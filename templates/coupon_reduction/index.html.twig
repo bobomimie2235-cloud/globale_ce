@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CouponReduction index{% endblock %}
+
+{% block body %}
+    <h1>CouponReduction index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Reference</th>
+                <th>Intitule</th>
+                <th>Description</th>
+                <th>Actif</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for coupon_reduction in coupon_reductions %}
+            <tr>
+                <td>{{ coupon_reduction.id }}</td>
+                <td>{{ coupon_reduction.reference }}</td>
+                <td>{{ coupon_reduction.intitule }}</td>
+                <td>{{ coupon_reduction.description }}</td>
+                <td>{{ coupon_reduction.actif ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_coupon_reduction_show', {'id': coupon_reduction.id}) }}">show</a>
+                    <a href="{{ path('app_coupon_reduction_edit', {'id': coupon_reduction.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_coupon_reduction_new') }}">Create new</a>
+{% endblock %}
