@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -41,8 +42,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column]
-    private ?\DateTime $dateInscription = null;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeInterface $dateInscription = null;
 
     /**
      * @var Collection<int, UtilisateurAdresse>
@@ -51,6 +52,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $utilisateurAdresses;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?UtilisateurGroupe $utilisateurGroupe = null;
 
     /**
@@ -70,6 +72,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->utilisateurAdresses = new ArrayCollection();
         $this->articles = new ArrayCollection();
         $this->commandes = new ArrayCollection();
+        $this->dateInscription = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -142,7 +145,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }
@@ -171,17 +174,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDateInscription(): ?\DateTime
+    public function getDateInscription(): ?\DateTimeInterface
     {
         return $this->dateInscription;
     }
 
-    public function setDateInscription(\DateTime $dateInscription): static
-    {
-        $this->dateInscription = $dateInscription;
-
-        return $this;
-    }
+    public function setDateInscription(\DateTimeInterface $dateInscription): static
+{
+    $this->dateInscription = $dateInscription;
+    return $this;
+}
 
     /**
      * @return Collection<int, UtilisateurAdresse>
