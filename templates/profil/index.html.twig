@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+<h1>Mon profil</h1>
+
+<h2>Mes informations personnelles</h2>
+<p>Email : {{ user.email }}</p>
+<p>Nom : {{ user.nom }}</p>
+<p>Prénom : {{ user.prenom }}</p>
+<p>Date d'inscription : {{ user.dateInscription|date('d/m/Y H:i') }}</p>
+<p>Groupe : {{ user.utilisateurGroupe.nomGroupe }}</p>
+
+<hr>
+
+<h2>Mes adresses</h2>
+<ul>
+    {% for adresse in adresses %}
+        <li>{{ adresse.adresse }}, {{ adresse.codePostal }}, {{ adresse.ville }}</li>
+    {% else %}
+        <li>Aucune adresse enregistrée</li>
+    {% endfor %}
+</ul>
+
+<h3>Ajouter une nouvelle adresse</h3>
+{{ form_start(formAdresse) }}
+    {{ form_widget(formAdresse) }}
+    <button type="submit">Ajouter</button>
+{{ form_end(formAdresse) }}
+
+<hr>
+
+{# <h2>Mes commandes</h2>
+<ul>
+    {% for commande in commandes %}
+        <li>Commande #{{ commande.id }} - {{ commande.date|date('d/m/Y H:i') }}</li>
+    {% else %}
+        <li>Aucune commande</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h2>Mes coupons utilisés</h2>
+<ul>
+    {% for coupon in coupons %}
+        <li>{{ coupon.code }} - {{ coupon.dateUtilisation|date('d/m/Y') }}</li>
+    {% else %}
+        <li>Aucun coupon utilisé</li>
+    {% endfor %}
+</ul> #}
+
+{% endblock %}

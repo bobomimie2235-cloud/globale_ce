@@ -1,13 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Utilisateur{% endblock %}
+{% block title %}Edit Utilisateur
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Utilisateur</h1>
+	<h1>Edit Utilisateur</h1>
 
-    {{ include('utilisateur/_form.html.twig', {'button_label': 'Update'}) }}
+	<p>Roles :
+		{{ form.vars.data.roles|join(', ') }}</p>
 
-    <a href="{{ path('app_utilisateur_index') }}">back to list</a>
+	<h2>Modifier le mot de passe</h2>
 
-    {{ include('utilisateur/_delete_form.html.twig') }}
+	{{ form_start(passwordForm) }}
+	{{ form_row(passwordForm.currentPassword) }}
+	{{ form_row(passwordForm.newPassword.first) }}
+	{{ form_row(passwordForm.newPassword.second) }}
+
+	<button class="btn btn-warning">Changer le mot de passe</button>
+	{{ form_end(passwordForm) }}
+
+	{{ include('utilisateur/_form.html.twig', {'button_label': 'Update'}) }}
+
+	<a href="{{ path('app_utilisateur_index') }}">back to list</a>
+
+	{{ include('utilisateur/_delete_form.html.twig') }}
 {% endblock %}

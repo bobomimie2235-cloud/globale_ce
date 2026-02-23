@@ -38,6 +38,9 @@
 
 				{% if app.user %}
 					<li>
+						<a href="{{ path('app_profil') }}">Profil Utilisateur</a>
+					</li>
+					<li>
 						<a href="{{ path('app_logout') }}">Déconnexion</a>
 					</li>
 				{% else %}
@@ -54,9 +57,13 @@
 			<p>
 				Bienvenue
 				{{ app.user.nom }}
-				{{ app.user.prenom }}, tu es bien connecté(e). <br>
-				Tu es <strong>{{ app.user.roles[0]|replace({'ROLE_': ''}) }}</strong> et 
-				tu fais partie du groupe <strong>{{ app.user.utilisateurGroupe.nomGroupe }}</strong>.
+				{{ app.user.prenom }}, tu es bien connecté(e).
+				<br>
+				Tu es
+				<strong>{{ app.user.roles[0]|replace({'ROLE_': ''}) }}</strong>
+				et 
+								tu fais partie du groupe
+				<strong>{{ app.user.utilisateurGroupe.nomGroupe }}</strong>.
 			</p>
 		{% endif %}
 		{% block body %}{% endblock %}

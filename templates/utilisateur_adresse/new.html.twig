@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New UtilisateurAdresse{% endblock %}
+
+{% block body %}
+    <h1>Create new UtilisateurAdresse</h1>
+
+    {{ include('utilisateur_adresse/_form.html.twig') }}
+
+    <a href="{{ path('app_utilisateur_adresse_index') }}">back to list</a>
+{% endblock %}

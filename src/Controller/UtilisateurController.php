@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Form\ChangePasswordType;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Form\FormError;
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
@@ -51,22 +54,57 @@ final class UtilisateurController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(UtilisateurType::class, $utilisateur);
-        $form->handleRequest($request);
+public function edit(
+    Request $request,
+    Utilisateur $utilisateur,
+    EntityManagerInterface $entityManager,
+    UserPasswordHasherInterface $passwordHasher
+): Response {
+    // ===== Formulaire utilisateur (sans mot de passe) =====
+    $form = $this->createForm(UtilisateurType::class, $utilisateur);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Utilisateur mis à jour');
+        return $this->redirectToRoute('app_utilisateur_index');
+    }
+
+    // ===== Formulaire changement de mot de passe =====
+    $passwordForm = $this->createForm(ChangePasswordType::class);
+    $passwordForm->handleRequest($request);
+
+    if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
+
+        $currentPassword = $passwordForm->get('currentPassword')->getData();
+
+        if (!$passwordHasher->isPasswordValid($utilisateur, $currentPassword)) {
+            $passwordForm->get('currentPassword')
+                ->addError(new FormError('Mot de passe actuel incorrect'));
+        } else {
+            $newPassword = $passwordForm->get('newPassword')->getData();
+
+            $utilisateur->setPassword(
+                $passwordHasher->hashPassword($utilisateur, $newPassword)
+            );
+
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
-        }
+            $this->addFlash('success', 'Mot de passe modifié avec succès');
 
-        return $this->render('utilisateur/edit.html.twig', [
-            'utilisateur' => $utilisateur,
-            'form' => $form,
-        ]);
+            return $this->redirectToRoute('app_utilisateur_edit', [
+                'id' => $utilisateur->getId(),
+            ]);
+        }
     }
+
+    return $this->render('utilisateur/edit.html.twig', [
+        'utilisateur' => $utilisateur,
+        'form' => $form->createView(),
+        'passwordForm' => $passwordForm->createView(),
+    ]);
+}
 
     #[Route('/{id}', name: 'app_utilisateur_delete', methods: ['POST'])]
     public function delete(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
@@ -77,5 +115,31 @@ final class UtilisateurController extends AbstractController
         }
 
         return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+    }
+}
+
+$passwordForm = $this->createForm(ChangePasswordType::class);
+$passwordForm->handleRequest($request);
+
+if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
+
+    $currentPassword = $passwordForm->get('currentPassword')->getData();
+
+    if (!$passwordHasher->isPasswordValid($utilisateur, $currentPassword)) {
+        $passwordForm->get('currentPassword')
+            ->addError(new FormError('Mot de passe actuel incorrect'));
+    } else {
+        $newPassword = $passwordForm->get('newPassword')->getData();
+
+        $utilisateur->setPassword(
+            $passwordHasher->hashPassword($utilisateur, $newPassword)
+        );
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Mot de passe modifié avec succès');
+        return $this->redirectToRoute('app_utilisateur_edit', [
+            'id' => $utilisateur->getId(),
+        ]);
     }
 }
