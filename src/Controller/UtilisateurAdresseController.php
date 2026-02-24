@@ -33,6 +33,7 @@ final class UtilisateurAdresseController extends AbstractController
             $entityManager->persist($utilisateurAdresse);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Adresse ajoutée avec succès !');
             return $this->redirectToRoute('app_utilisateur_adresse_index', [], Response::HTTP_SEE_OTHER);
         }
 

@@ -33,6 +33,8 @@ final class CouponReductionController extends AbstractController
             $entityManager->persist($couponReduction);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Coupon réduction ajouté avec succès !');
+
             return $this->redirectToRoute('app_coupon_reduction_index', [], Response::HTTP_SEE_OTHER);
         }
 

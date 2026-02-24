@@ -36,6 +36,8 @@ final class UtilisateurController extends AbstractController
             $entityManager->persist($utilisateur);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Utilisateur ajouté avec succès !');
+
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
         }
 

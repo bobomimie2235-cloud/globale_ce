@@ -7,8 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UtilisateurGroupeRepository::class)]
+#[UniqueEntity(
+    fields: ['reference'],
+    message: 'Cette référence est déjà utilisée.'
+)]
 class UtilisateurGroupe
 {
     #[ORM\Id]
@@ -16,7 +21,14 @@ class UtilisateurGroupe
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 60)]
+    #[Assert\NotBlank(message: 'Le nom du groupe est obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'Le nom du groupe doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom du groupe ne doit pas dépasser {{ limit }} caractères'
+    )]
     private ?string $nomGroupe = null;
 
     /**
@@ -25,23 +37,50 @@ class UtilisateurGroupe
     #[ORM\OneToMany(targetEntity: Utilisateur::class, mappedBy: 'utilisateurGroupe')]
     private Collection $utilisateurs;
 
-    #[ORM\Column(length: 255, unique: true)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "La référence du groupe est obligatoire")]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: "La référence doit contenir au moins {{ limit }} caractères",
+        maxMessage: "La référence ne doit pas dépasser {{ limit }} caractères"
+    )]
     private string $referenceGroupe;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: "L'adresse doit contenir au moins {{ limit }} caractères",
+        maxMessage: "L'adresse ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^[0-9]{5}$/',
+        message: "Le code postal doit contenir exactement 5 chiffres"
+    )]
     private ?string $codePostal = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "La ville doit contenir au moins {{ limit }} caractères",
+        maxMessage: "La ville ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $ville = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^\+?[0-9\s\-]{6,20}$/',
+        message: "Le numéro de téléphone est invalide"
+    )]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
+    #[Assert\Email(message: "L'email '{{ value }}' n'est pas valide")]
     private ?string $email = null;
 
     public function __construct()

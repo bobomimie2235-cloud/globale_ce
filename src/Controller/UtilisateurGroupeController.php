@@ -33,6 +33,8 @@ final class UtilisateurGroupeController extends AbstractController
             $entityManager->persist($utilisateurGroupe);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Groupe ajouté avec succès !');
+
             return $this->redirectToRoute('app_utilisateur_groupe_index', [], Response::HTTP_SEE_OTHER);
         }
 

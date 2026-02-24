@@ -33,6 +33,8 @@ final class ProduitController extends AbstractController
             $entityManager->persist($produit);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Produit ajouté avec succès !');
+
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
