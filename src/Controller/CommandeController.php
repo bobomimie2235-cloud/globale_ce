@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 #[Route('/commande')]
 final class CommandeController extends AbstractController
@@ -42,6 +44,7 @@ final class CommandeController extends AbstractController
         ]);
     }
 
+    #[IsGranted('VIEW', subject: 'commande')]
     #[Route('/{id}', name: 'app_commande_show', methods: ['GET'])]
     public function show(Commande $commande): Response
     {
@@ -50,6 +53,7 @@ final class CommandeController extends AbstractController
         ]);
     }
 
+    #[IsGranted('VIEW', subject: 'commande')]
     #[Route('/{id}/edit', name: 'app_commande_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
@@ -68,6 +72,7 @@ final class CommandeController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_commande_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {

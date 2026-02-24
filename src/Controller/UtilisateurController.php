@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/utilisateur')]
 final class UtilisateurController extends AbstractController
@@ -25,6 +26,7 @@ final class UtilisateurController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_utilisateur_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -47,7 +49,7 @@ final class UtilisateurController extends AbstractController
         ]);
     }
 
-
+    #[IsGranted('VIEW', subject: 'commande')]
     #[Route('/{id}', name: 'app_utilisateur_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Utilisateur $utilisateur): Response
     {
@@ -109,6 +111,7 @@ final class UtilisateurController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_utilisateur_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
     {

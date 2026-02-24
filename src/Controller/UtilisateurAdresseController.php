@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/utilisateur/adresse')]
 final class UtilisateurAdresseController extends AbstractController
@@ -22,6 +23,7 @@ final class UtilisateurAdresseController extends AbstractController
         ]);
     }
 
+    #[IsGranted('VIEW', subject: 'commande')]
     #[Route('/new', name: 'app_utilisateur_adresse_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -43,6 +45,7 @@ final class UtilisateurAdresseController extends AbstractController
         ]);
     }
 
+    #[IsGranted('VIEW', subject: 'commande')]
     #[Route('/{id}', name: 'app_utilisateur_adresse_show', methods: ['GET'])]
     public function show(UtilisateurAdresse $utilisateurAdresse): Response
     {
@@ -51,6 +54,7 @@ final class UtilisateurAdresseController extends AbstractController
         ]);
     }
 
+    #[IsGranted('VIEW', subject: 'commande')]
     #[Route('/{id}/edit', name: 'app_utilisateur_adresse_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, UtilisateurAdresse $utilisateurAdresse, EntityManagerInterface $entityManager): Response
     {
@@ -69,6 +73,7 @@ final class UtilisateurAdresseController extends AbstractController
         ]);
     }
 
+    #[IsGranted('VIEW', subject: 'commande')]
     #[Route('/{id}', name: 'app_utilisateur_adresse_delete', methods: ['POST'])]
     public function delete(Request $request, UtilisateurAdresse $utilisateurAdresse, EntityManagerInterface $entityManager): Response
     {

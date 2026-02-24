@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/produit/categorie')]
 final class ProduitCategorieController extends AbstractController
@@ -22,6 +23,7 @@ final class ProduitCategorieController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_produit_categorie_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -44,6 +46,7 @@ final class ProduitCategorieController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_produit_categorie_show', methods: ['GET'])]
     public function show(ProduitCategorie $produitCategorie): Response
     {
@@ -52,6 +55,7 @@ final class ProduitCategorieController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'app_produit_categorie_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ProduitCategorie $produitCategorie, EntityManagerInterface $entityManager): Response
     {
@@ -70,6 +74,7 @@ final class ProduitCategorieController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_produit_categorie_delete', methods: ['POST'])]
     public function delete(Request $request, ProduitCategorie $produitCategorie, EntityManagerInterface $entityManager): Response
     {

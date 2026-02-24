@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/coupon/reduction')]
 final class CouponReductionController extends AbstractController
@@ -22,6 +23,7 @@ final class CouponReductionController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_coupon_reduction_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -52,6 +54,7 @@ final class CouponReductionController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'app_coupon_reduction_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, CouponReduction $couponReduction, EntityManagerInterface $entityManager): Response
     {
