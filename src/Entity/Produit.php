@@ -7,8 +7,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
+#[UniqueEntity(
+    fields: ['reference'],
+    message: 'Cette référence est déjà utilisée.'
+)]
 class Produit
 {
     #[ORM\Id]
@@ -17,18 +23,49 @@ class Produit
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La référence du produit est obligatoire")]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: "La référence doit contenir au moins {{ limit }} caractères",
+        maxMessage: "La référence ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $reference = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L’intitulé du produit est obligatoire")]
+    #[Assert\Length(
+        min: 5,
+        max: 100,
+        minMessage: "L’intitulé doit contenir au moins {{ limit }} caractères",
+        maxMessage: "L’intitulé ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $intitule = null;
 
     #[ORM\Column(length: 500, nullable: true)]
+    #[Assert\Length(
+        min: 10,
+        max: 500,
+        minMessage: "La description doit contenir au moins {{ limit }} caractères",
+        maxMessage: "La description ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Assert\Type(
+        type: 'numeric',
+        message: 'Le prix doit être un nombre'
+    )]
+    #[Assert\PositiveOrZero(message: 'Le prix doit être supérieur ou égal à 0')]
     private ?string $prixUnitaire = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Le stock est obligatoire')]
+    #[Assert\Type(
+        type: 'integer',
+        message: 'Le stock doit être un nombre entier'
+    )]
+    #[Assert\PositiveOrZero(message: 'Le stock doit être supérieur ou égal à 0')]
     private ?int $stock = null;
 
     #[ORM\Column]

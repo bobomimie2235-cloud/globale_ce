@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             // ✅ Date d'inscription automatique
-            $user->setDateInscription(new DateTimeImmutable());
+            $user->setDateInscription(new \DateTimeImmutable());
 
             // 🔐 Récupération et normalisation du code groupe
             $codeGroupe = strtoupper(trim(
@@ -57,6 +57,9 @@ class RegistrationController extends AbstractController
                 $user->setPassword(
                     $userPasswordHasher->hashPassword($user, $plainPassword)
                 );
+
+                // ✅ RÔLE PAR DÉFAUT (OBLIGATOIRE)
+                $user->setRoles(['ROLE_USER']);
 
                 // 💾 Sauvegarde
                 $entityManager->persist($user);

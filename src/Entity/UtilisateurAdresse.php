@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UtilisateurAdresseRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurAdresseRepository::class)]
 class UtilisateurAdresse
@@ -14,21 +15,61 @@ class UtilisateurAdresse
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le nom ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le prénom est obligatoire")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "Le prénom doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le prénom ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'adresse est obligatoire")]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: "L'adresse doit contenir au moins {{ limit }} caractères",
+        maxMessage: "L'adresse ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 5)]
+    #[Assert\NotBlank(message: "Le code postal est obligatoire")]
+    #[Assert\Regex(
+        pattern: '/^[0-9]{5}$/',
+        message: "Le code postal doit contenir exactement 5 chiffres"
+    )]
     private ?string $codePostal = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La ville est obligatoire")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "La ville doit contenir au moins {{ limit }} caractères",
+        maxMessage: "La ville ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $ville = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le pays est obligatoire")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "Le pays doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le pays ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $pays = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurAdresses')]

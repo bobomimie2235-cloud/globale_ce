@@ -22,6 +22,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: "L'Email est obligatoire")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+        message: "L'email '{{ value }}' n'est pas valide"
+        )]
     private ?string $email = null;
 
     /**
@@ -33,13 +38,28 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom ne doit pas dépasser {{ limit }} caractères'
+    )]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Le prénom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le prénom ne doit pas dépasser {{ limit }} caractères'
+    )]
     private ?string $prenom = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -180,10 +200,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setDateInscription(\DateTimeInterface $dateInscription): static
-{
-    $this->dateInscription = $dateInscription;
-    return $this;
-}
+    {
+        $this->dateInscription = $dateInscription;
+        return $this;
+    }
 
     /**
      * @return Collection<int, UtilisateurAdresse>

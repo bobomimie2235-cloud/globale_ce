@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,13 +14,31 @@ class Article
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le titre est obligatoire')]
+    #[Assert\Length(
+        min: 10,
+        max: 150,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères'
+    )]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(
+        min: 10,
+        max: 500,
+        minMessage: 'La description doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La description ne doit pas dépasser {{ limit }} caractères'
+    )]
     private ?string $description = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(
+        min: 10,
+        max: 500,
+        minMessage: 'La description doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La description ne doit pas dépasser {{ limit }} caractères'
+    )]
     private ?string $infosActivite = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -34,10 +53,22 @@ class Article
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imgPhotosInterieur = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(
+        min: 10,
+        max: 500,
+        minMessage: "L'Offre Commerciale doit contenir au moins {{ limit }} caractères",
+        maxMessage: "L'Offre Commerciale ne doit pas dépasser {{ limit }} caractères"
+    )]
     private ?string $offreCommerciale = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(
+        min: 20,
+        max: 500,
+        minMessage: 'Les horaires doivent contenir au moins {{ limit }} caractères',
+        maxMessage: 'Les horaires ne doivent pas dépasser {{ limit }} caractères'
+    )]
     private ?string $horaires = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UtilisateurGroupe index{% endblock %}
+
+{% block body %}
+    <h1>UtilisateurGroupe index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NomGroupe</th>
+                <th>ReferenceGroupe</th>
+                <th>Adresse</th>
+                <th>CodePostal</th>
+                <th>Ville</th>
+                <th>Telephone</th>
+                <th>Email</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for utilisateur_groupe in utilisateur_groupes %}
+            <tr>
+                <td>{{ utilisateur_groupe.id }}</td>
+                <td>{{ utilisateur_groupe.nomGroupe }}</td>
+                <td>{{ utilisateur_groupe.referenceGroupe }}</td>
+                <td>{{ utilisateur_groupe.adresse }}</td>
+                <td>{{ utilisateur_groupe.codePostal }}</td>
+                <td>{{ utilisateur_groupe.ville }}</td>
+                <td>{{ utilisateur_groupe.telephone }}</td>
+                <td>{{ utilisateur_groupe.email }}</td>
+                <td>
+                    <a href="{{ path('app_utilisateur_groupe_show', {'id': utilisateur_groupe.id}) }}">show</a>
+                    <a href="{{ path('app_utilisateur_groupe_edit', {'id': utilisateur_groupe.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_utilisateur_groupe_new') }}">Create new</a>
+{% endblock %}

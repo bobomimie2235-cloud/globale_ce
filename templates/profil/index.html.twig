@@ -12,6 +12,11 @@
 <p>Date d'inscription : {{ user.dateInscription|date('d/m/Y H:i') }}</p>
 <p>Groupe : {{ user.utilisateurGroupe.nomGroupe }}</p>
 
+<td>
+    <a href="{{ path('app_utilisateur_show', {'id': app.user.id}) }}">show</a>
+    <a href="{{ path('app_utilisateur_edit', {'id': app.user.id}) }}">edit</a>
+</td>
+
 <hr>
 
 <h2>Mes adresses</h2>
