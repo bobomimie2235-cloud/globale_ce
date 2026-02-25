@@ -31,9 +31,27 @@ security:
                 target: app_accueil
 
     access_control:
-        # Exemple de restriction de route
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # 🔓 Pages publiques
+        - { path: ^/accueil, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+
+        # 👑 ADMIN uniquement
+        - { path: ^/utilisateur-groupe, roles: ROLE_ADMIN }
+        - { path: ^/utilisateur, roles: ROLE_ADMIN }
+        - { path: ^/article-categorie, roles: ROLE_ADMIN }
+        - { path: ^/produit-categorie, roles: ROLE_ADMIN }
+
+        # 🔐 Utilisateurs connectés
+        - { path: ^/commande, roles: ROLE_USER }
+        - { path: ^/article, roles: ROLE_USER }
+        - { path: ^/produit, roles: ROLE_USER }
+        - { path: ^/coupon-reduction, roles: ROLE_USER }
+        - { path: ^/profil, roles: ROLE_USER }
+
+        # 🔒 Tout le reste nécessite une connexion
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:

@@ -17,48 +17,26 @@
 	<body>
 		<nav>
 			<ul>
-				<li>
-					<a href="{{ path('app_accueil') }}">Accueil</a>
-				</li>
-				<li>
-					<a href="{{ path('app_article_index') }}">Offres Cartes</a>
-				</li>
-				<li>
-					<a href="{{ path('app_article_categorie_index') }}">Article Catégorie</a>
-				</li>
-				<li>
-					<a href="{{ path('app_produit_index') }}">Billetterie</a>
-				</li>
-				<li>
-					<a href="{{ path('app_produit_categorie_index') }}">Produit Catégorie</a>
-				</li>
-				<li>
-					<a href="{{ path('app_coupon_reduction_index') }}">Coupon Réduction</a>
-				</li>
-				<li>
-					<a href="{{ path('app_commande_index') }}">Commande</a>
-				</li>
-				<li>
-					<a href="{{ path('app_utilisateur_index') }}">Utilisateur</a>
-				</li>
-				<li>
-					<a href="{{ path('app_utilisateur_groupe_index') }}">Utilisateur Groupe</a>
-				</li>
-
-				{% if app.user %}
-					<li>
-						<a href="{{ path('app_profil') }}">Profil Utilisateur</a>
-					</li>
-					<li>
-						<a href="{{ path('app_logout') }}">Déconnexion</a>
-					</li>
+				{# Pages Public #}
+				<li><a href="{{ path('app_accueil') }}">Accueil</a></li>
+				{# Pages Administrateurs #}
+				{% if is_granted('ROLE_ADMIN') %}
+					<li><a href="{{ path('app_utilisateur_index') }}">Utilisateur</a></li>
+					<li><a href="{{ path('app_utilisateur_groupe_index') }}">Utilisateur Groupe</a></li>
+					<li><a href="{{ path('app_article_categorie_index') }}">Article Catégorie</a></li>
+					<li><a href="{{ path('app_produit_categorie_index') }}">Produit Catégorie</a></li>
+				{% endif %}
+				{# Pages Utilisateurs #}
+				{% if is_granted('ROLE_USER') %}
+					<li><a href="{{ path('app_profil') }}">Profil Utilisateur</a></li>
+					<li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+					<li><a href="{{ path('app_article_index') }}">Offres Cartes</a></li>
+					<li><a href="{{ path('app_produit_index') }}">Billetterie</a></li>
+					<li><a href="{{ path('app_coupon_reduction_index') }}">Coupon Réduction</a></li>
+					<li><a href="{{ path('app_commande_index') }}">Commande</a></li>
 				{% else %}
-					<li>
-						<a href="{{ path('app_register') }}">Inscription</a>
-					</li>
-					<li>
-						<a href="{{ path('app_login') }}">Connexion</a>
-					</li>
+					<li><a href="{{ path('app_register') }}">Inscription</a></li>
+					<li><a href="{{ path('app_login') }}">Connexion</a></li>
 				{% endif %}
 			</ul>
 		</nav>
@@ -71,7 +49,7 @@
 				Tu es
 				<strong>{{ app.user.roles[0]|replace({'ROLE_': ''}) }}</strong>
 				et 
-								tu fais partie du groupe
+												tu fais partie du groupe
 				<strong>{{ app.user.utilisateurGroupe.nomGroupe }}</strong>.
 			</p>
 		{% endif %}
