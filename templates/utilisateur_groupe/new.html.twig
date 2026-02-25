@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New UtilisateurGroupe{% endblock %}
+{% block title %}Nouveau Groupe Utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Create new UtilisateurGroupe</h1>
+    <h1>Créer Nouveau Groupe Utilisateur</h1>
 
-    {{ include('utilisateur_groupe/_form.html.twig') }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('utilisateur_groupe/_form.html.twig') }}
+    {% else %}
+        <p class="alert alert-warning">Vous n'avez pas les droits pour créer un groupe.</p>
+    {% endif %}
 
-    <a href="{{ path('app_utilisateur_groupe_index') }}">back to list</a>
+    <a href="{{ path('app_utilisateur_groupe_index') }}">Retour à la liste</a>
 {% endblock %}

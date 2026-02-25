@@ -5,7 +5,11 @@
 {% block body %}
     <h1>Create new Produit</h1>
 
-    {{ include('produit/_form.html.twig') }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('produit/_form.html.twig') }}
+    {% else %}
+        <p class="alert alert-warning">Vous n'avez pas les droits pour créer un produit.</p>
+    {% endif %}
 
-    <a href="{{ path('app_produit_index') }}">back to list</a>
+    <a href="{{ path('app_produit_index') }}">Retour à la liste</a>
 {% endblock %}

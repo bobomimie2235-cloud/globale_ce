@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Commande{% endblock %}
+{% block title %}Nouvelle Commande{% endblock %}
 
 {% block body %}
-    <h1>Create new Commande</h1>
+    <h1>Créer Nouvelle Commande</h1>
 
-    {{ include('commande/_form.html.twig') }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('commande/_form.html.twig') }}
+    {% else %}
+        <p class="alert alert-warning">Vous n'avez pas les droits pour créer une commande.</p>
+    {% endif %}
 
-    <a href="{{ path('app_commande_index') }}">back to list</a>
+    <a href="{{ path('app_commande_index') }}">Retour à la liste</a>
 {% endblock %}

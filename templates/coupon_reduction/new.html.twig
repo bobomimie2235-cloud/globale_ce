@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New CouponReduction{% endblock %}
+{% block title %}Nouveau Coupon Réduction{% endblock %}
 
 {% block body %}
-    <h1>Create new CouponReduction</h1>
+    <h1>Créer Nouveau Coupon Réduction</h1>
 
-    {{ include('coupon_reduction/_form.html.twig') }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('coupon_reduction/_form.html.twig') }}
+    {% else %}
+        <p class="alert alert-warning">Vous n'avez pas les droits pour créer un coupon.</p>
+    {% endif %}
 
-    <a href="{{ path('app_coupon_reduction_index') }}">back to list</a>
+    <a href="{{ path('app_coupon_reduction_index') }}">Retour à la liste</a>
 {% endblock %}

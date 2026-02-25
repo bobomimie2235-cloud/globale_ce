@@ -5,17 +5,21 @@
 {% block body %}
     <h1>Utilisateur index</h1>
 
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_utilisateur_new') }}" class="btn btn-primary btn-sm">Créer un utilisateur</a>
+    {% endif %}
+
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Email</th>
                 <th>Roles</th>
-                <th>Password</th>
                 <th>Nom</th>
-                <th>Prenom</th>
-                <th>DateInscription</th>
-                <th>actions</th>
+                <th>Prénom</th>
+                <th>Date inscription</th>
+                <th>Groupe</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -23,23 +27,33 @@
             <tr>
                 <td>{{ utilisateur.id }}</td>
                 <td>{{ utilisateur.email }}</td>
-                <td>{{ utilisateur.roles ? utilisateur.roles|json_encode : '' }}</td>
-                <td>{{ utilisateur.password }}</td>
+                <td>{{ utilisateur.roles ? utilisateur.roles|join(', ') : '-' }}</td>
                 <td>{{ utilisateur.nom }}</td>
                 <td>{{ utilisateur.prenom }}</td>
-                <td>{{ utilisateur.dateInscription ? utilisateur.dateInscription|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ utilisateur.dateInscription ? utilisateur.dateInscription|date('d/m/Y H:i') : '-' }}</td>
+                <td>{{ utilisateur.utilisateurGroupe ? utilisateur.utilisateurGroupe.nomGroupe : '-' }}</td>
                 <td>
-                    <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">show</a>
-                    <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">edit</a>
+                    <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-info btn-sm">Voir</a>
+
+                    {% if is_granted('ROLE_ADMIN') or app.user == utilisateur %}
+                        <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <form method="post" action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}"
+                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');"
+                            style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="8">Aucun utilisateur trouvé.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_utilisateur_new') }}">Create new</a>
 {% endblock %}

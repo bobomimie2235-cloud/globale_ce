@@ -5,15 +5,19 @@
 {% block body %}
     <h1>CouponReduction index</h1>
 
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_coupon_reduction_new') }}" class="btn btn-primary btn-sm">Créer un coupon</a>
+    {% endif %}
+
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Reference</th>
-                <th>Intitule</th>
+                <th>Référence</th>
+                <th>Intitulé</th>
                 <th>Description</th>
                 <th>Actif</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -23,19 +27,33 @@
                 <td>{{ coupon_reduction.reference }}</td>
                 <td>{{ coupon_reduction.intitule }}</td>
                 <td>{{ coupon_reduction.description }}</td>
-                <td>{{ coupon_reduction.actif ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('app_coupon_reduction_show', {'id': coupon_reduction.id}) }}">show</a>
-                    <a href="{{ path('app_coupon_reduction_edit', {'id': coupon_reduction.id}) }}">edit</a>
+                    {% if coupon_reduction.actif %}
+                        <span class="badge bg-success">Actif</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inactif</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('app_coupon_reduction_show', {'id': coupon_reduction.id}) }}" class="btn btn-info btn-sm">Voir</a>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_coupon_reduction_edit', {'id': coupon_reduction.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+
+                        <form method="post" action="{{ path('app_coupon_reduction_delete', {'id': coupon_reduction.id}) }}"
+                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce coupon ?');"
+                            style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ coupon_reduction.id) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="6">Aucun coupon trouvé.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_coupon_reduction_new') }}">Create new</a>
 {% endblock %}

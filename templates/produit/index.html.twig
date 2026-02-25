@@ -5,17 +5,21 @@
 {% block body %}
     <h1>Produit index</h1>
 
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_produit_new') }}" class="btn btn-primary btn-sm">Créer un produit</a>
+    {% endif %}
+
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Reference</th>
-                <th>Intitule</th>
+                <th>Référence</th>
+                <th>Intitulé</th>
                 <th>Description</th>
-                <th>PrixUnitaire</th>
+                <th>Prix unitaire</th>
                 <th>Stock</th>
-                <th>DateCreation</th>
-                <th>actions</th>
+                <th>Date création</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,21 +29,35 @@
                 <td>{{ produit.reference }}</td>
                 <td>{{ produit.intitule }}</td>
                 <td>{{ produit.description }}</td>
-                <td>{{ produit.prixUnitaire }}</td>
-                <td>{{ produit.stock }}</td>
-                <td>{{ produit.dateCreation ? produit.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ produit.prixUnitaire }} €</td>
                 <td>
-                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}">show</a>
-                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>
+                    {% if produit.stock > 0 %}
+                        <span class="badge bg-success">{{ produit.stock }}</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rupture</span>
+                    {% endif %}
+                </td>
+                <td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
+                <td>
+                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+
+                        <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}"
+                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');"
+                            style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="8">Aucun produit trouvé.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_produit_new') }}">Create new</a>
 {% endblock %}

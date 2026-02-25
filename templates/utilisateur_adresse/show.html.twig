@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UtilisateurAdresse{% endblock %}
+{% block title %}Adresse Utilisateur{% endblock %}
 
 {% block body %}
-    <h1>UtilisateurAdresse</h1>
+    <h1>Adresse Utilisateur</h1>
 
     <table class="table">
         <tbody>
@@ -16,7 +16,7 @@
                 <td>{{ utilisateur_adresse.nom }}</td>
             </tr>
             <tr>
-                <th>Prenom</th>
+                <th>Prénom</th>
                 <td>{{ utilisateur_adresse.prenom }}</td>
             </tr>
             <tr>
@@ -24,7 +24,7 @@
                 <td>{{ utilisateur_adresse.adresse }}</td>
             </tr>
             <tr>
-                <th>CodePostal</th>
+                <th>Code postal</th>
                 <td>{{ utilisateur_adresse.codePostal }}</td>
             </tr>
             <tr>
@@ -38,9 +38,11 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_utilisateur_adresse_index') }}">back to list</a>
+    <a href="{{ path('app_utilisateur_adresse_index') }}">Retour à la liste</a>
 
-    <a href="{{ path('app_utilisateur_adresse_edit', {'id': utilisateur_adresse.id}) }}">edit</a>
+    {% if is_granted('ROLE_ADMIN') or app.user == utilisateur_adresse.utilisateur %}
+        <a href="{{ path('app_utilisateur_adresse_edit', {'id': utilisateur_adresse.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+    {% endif %}
 
     {{ include('utilisateur_adresse/_delete_form.html.twig') }}
 {% endblock %}

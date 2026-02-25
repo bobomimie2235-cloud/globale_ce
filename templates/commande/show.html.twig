@@ -16,19 +16,21 @@
                 <td>{{ commande.statut }}</td>
             </tr>
             <tr>
-                <th>TotalTTC</th>
-                <td>{{ commande.totalTTC }}</td>
+                <th>Total TTC</th>
+                <td>{{ commande.totalTTC }} €</td>
             </tr>
             <tr>
-                <th>DateCommande</th>
-                <td>{{ commande.dateCommande ? commande.dateCommande|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Date commande</th>
+                <td>{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y H:i') : '-' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_commande_index') }}">back to list</a>
+    <a href="{{ path('app_commande_index') }}">Retour à la liste</a>
 
-    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}">edit</a>
+    {% if is_granted('ROLE_ADMIN') or app.user == commande.utilisateur %}
+        <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+    {% endif %}
 
     {{ include('commande/_delete_form.html.twig') }}
 {% endblock %}

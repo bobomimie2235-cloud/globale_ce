@@ -21,8 +21,8 @@
 				<li><a href="{{ path('app_accueil') }}">Accueil</a></li>
 				{# Pages Administrateurs #}
 				{% if is_granted('ROLE_ADMIN') %}
-					<li><a href="{{ path('app_utilisateur_index') }}">Utilisateur</a></li>
-					<li><a href="{{ path('app_utilisateur_groupe_index') }}">Utilisateur Groupe</a></li>
+					<li><a href="{{ path('app_utilisateur_index') }}">Utilisateurs</a></li>
+					<li><a href="{{ path('app_utilisateur_groupe_index') }}">Groupes Utilisateurs</a></li>
 					<li><a href="{{ path('app_article_categorie_index') }}">Article Catégorie</a></li>
 					<li><a href="{{ path('app_produit_categorie_index') }}">Produit Catégorie</a></li>
 				{% endif %}

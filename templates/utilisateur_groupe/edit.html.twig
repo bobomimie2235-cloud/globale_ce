@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit UtilisateurGroupe{% endblock %}
+{% block title %}Modifier Groupe Utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Edit UtilisateurGroupe</h1>
+    <h1>Modifier Groupe Utilisateur</h1>
 
-    {{ include('utilisateur_groupe/_form.html.twig', {'button_label': 'Update'}) }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('utilisateur_groupe/_form.html.twig', {'button_label': 'Modifier'}) }}
+    {% else %}
+        <p class="alert alert-warning">Vous n'avez pas les droits pour modifier ce groupe.</p>
+    {% endif %}
 
-    <a href="{{ path('app_utilisateur_groupe_index') }}">back to list</a>
+    <a href="{{ path('app_utilisateur_groupe_index') }}">Retour à la liste</a>
 
     {{ include('utilisateur_groupe/_delete_form.html.twig') }}
 {% endblock %}

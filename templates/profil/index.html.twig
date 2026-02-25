@@ -3,57 +3,132 @@
 {% block title %}Profil{% endblock %}
 
 {% block body %}
-<h1>Mon profil</h1>
+    <h1>Mon profil</h1>
 
-<h2>Mes informations personnelles</h2>
-<p>Email : {{ user.email }}</p>
-<p>Nom : {{ user.nom }}</p>
-<p>Prénom : {{ user.prenom }}</p>
-<p>Date d'inscription : {{ user.dateInscription|date('d/m/Y H:i') }}</p>
-<p>Groupe : {{ user.utilisateurGroupe.nomGroupe }}</p>
+    {# ===== Informations personnelles ===== #}
+    <h2>Mes informations personnelles</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Email</th>
+                <td>{{ app.user.email }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ app.user.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ app.user.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Date d'inscription</th>
+                <td>{{ app.user.dateInscription|date('d/m/Y H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Groupe</th>
+                <td>{{ app.user.utilisateurGroupe ? app.user.utilisateurGroupe.nomGroupe : '-' }}</td>
+            </tr>
+        </tbody>
+    </table>
 
-<td>
-    <a href="{{ path('app_utilisateur_show', {'id': app.user.id}) }}">show</a>
-    <a href="{{ path('app_utilisateur_edit', {'id': app.user.id}) }}">edit</a>
-</td>
+    <a href="{{ path('app_utilisateur_show', {'id': app.user.id}) }}" class="btn btn-info btn-sm">Voir</a>
+    <a href="{{ path('app_utilisateur_edit', {'id': app.user.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
 
-<hr>
+    <hr>
 
-<h2>Mes adresses</h2>
-<ul>
-    {% for adresse in adresses %}
-        <li>{{ adresse.adresse }}, {{ adresse.codePostal }}, {{ adresse.ville }}</li>
+    {# ===== Adresses ===== #}
+    <h2>Mes adresses</h2>
+
+    {% if adresses is empty %}
+        <p>Aucune adresse enregistrée.</p>
     {% else %}
-        <li>Aucune adresse enregistrée</li>
-    {% endfor %}
-</ul>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Adresse</th>
+                    <th>Code postal</th>
+                    <th>Ville</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for adresse in adresses %}
+                    <tr>
+                        <td>{{ adresse.adresse }}</td>
+                        <td>{{ adresse.codePostal }}</td>
+                        <td>{{ adresse.ville }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 
-<h3>Ajouter une nouvelle adresse</h3>
-{{ form_start(formAdresse) }}
-    {{ form_widget(formAdresse) }}
-    <button type="submit">Ajouter</button>
-{{ form_end(formAdresse) }}
+    <h3>Ajouter une nouvelle adresse</h3>
+    {{ form_start(formAdresse) }}
+        {{ form_widget(formAdresse) }}
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    {{ form_end(formAdresse) }}
 
-<hr>
+    <hr>
 
-{# <h2>Mes commandes</h2>
-<ul>
-    {% for commande in commandes %}
-        <li>Commande #{{ commande.id }} - {{ commande.date|date('d/m/Y H:i') }}</li>
+    {# ===== Commandes ===== #}
+    <h2>Mes commandes</h2>
+
+    {% if commandes is defined and commandes is not empty %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Statut</th>
+                    <th>Total TTC</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commande in commandes %}
+                    <tr>
+                        <td>#{{ commande.id }}</td>
+                        <td>{{ commande.statut }}</td>
+                        <td>{{ commande.totalTTC }} €</td>
+                        <td>{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y H:i') : '-' }}</td>
+                        <td>
+                            <a href="{{ path('app_commande_show', {'id': commande.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% else %}
-        <li>Aucune commande</li>
-    {% endfor %}
-</ul>
+        <p>Aucune commande.</p>
+    {% endif %}
 
-<hr>
+    <hr>
 
-<h2>Mes coupons utilisés</h2>
-<ul>
-    {% for coupon in coupons %}
-        <li>{{ coupon.code }} - {{ coupon.dateUtilisation|date('d/m/Y') }}</li>
+    {# ===== Coupons ===== #}
+    <h2>Mes coupons utilisés</h2>
+
+    {% if coupons is defined and coupons is not empty %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Intitulé</th>
+                    <th>Date d'utilisation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for coupon in coupons %}
+                    <tr>
+                        <td>{{ coupon.reference }}</td>
+                        <td>{{ coupon.intitule }}</td>
+                        <td>{{ coupon.dateUtilisation ? coupon.dateUtilisation|date('d/m/Y') : '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% else %}
-        <li>Aucun coupon utilisé</li>
-    {% endfor %}
-</ul> #}
+        <p>Aucun coupon utilisé.</p>
+    {% endif %}
 
 {% endblock %}

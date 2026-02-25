@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UtilisateurGroupeRepository::class)]
 #[UniqueEntity(
-    fields: ['reference'],
+    fields: ['referenceGroupe'],
     message: 'Cette référence est déjà utilisée.'
 )]
 class UtilisateurGroupe
@@ -36,7 +36,8 @@ class UtilisateurGroupe
      */
     #[ORM\OneToMany(targetEntity: Utilisateur::class, mappedBy: 'utilisateurGroupe')]
     private Collection $utilisateurs;
-
+    
+    #[ORM\Column(length: 50, unique: true)]
     #[Assert\NotBlank(message: "La référence du groupe est obligatoire")]
     #[Assert\Length(
         min: 3,
@@ -44,7 +45,7 @@ class UtilisateurGroupe
         minMessage: "La référence doit contenir au moins {{ limit }} caractères",
         maxMessage: "La référence ne doit pas dépasser {{ limit }} caractères"
     )]
-    private string $referenceGroupe;
+    private string $referenceGroupe = "";
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(

@@ -49,7 +49,7 @@ final class UtilisateurController extends AbstractController
         ]);
     }
 
-    #[IsGranted('VIEW', subject: 'commande')]
+    #[IsGranted('VIEW', subject: 'utilisateur')]
     #[Route('/{id}', name: 'app_utilisateur_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Utilisateur $utilisateur): Response
     {

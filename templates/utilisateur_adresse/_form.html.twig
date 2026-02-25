@@ -1,4 +1,8 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{% if is_granted('ROLE_ADMIN') or app.user == utilisateur_adresse.utilisateur %}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    {{ form_end(form) }}
+{% else %}
+    <p class="alert alert-warning">Vous n'avez pas les droits pour modifier cette adresse.</p>
+{% endif %}

@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Article{% endblock %}
+{% block title %}Nouveau Article{% endblock %}
 
 {% block body %}
-    <h1>Create new Article</h1>
+    <h1>Créer Nouveau Article</h1>
 
-    {{ include('article/_form.html.twig') }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('article/_form.html.twig') }}
+    {% else %}
+        <p class="alert alert-warning">Vous n'avez pas les droits pour créer un article.</p>
+    {% endif %}
 
-    <a href="{{ path('app_article_index') }}">back to list</a>
+    <a href="{{ path('app_article_index') }}">Retour à la liste</a>
 {% endblock %}

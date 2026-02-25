@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New UtilisateurAdresse{% endblock %}
+{% block title %}Nouvelle Adresse Utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Create new UtilisateurAdresse</h1>
+    <h1>Ajouter une adresse</h1>
 
-    {{ include('utilisateur_adresse/_form.html.twig') }}
+    {% if is_granted('ROLE_USER') %}
+        {{ include('utilisateur_adresse/_form.html.twig') }}
+    {% else %}
+        <p class="alert alert-warning">Vous devez être connecté pour ajouter une adresse.</p>
+    {% endif %}
 
-    <a href="{{ path('app_utilisateur_adresse_index') }}">back to list</a>
+    <a href="{{ path('app_utilisateur_adresse_index') }}">Retour à la liste</a>
 {% endblock %}

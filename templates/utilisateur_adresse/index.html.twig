@@ -1,21 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UtilisateurAdresse index{% endblock %}
+{% block title %}Utilisateur Adresse index{% endblock %}
 
 {% block body %}
-    <h1>UtilisateurAdresse index</h1>
+    <h1>Utilisateur Adresse index</h1>
+
+    <a href="{{ path('app_utilisateur_adresse_new') }}" class="btn btn-primary btn-sm">Ajouter une adresse</a>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>Prenom</th>
+                <th>Prénom</th>
                 <th>Adresse</th>
-                <th>CodePostal</th>
+                <th>Code postal</th>
                 <th>Ville</th>
                 <th>Pays</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -29,17 +31,25 @@
                 <td>{{ utilisateur_adresse.ville }}</td>
                 <td>{{ utilisateur_adresse.pays }}</td>
                 <td>
-                    <a href="{{ path('app_utilisateur_adresse_show', {'id': utilisateur_adresse.id}) }}">show</a>
-                    <a href="{{ path('app_utilisateur_adresse_edit', {'id': utilisateur_adresse.id}) }}">edit</a>
+                    <a href="{{ path('app_utilisateur_adresse_show', {'id': utilisateur_adresse.id}) }}" class="btn btn-info btn-sm">Voir</a>
+
+                    {% if is_granted('ROLE_ADMIN') or app.user == utilisateur_adresse.utilisateur %}
+                        <a href="{{ path('app_utilisateur_adresse_edit', {'id': utilisateur_adresse.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+
+                        <form method="post" action="{{ path('app_utilisateur_adresse_delete', {'id': utilisateur_adresse.id}) }}"
+                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette adresse ?');"
+                            style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur_adresse.id) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="8">Aucune adresse trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_utilisateur_adresse_new') }}">Create new</a>
 {% endblock %}

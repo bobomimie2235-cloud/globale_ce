@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Security\Voter;
-
+use App\Entity\UtilisateurAdresse;
+use App\Entity\Utilisateur;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -22,30 +23,28 @@ final class UtilisateurAdresseVoter extends Voter
 
     /**
  * @param string $attribute
- * @param Commande $subject
+ * @param UtilisateurAdresse $subject
  * @param TokenInterface $token
  */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool {
         $user = $token->getUser();
 
-        // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof Utilisateur) {
             return false;
         }
 
-        // ... (check conditions and return true to grant permission) ...
-        switch ($attribute) {
-            case self::EDIT:
-                // logic to determine if the user can EDIT
-                // return true or false
-                break;
+        /** @var UtilisateurAdresse $commande */
+        $utilisateurAdresse = $subject;
 
-            case self::VIEW:
-                // logic to determine if the user can VIEW
-                // return true or false
-                break;
+        // ✅ ADMIN → accès total
+        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            return true;
         }
 
-        return false;
+        // ✅ USER → uniquement ses commandes
+        return match ($attribute) {
+            self::VIEW, self::EDIT => $utilisateurAdresse->getUtilisateur() === $user,
+            default => false,
+        };
     }
 }

@@ -5,6 +5,10 @@
 {% block body %}
     <h1>Article index</h1>
 
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_article_new') }}" class="btn btn-primary btn-sm">Créer un article</a>
+    {% endif %}
+
     <table class="table">
         <thead>
             <tr>
@@ -18,7 +22,7 @@
                 <th>ImgPhotosInterieur</th>
                 <th>OffreCommerciale</th>
                 <th>Horaires</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -28,24 +32,58 @@
                 <td>{{ article.titre }}</td>
                 <td>{{ article.description }}</td>
                 <td>{{ article.infosActivite }}</td>
-                <td>{{ article.siteWeb }}</td>
-                <td>{{ article.imgLogo }}</td>
-                <td>{{ article.imgPhotosDevanture }}</td>
-                <td>{{ article.imgPhotosInterieur }}</td>
+                <td>
+                    {% if article.siteWeb %}
+                        <a href="{{ article.siteWeb }}" target="_blank">{{ article.siteWeb }}</a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if article.imgLogo %}
+                        <img src="{{ asset(article.imgLogo) }}" alt="Logo" style="max-height: 40px;">
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if article.imgPhotosDevanture %}
+                        <img src="{{ asset(article.imgPhotosDevanture) }}" alt="Devanture" style="max-height: 40px;">
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if article.imgPhotosInterieur %}
+                        <img src="{{ asset(article.imgPhotosInterieur) }}" alt="Intérieur" style="max-height: 40px;">
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
                 <td>{{ article.offreCommerciale }}</td>
                 <td>{{ article.horaires }}</td>
                 <td>
-                    <a href="{{ path('app_article_show', {'id': article.id}) }}">show</a>
-                    <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
+                    <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-info btn-sm">Voir</a>
+
+                    {% if is_granted('ROLE_ADMIN') or app.user == article.utilisateur %}
+                        <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <form method="post" action="{{ path('app_article_delete', {'id': article.id}) }}"
+                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');"
+                            style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="11">no records found</td>
+                <td colspan="11">Aucun article trouvé.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_article_new') }}">Create new</a>
 {% endblock %}

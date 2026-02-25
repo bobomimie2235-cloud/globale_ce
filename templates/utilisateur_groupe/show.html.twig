@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UtilisateurGroupe{% endblock %}
+{% block title %}Groupe Utilisateur{% endblock %}
 
 {% block body %}
-    <h1>UtilisateurGroupe</h1>
+    <h1>Groupe Utilisateur</h1>
 
     <table class="table">
         <tbody>
@@ -12,11 +12,11 @@
                 <td>{{ utilisateur_groupe.id }}</td>
             </tr>
             <tr>
-                <th>NomGroupe</th>
+                <th>Nom groupe</th>
                 <td>{{ utilisateur_groupe.nomGroupe }}</td>
             </tr>
             <tr>
-                <th>ReferenceGroupe</th>
+                <th>Référence</th>
                 <td>{{ utilisateur_groupe.referenceGroupe }}</td>
             </tr>
             <tr>
@@ -24,7 +24,7 @@
                 <td>{{ utilisateur_groupe.adresse }}</td>
             </tr>
             <tr>
-                <th>CodePostal</th>
+                <th>Code postal</th>
                 <td>{{ utilisateur_groupe.codePostal }}</td>
             </tr>
             <tr>
@@ -32,7 +32,7 @@
                 <td>{{ utilisateur_groupe.ville }}</td>
             </tr>
             <tr>
-                <th>Telephone</th>
+                <th>Téléphone</th>
                 <td>{{ utilisateur_groupe.telephone }}</td>
             </tr>
             <tr>
@@ -42,9 +42,58 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_utilisateur_groupe_index') }}">back to list</a>
+    {# ===== Utilisateurs du groupe ===== #}
+    <h2>Utilisateurs du groupe</h2>
 
-    <a href="{{ path('app_utilisateur_groupe_edit', {'id': utilisateur_groupe.id}) }}">edit</a>
+    {% if utilisateur_groupe.utilisateurs is empty %}
+        <p>Aucun utilisateur dans ce groupe.</p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Inscription</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for utilisateur in utilisateur_groupe.utilisateurs %}
+                    <tr>
+                        <td>{{ utilisateur.id }}</td>
+                        <td>{{ utilisateur.nom }}</td>
+                        <td>{{ utilisateur.prenom }}</td>
+                        <td>{{ utilisateur.email }}</td>
+                        <td>{{ utilisateur.dateInscription ? utilisateur.dateInscription|date('d/m/Y') : '-' }}</td>
+                        <td>
+                            <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-info btn-sm">Voir</a>
+
+                            {% if is_granted('ROLE_ADMIN') or app.user == utilisateur %}
+                                <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <form method="post" action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}"
+                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');"
+                                    style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
+                                    <button class="btn btn-danger btn-sm">Supprimer</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ path('app_utilisateur_groupe_index') }}">Retour à la liste</a>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_utilisateur_groupe_edit', {'id': utilisateur_groupe.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+    {% endif %}
 
     {{ include('utilisateur_groupe/_delete_form.html.twig') }}
 {% endblock %}

@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit ArticleCategorie{% endblock %}
+{% block title %}Modifier ArticleCategorie
+{% endblock %}
 
 {% block body %}
-    <h1>Edit ArticleCategorie</h1>
+	<h1>Modifier ArticleCategorie</h1>
+	{% if is_granted('ROLE_ADMIN') %}
+		{{ include('article_categorie/_form.html.twig', {'button_label': 'Modifier'}) }}
+	{% else %}
+		<p class="alert alert-warning">Vous n'avez pas les droits pour modifier cet article.</p>
+	{% endif %}
+	<a href="{{ path('app_article_categorie_index') }}">Retour à la liste</a>
 
-    {{ include('article_categorie/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_article_categorie_index') }}">back to list</a>
-
-    {{ include('article_categorie/_delete_form.html.twig') }}
+	{{ include('article_categorie/_delete_form.html.twig') }}
 {% endblock %}

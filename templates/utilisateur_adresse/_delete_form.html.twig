@@ -1,4 +1,7 @@
-<form method="post" action="{{ path('app_utilisateur_adresse_delete', {'id': utilisateur_adresse.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur_adresse.id) }}">
-    <button class="btn">Delete</button>
-</form>
+{% if is_granted('ROLE_ADMIN') or app.user == utilisateur_adresse.utilisateur %}
+    <form method="post" action="{{ path('app_utilisateur_adresse_delete', {'id': utilisateur_adresse.id}) }}"
+        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette adresse ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur_adresse.id) }}">
+        <button class="btn btn-danger btn-sm">Supprimer</button>
+    </form>
+{% endif %}

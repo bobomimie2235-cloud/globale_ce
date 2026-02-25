@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New ArticleCategorie{% endblock %}
+{% block title %}Nouvelle Catégorie Article{% endblock %}
 
 {% block body %}
-    <h1>Create new ArticleCategorie</h1>
+    <h1>Créer Nouvelle Catégorie Article</h1>
 
-    {{ include('article_categorie/_form.html.twig') }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('article_categorie/_form.html.twig') }}
+    {% else %}
+        <p class="alert alert-warning">Vous n'avez pas les droits pour créer une catégorie.</p>
+    {% endif %}
 
-    <a href="{{ path('app_article_categorie_index') }}">back to list</a>
+    <a href="{{ path('app_article_categorie_index') }}">Retour à la liste</a>
 {% endblock %}
