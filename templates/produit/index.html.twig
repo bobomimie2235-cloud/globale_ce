@@ -1,63 +1,75 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produit index{% endblock %}
+{% block title %}Produit index
+{% endblock %}
 
 {% block body %}
-    <h1>Produit index</h1>
+	<h1>Produit index</h1>
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_produit_new') }}" class="btn btn-primary btn-sm">Créer un produit</a>
-    {% endif %}
+	{% if is_granted('ROLE_ADMIN') %}
+		<a href="{{ path('app_produit_new') }}" class="btn btn-primary btn-sm">Créer un produit</a>
+	{% endif %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Logo</th>
                 <th>Référence</th>
-                <th>Intitulé</th>
-                <th>Description</th>
-                <th>Prix unitaire</th>
-                <th>Stock</th>
-                <th>Date création</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for produit in produits %}
-            <tr>
-                <td>{{ produit.id }}</td>
-                <td>{{ produit.reference }}</td>
-                <td>{{ produit.intitule }}</td>
-                <td>{{ produit.description }}</td>
-                <td>{{ produit.prixUnitaire }} €</td>
-                <td>
-                    {% if produit.stock > 0 %}
-                        <span class="badge bg-success">{{ produit.stock }}</span>
-                    {% else %}
-                        <span class="badge bg-danger">Rupture</span>
-                    {% endif %}
-                </td>
-                <td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
-                <td>
-                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
+				<th>Intitulé</th>
+                <th>Catégorie</th>
+				<th>Description</th>
+                <th>Prix Public</th>
+				<th>Prix Unitaire</th>
+				<th>Stock</th>
+				<th>Date création</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for produit in produits %}
+				<tr>
+                    <td>{{ produit.id }}</td>
+					<td>
+						{% if produit.logo %}
+							<img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="Logo {{ produit.intitule }}" style="max-height: 80px;">
+						{% else %}
+							<span>Aucun logo</span>
+						{% endif %}
+					</td>
+					
+					<td>{{ produit.reference }}</td>
+					<td>{{ produit.intitule }}</td>
+                    <td>{{ produit.produitCategorie ? produit.produitCategorie.intitule : '-' }}</td>
+					<td>{{ produit.description }}</td>
+                    <td>{{ produit.prixPublic }} €</td>
+					<td>{{ produit.prixUnitaire }} €</td>
+					<td>
+						{% if produit.stock > 0 %}
+							<span class="badge bg-success">{{ produit.stock }}</span>
+						{% else %}
+							<span class="badge bg-danger">Rupture</span>
+						{% endif %}
+					</td>
+					<td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
+					<td>
+						<a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
 
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+						{% if is_granted('ROLE_ADMIN') %}
+							<a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
 
-                        <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}"
-                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');"
-                            style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
-                            <button class="btn btn-danger btn-sm">Supprimer</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">Aucun produit trouvé.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+							<form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');" style="display:inline;">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+								<button class="btn btn-danger btn-sm">Supprimer</button>
+							</form>
+						{% endif %}
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="8">Aucun produit trouvé.</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 {% endblock %}

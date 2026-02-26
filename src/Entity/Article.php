@@ -14,6 +14,7 @@ class Article
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le titre est obligatoire')]
     #[Assert\Length(
         min: 10,

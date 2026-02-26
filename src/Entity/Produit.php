@@ -69,7 +69,7 @@ class Produit
     private ?int $stock = null;
 
     #[ORM\Column]
-    private ?\DateTime $dateCreation = null;
+    private ?\DateTimeImmutable $dateCreation = null;
 
     /**
      * @var Collection<int, CommandeProduit>
@@ -80,9 +80,16 @@ class Produit
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?ProduitCategorie $produitCategorie = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $prixPublic = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logo = null;
+
     public function __construct()
     {
         $this->commandeProduits = new ArrayCollection();
+        $this->dateCreation = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -150,15 +157,14 @@ class Produit
         return $this;
     }
 
-    public function getDateCreation(): ?\DateTime
+    public function getDateCreation(): ?\DateTimeImmutable
     {
         return $this->dateCreation;
     }
 
-    public function setDateCreation(\DateTime $dateCreation): static
+    public function setDateCreation(\DateTimeImmutable $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 
@@ -201,6 +207,29 @@ class Produit
     {
         $this->produitCategorie = $produitCategorie;
 
+        return $this;
+    }
+
+    public function getPrixPublic(): ?string
+    {
+        return $this->prixPublic;
+    }
+
+    public function setPrixPublic(string $prixPublic): static
+    {
+        $this->prixPublic = $prixPublic;
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): static
+    {
+        $this->logo = $logo;
         return $this;
     }
 }

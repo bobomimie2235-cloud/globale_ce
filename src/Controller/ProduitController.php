@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/produit')]
 final class ProduitController extends AbstractController
@@ -25,20 +26,31 @@ final class ProduitController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $logoFile = $form->get('logo')->getData();
+        if ($logoFile) {
+            $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+            $logoFile->move(
+                $this->getParameter('logos_directory'),
+                $newFilename
+            );
+            $produit->setLogo($newFilename);
+        }
             $entityManager->persist($produit);
             $entityManager->flush();
 
             $this->addFlash('success', 'Produit ajouté avec succès !');
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
-        }
+    }
 
         return $this->render('produit/new.html.twig', [
             'produit' => $produit,
@@ -56,12 +68,25 @@ final class ProduitController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+        $logoFile = $form->get('logo')->getData();
+        if ($logoFile) {
+            $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+            $logoFile->move(
+                $this->getParameter('logos_directory'),
+                $newFilename
+            );
+            $produit->setLogo($newFilename);
+        }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);

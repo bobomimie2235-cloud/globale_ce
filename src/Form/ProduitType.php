@@ -9,6 +9,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class ProduitType extends AbstractType
 {
@@ -18,12 +20,27 @@ class ProduitType extends AbstractType
             ->add('reference', TextType::class)
             ->add('intitule', TextType::class)
             ->add('description', TextType::class)
+            ->add('prixPublic', TextType::class)
             ->add('prixUnitaire', TextType::class)
             ->add('stock', TextType::class)
-            ->add('dateCreation')
+            ->add('dateCreation', null, [
+                'disabled' => true, // rend le champ non éditable
+            ])
             ->add('produitCategorie', EntityType::class, [
                 'class' => ProduitCategorie::class,
-                'choice_label' => 'id',
+                'choice_label' => 'intitule',
+            ])
+            ->add('logo', FileType::class, [
+                'label' => 'Logo du produit (PNG, JPG)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File(
+                        maxSize: '2000k',
+                        mimeTypes: ['image/*'],
+                        mimeTypesMessage: 'Veuillez uploader une image valide',
+                    )
+                ],
             ])
         ;
     }

@@ -16,9 +16,10 @@ class ArticleCategorie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "L'Intitulé est obligatoire")]
     #[Assert\Length(
-        min: 5,
+        min: 3,
         max: 100,
         minMessage: "L'Intitulé doit contenir au moins {{ limit }} caractères",
         maxMessage: "L'Intitulé ne doit pas dépasser {{ limit }} caractères"
