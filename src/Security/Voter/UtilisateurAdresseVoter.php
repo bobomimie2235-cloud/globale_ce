@@ -43,7 +43,7 @@ final class UtilisateurAdresseVoter extends Voter
 
         // ✅ USER → uniquement ses commandes
         return match ($attribute) {
-            self::VIEW, self::EDIT => $utilisateurAdresse->getUtilisateur() === $user,
+            self::VIEW, self::EDIT => $utilisateurAdresse->getUtilisateur()?->getId() === $user->getId(),
             default => false,
         };
     }
