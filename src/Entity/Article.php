@@ -17,7 +17,7 @@ class Article
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le titre est obligatoire')]
     #[Assert\Length(
-        min: 10,
+        min: 3,
         max: 150,
         minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
         maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères'
@@ -26,7 +26,7 @@ class Article
 
     #[ORM\Column(type: 'text', nullable: true)]
     #[Assert\Length(
-        min: 10,
+        min: 5,
         max: 500,
         minMessage: 'La description doit contenir au moins {{ limit }} caractères',
         maxMessage: 'La description ne doit pas dépasser {{ limit }} caractères'
@@ -35,7 +35,7 @@ class Article
 
     #[ORM\Column(type: 'text', nullable: true)]
     #[Assert\Length(
-        min: 10,
+        min: 5,
         max: 500,
         minMessage: 'La description doit contenir au moins {{ limit }} caractères',
         maxMessage: 'La description ne doit pas dépasser {{ limit }} caractères'
@@ -56,20 +56,14 @@ class Article
 
     #[ORM\Column(type: 'text', nullable: true)]
     #[Assert\Length(
-        min: 10,
+        min: 3,
         max: 500,
         minMessage: "L'Offre Commerciale doit contenir au moins {{ limit }} caractères",
         maxMessage: "L'Offre Commerciale ne doit pas dépasser {{ limit }} caractères"
     )]
     private ?string $offreCommerciale = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    #[Assert\Length(
-        min: 20,
-        max: 500,
-        minMessage: 'Les horaires doivent contenir au moins {{ limit }} caractères',
-        maxMessage: 'Les horaires ne doivent pas dépasser {{ limit }} caractères'
-    )]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $horaires = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]

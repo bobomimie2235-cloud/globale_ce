@@ -12,10 +12,14 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Logo</th>
                 <th>Id</th>
                 <th>Référence</th>
                 <th>Intitulé</th>
-                <th>Description</th>
+                <th>Coupon Catégorie</th>
+                <th>Ville</th>
+                <th>Adresse</th>
+                <th>Offre Commerciale</th>
                 <th>Actif</th>
                 <th>Actions</th>
             </tr>
@@ -23,10 +27,20 @@
         <tbody>
         {% for coupon_reduction in coupon_reductions %}
             <tr>
+            <td>
+						{% if coupon_reduction.logo %}
+							<img src="{{ asset('uploads/logos/' ~ coupon_reduction.logo) }}" alt="Logo" style="max-height: 80px;">
+						{% else %}
+							-
+						{% endif %}
+					</td>
                 <td>{{ coupon_reduction.id }}</td>
                 <td>{{ coupon_reduction.reference }}</td>
                 <td>{{ coupon_reduction.intitule }}</td>
-                <td>{{ coupon_reduction.description }}</td>
+                <td>{{ coupon_reduction.couponCategorie ? coupon_reduction.couponCategorie.categorie : '-' }}</td>
+                <td>{{ coupon_reduction.ville }}</td>
+                <td>{{ coupon_reduction.adresse }}</td>
+                <td>{{ coupon_reduction.offreCommerciale }}</td>
                 <td>
                     {% if coupon_reduction.actif %}
                         <span class="badge bg-success">Actif</span>

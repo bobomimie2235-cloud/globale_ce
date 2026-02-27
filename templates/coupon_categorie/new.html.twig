@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New CouponCategorie{% endblock %}
+
+{% block body %}
+    <h1>Create new CouponCategorie</h1>
+
+    {{ include('coupon_categorie/_form.html.twig') }}
+
+    <a href="{{ path('app_coupon_categorie_index') }}">back to list</a>
+{% endblock %}

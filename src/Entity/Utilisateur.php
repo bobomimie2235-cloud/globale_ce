@@ -87,12 +87,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'utilisateur')]
     private Collection $commandes;
 
+    /**
+     * @var Collection<int, UtilisateurCoupon>
+     */
+    #[ORM\OneToMany(targetEntity: UtilisateurCoupon::class, mappedBy: 'utilisateur')]
+    private Collection $utilisateurCoupons;
+
     public function __construct()
     {
         $this->utilisateurAdresses = new ArrayCollection();
         $this->articles = new ArrayCollection();
         $this->commandes = new ArrayCollection();
         $this->dateInscription = new \DateTimeImmutable();
+        $this->utilisateurCoupons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -301,6 +308,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($commande->getUtilisateur() === $this) {
                 $commande->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UtilisateurCoupon>
+     */
+    public function getUtilisateurCoupons(): Collection
+    {
+        return $this->utilisateurCoupons;
+    }
+
+    public function addUtilisateurCoupon(UtilisateurCoupon $utilisateurCoupon): static
+    {
+        if (!$this->utilisateurCoupons->contains($utilisateurCoupon)) {
+            $this->utilisateurCoupons->add($utilisateurCoupon);
+            $utilisateurCoupon->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateurCoupon(UtilisateurCoupon $utilisateurCoupon): static
+    {
+        if ($this->utilisateurCoupons->removeElement($utilisateurCoupon)) {
+            // set the owning side to null (unless already changed)
+            if ($utilisateurCoupon->getUtilisateur() === $this) {
+                $utilisateurCoupon->setUtilisateur(null);
             }
         }
 

@@ -5,11 +5,44 @@
 {% block body %}
     <h1>Coupon Réduction</h1>
 
+    {# ===== Modale succès ===== #}
+    {% if app.flashes('success') is not empty %}
+        <div id="modalSucces" style="display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
+            <div style="background:#fff; padding:2rem; border-radius:8px; max-width:500px; width:90%; text-align:center;">
+                <h3 style="color:green;">✅ Succès !</h3>
+                {% for message in app.flashes('success') %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+                <button onclick="document.getElementById('modalSucces').style.display='none'" class="btn btn-success">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    {% endif %}
+
+    {# ===== Alertes warning et error ===== #}
+    {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
     <table class="table">
         <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ coupon_reduction.id }}</td>
+            </tr>
+            <tr>
+                <th>Logo</th>
+                <td>
+                    {% if coupon_reduction.logo %}
+                        <img src="{{ asset('uploads/logos/' ~ coupon_reduction.logo) }}" alt="Logo" style="max-height: 80px;">
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Référence</th>
@@ -20,8 +53,20 @@
                 <td>{{ coupon_reduction.intitule }}</td>
             </tr>
             <tr>
-                <th>Description</th>
-                <td>{{ coupon_reduction.description }}</td>
+                <th>Catégorie</th>
+                <td>{{ coupon_reduction.couponCategorie ? coupon_reduction.couponCategorie.categorie : '-' }}</td>
+            </tr>
+            <tr>
+                <th>Ville</th>
+                <td>{{ coupon_reduction.ville }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ coupon_reduction.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Offre Commerciale</th>
+                <td>{{ coupon_reduction.offreCommerciale }}</td>
             </tr>
             <tr>
                 <th>Actif</th>
@@ -40,6 +85,62 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_coupon_reduction_edit', {'id': coupon_reduction.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+        <a href="{{ path('app_coupon_reduction_valider_page', {'id': coupon_reduction.id}) }}" class="btn btn-primary">
+            Gérer les validations
+        </a>
+    {% endif %}
+
+    {# ===== Boutons utilisateur ===== #}
+    {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
+
+        {% set monCoupon = null %}
+        {% for uc in coupon_reduction.utilisateurCoupons %}
+            {% if uc.utilisateur == app.user %}
+                {% set monCoupon = uc %}
+            {% endif %}
+        {% endfor %}
+
+        {% if monCoupon is null or monCoupon.utilise == false %}
+            <button class="btn btn-primary" onclick="document.getElementById('modalUtiliserCoupon').style.display='flex'">
+                Utiliser le coupon
+            </button>
+
+            {# ===== Modale confirmation ===== #}
+            <div id="modalUtiliserCoupon" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
+                <div style="background:#fff; padding:2rem; border-radius:8px; max-width:500px; width:90%;">
+                    <h5>Utiliser le coupon</h5>
+                    <p><strong>Offre :</strong> {{ coupon_reduction.offreCommerciale }}</p>
+                    <p>Êtes-vous sûr de vouloir utiliser ce coupon ? Cette action est irréversible.</p>
+                    <button onclick="document.getElementById('modalUtiliserCoupon').style.display='none'" style="margin-right:1rem;">
+                        Annuler
+                    </button>
+                    <form method="post" action="{{ path('app_coupon_reduction_utiliser_mon_coupon', {'id': coupon_reduction.id}) }}" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('utiliser-mon-coupon' ~ coupon_reduction.id) }}">
+                        <button type="submit" class="btn btn-primary">Utiliser le coupon</button>
+                    </form>
+                </div>
+            </div>
+            
+            {# ===== Modale succès ===== #}
+    {% if app.flashes('success') is not empty %}
+        <div id="modalSucces" style="display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
+            <div style="background:#fff; padding:2rem; border-radius:8px; max-width:500px; width:90%; text-align:center;">
+                <h3 style="color:green;">✅ Succès !</h3>
+                {% for message in app.flashes('success') %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+                <button onclick="document.getElementById('modalSucces').style.display='none'" class="btn btn-success">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    {% endif %}
+        {% else %}
+            <span class="badge bg-secondary fs-6">
+                Coupon déjà utilisé le {{ monCoupon.dateUtilisation|date('d/m/Y') }}
+            </span>
+        {% endif %}
+
     {% endif %}
 
     {{ include('coupon_reduction/_delete_form.html.twig') }}

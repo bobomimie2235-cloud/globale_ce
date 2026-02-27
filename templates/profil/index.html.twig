@@ -105,30 +105,41 @@
 
     <hr>
 
-    {# ===== Coupons ===== #}
-    <h2>Mes coupons utilisés</h2>
+    {# ===== Coupons utilisés ===== #}
+<h2>Mes coupons utilisés</h2>
 
-    {% if coupons is defined and coupons is not empty %}
-        <table class="table">
-            <thead>
+{% if coupons is not empty %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>Référence</th>
+                <th>Intitulé</th>
+                <th>Offre</th>
+                <th>Date d'utilisation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateurCoupon in coupons %}
                 <tr>
-                    <th>Référence</th>
-                    <th>Intitulé</th>
-                    <th>Date d'utilisation</th>
+                    <td>
+                        {% if utilisateurCoupon.couponReduction.logo %}
+                            <img src="{{ asset('uploads/logos/' ~ utilisateurCoupon.couponReduction.logo) }}"
+                                alt="Logo" style="max-height: 40px;">
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ utilisateurCoupon.couponReduction.reference }}</td>
+                    <td>{{ utilisateurCoupon.couponReduction.intitule }}</td>
+                    <td>{{ utilisateurCoupon.couponReduction.offreCommerciale }}</td>
+                    <td>{{ utilisateurCoupon.dateUtilisation ? utilisateurCoupon.dateUtilisation|date('d/m/Y') : '-' }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for coupon in coupons %}
-                    <tr>
-                        <td>{{ coupon.reference }}</td>
-                        <td>{{ coupon.intitule }}</td>
-                        <td>{{ coupon.dateUtilisation ? coupon.dateUtilisation|date('d/m/Y') : '-' }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucun coupon utilisé.</p>
-    {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun coupon utilisé.</p>
+{% endif %}
 
 {% endblock %}

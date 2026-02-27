@@ -4,11 +4,15 @@ namespace App\Form;
 
 use App\Entity\Article;
 use App\Entity\CouponReduction;
+use App\Entity\CouponCategorie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class CouponReductionType extends AbstractType
 {
@@ -17,11 +21,28 @@ class CouponReductionType extends AbstractType
         $builder
             ->add('reference', TextType::class)
             ->add('intitule', TextType::class)
-            ->add('description', TextType::class)
-            ->add('actif')
-            ->add('article', EntityType::class, [
-                'class' => Article::class,
-                'choice_label' => 'id',
+            ->add('ville', TextType::class)
+            ->add('adresse', TextType::class)
+            ->add('offreCommerciale', TextType::class)
+            ->add('logo', FileType::class, [
+                'label' => 'Logo du Coupon Réduction (PNG, JPG)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File(
+                        maxSize: '2000k',
+                        mimeTypes: ['image/*'],
+                        mimeTypesMessage: 'Veuillez uploader une image valide',
+                    )
+                ],
+            ])
+            ->add('actif', CheckboxType::class, [
+                'label' => 'Coupon actif',
+                'required' => false,
+            ])
+            ->add('couponCategorie', EntityType::class, [
+                'class' => CouponCategorie::class,
+                'choice_label' => 'categorie',
             ])
         ;
     }

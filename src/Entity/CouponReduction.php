@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CouponReductionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -39,20 +41,37 @@ class CouponReduction
     )]
     private ?string $intitule = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
-    #[Assert\Length(
-        min: 10,
-        max: 500,
-        minMessage: "La description doit contenir au moins {{ limit }} caractères",
-        maxMessage: "La description ne doit pas dépasser {{ limit }} caractères"
-    )]
-    private ?string $description = null;
-
     #[ORM\Column]
     private ?bool $actif = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Article $article = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $ville = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $offreCommerciale = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logo = null;
+
+    #[ORM\ManyToOne(inversedBy: 'couponReductions')]
+    private ?CouponCategorie $couponCategorie = null;
+
+    /**
+     * @var Collection<int, UtilisateurCoupon>
+     */
+    #[ORM\OneToMany(targetEntity: UtilisateurCoupon::class, mappedBy: 'couponReduction')]
+    private Collection $utilisateurCoupons;
+
+    public function __construct()
+    {
+        $this->utilisateurCoupons = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -83,18 +102,6 @@ class CouponReduction
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
     public function isActif(): ?bool
     {
         return $this->actif;
@@ -115,6 +122,96 @@ class CouponReduction
     public function setArticle(?Article $article): static
     {
         $this->article = $article;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(string $adresse): static
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): static
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getOffreCommerciale(): ?string
+    {
+        return $this->offreCommerciale;
+    }
+
+    public function setOffreCommerciale(string $offreCommerciale): static
+    {
+        $this->offreCommerciale = $offreCommerciale;
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(string $logo): static
+    {
+        $this->logo = $logo;
+
+        return $this;
+    }
+
+    public function getCouponCategorie(): ?CouponCategorie
+    {
+        return $this->couponCategorie;
+    }
+
+    public function setCouponCategorie(?CouponCategorie $couponCategorie): static
+    {
+        $this->couponCategorie = $couponCategorie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UtilisateurCoupon>
+     */
+    public function getUtilisateurCoupons(): Collection
+    {
+        return $this->utilisateurCoupons;
+    }
+
+    public function addUtilisateurCoupon(UtilisateurCoupon $utilisateurCoupon): static
+    {
+        if (!$this->utilisateurCoupons->contains($utilisateurCoupon)) {
+            $this->utilisateurCoupons->add($utilisateurCoupon);
+            $utilisateurCoupon->setCouponReduction($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateurCoupon(UtilisateurCoupon $utilisateurCoupon): static
+    {
+        if ($this->utilisateurCoupons->removeElement($utilisateurCoupon)) {
+            // set the owning side to null (unless already changed)
+            if ($utilisateurCoupon->getCouponReduction() === $this) {
+                $utilisateurCoupon->setCouponReduction(null);
+            }
+        }
 
         return $this;
     }

@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Valider un coupon{% endblock %}
+
+{% block body %}
+    <h1>Validation du coupon : {{ coupon_reduction.intitule }}</h1>
+    <p>{{ coupon_reduction.offreCommerciale }}</p>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <h2>Coupons en attente de validation</h2>
+
+    {% if coupons_en_attente is empty %}
+        <p class="alert alert-info">Aucun coupon en attente.</p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for utilisateurCoupon in coupons_en_attente %}
+                    <tr>
+                        <td>{{ utilisateurCoupon.utilisateur.nom }} {{ utilisateurCoupon.utilisateur.prenom }}</td>
+                        <td>{{ utilisateurCoupon.utilisateur.email }}</td>
+                        <td>
+                            <form method="post" action="{{ path('app_coupon_reduction_utiliser', {
+                                'id': coupon_reduction.id,
+                                'utilisateurCouponId': utilisateurCoupon.id
+                            }) }}"
+                                onsubmit="return confirm('Confirmer l\'utilisation de ce coupon ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('utiliser' ~ utilisateurCoupon.id) }}">
+                                <button class="btn btn-success">✅ Utiliser le coupon</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ path('app_coupon_reduction_show', {'id': coupon_reduction.id}) }}" class="btn btn-secondary">Retour</a>
+
+{% endblock %}

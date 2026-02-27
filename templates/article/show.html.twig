@@ -1,60 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article{% endblock %}
+{% block title %}Article
+{% endblock %}
 
 {% block body %}
-    <h1>Article</h1>
+	<h1>Article</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ article.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ article.titre }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ article.description }}</td>
-            </tr>
-            <tr>
-                <th>InfosActivite</th>
-                <td>{{ article.infosActivite }}</td>
-            </tr>
-            <tr>
-                <th>SiteWeb</th>
-                <td>{{ article.siteWeb }}</td>
-            </tr>
-            <tr>
-                <th>ImgLogo</th>
-                <td>{{ article.imgLogo }}</td>
-            </tr>
-            <tr>
-                <th>ImgPhotosDevanture</th>
-                <td>{{ article.imgPhotosDevanture }}</td>
-            </tr>
-            <tr>
-                <th>ImgPhotosInterieur</th>
-                <td>{{ article.imgPhotosInterieur }}</td>
-            </tr>
-            <tr>
-                <th>OffreCommerciale</th>
-                <td>{{ article.offreCommerciale }}</td>
-            </tr>
-            <tr>
-                <th>Horaires</th>
-                <td>{{ article.horaires }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Logo</th>
+				<td>
+						{% if article.imgLogo %}
+							<img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="Logo" style="max-height: 80px;">
+						{% else %}
+							-
+						{% endif %}
+					</td>
+					</tr>
+				<th>Id</th>
+				<td>{{ article.id }}</td>
+			</tr>
+			<tr>
+				<th>Titre</th>
+				<td>{{ article.titre }}</td>
+			</tr>
+			<tr>
+				<th>Description</th>
+				<td>{{ article.description }}</td>
+			</tr>
+			<tr>
+				<th>Categorie</th>
+				<td>{{ article.articleCategorie ? article.articleCategorie.intitule : '-' }}</td>
+			</tr>
+			<tr>
+				<th>InfosActivite</th>
+				<td>{{ article.infosActivite }}</td>
+			</tr>
+			<tr>
+				<th>SiteWeb</th>
+				<td>{{ article.siteWeb }}</td>
+			</tr>
+			<tr>
+				<th>ImgLogo</th>
+				<td>{{ article.imgLogo }}</td>
+			</tr>
+			<tr>
+				<th>ImgPhotosDevanture</th>
+				<td>{{ article.imgPhotosDevanture }}</td>
+			</tr>
+			<tr>
+				<th>ImgPhotosInterieur</th>
+				<td>{{ article.imgPhotosInterieur }}</td>
+			</tr>
+			<tr>
+				<th>OffreCommerciale</th>
+				<td>{{ article.offreCommerciale }}</td>
+			</tr>
+			<tr>
+				<th>Horaires</th>
+				<td>{{ article.horaires }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_article_index') }}">Retour à la liste</a>
+	<a href="{{ path('app_article_index') }}">Retour à la liste</a>
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
-    {% endif %}
+	{% if is_granted('ROLE_ADMIN') %}
+		<a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+	{% endif %}
 
-    {{ include('article/_delete_form.html.twig') }}
+	{{ include('article/_delete_form.html.twig') }}
 {% endblock %}

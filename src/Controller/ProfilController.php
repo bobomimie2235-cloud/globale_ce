@@ -5,35 +5,33 @@ namespace App\Controller;
 use App\Entity\Utilisateur;
 use App\Entity\UtilisateurAdresse;
 use App\Form\UtilisateurAdresseType;
+use App\Repository\UtilisateurCouponRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/profil')]
 class ProfilController extends AbstractController
 {
     #[Route('/', name: 'app_profil')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, UtilisateurCouponRepository $utilisateurCouponRepository): Response
     {
-        // Utilisateur connecté
+        /** @var Utilisateur $user */
         $user = $this->getUser();
 
-        // Vérifie que l’utilisateur est connecté
         if (!$user instanceof Utilisateur) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à votre profil.');
         }
 
-        // Formulaire pour ajouter une adresse
+        // ===== Formulaire adresse =====
         $adresse = new UtilisateurAdresse();
         $form = $this->createForm(UtilisateurAdresseType::class, $adresse);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Associer automatiquement l’adresse à l’utilisateur connecté
-            $adresse->setUtilisateur($this->getUser());
+            $adresse->setUtilisateur($user);
             $em->persist($adresse);
             $em->flush();
 
@@ -41,12 +39,18 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('app_profil');
         }
 
+        // ===== Coupons utilisés =====
+        $utilisateurCoupons = $utilisateurCouponRepository->findBy([
+            'utilisateur' => $user,
+            'utilise' => true,
+        ]);
+
         return $this->render('profil/index.html.twig', [
             'user' => $user,
             'formAdresse' => $form->createView(),
             'adresses' => $user->getUtilisateurAdresses(),
-            // 'commandes' => $user->getCommandes(),
-            // 'coupons' => $user->getCoupons(),
+            'commandes' => [],  // à compléter quand tu auras la relation commandes
+            'coupons' => $utilisateurCoupons,
         ]);
     }
 }
