@@ -16,6 +16,21 @@ class CouponReductionRepository extends ServiceEntityRepository
         parent::__construct($registry, CouponReduction::class);
     }
 
+    public function search(string $q): array
+{
+    return $this->createQueryBuilder('c')
+        ->leftJoin('c.couponCategorie', 'cat')
+        ->where('c.intitule LIKE :q 
+            OR c.offreCommerciale LIKE :q 
+            OR c.ville LIKE :q 
+            OR c.reference LIKE :q
+            OR cat.categorie LIKE :q')
+        ->setParameter('q', '%' . $q . '%')
+        ->orderBy('c.intitule', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
     //    /**
     //     * @return CouponReduction[] Returns an array of CouponReduction objects
     //     */

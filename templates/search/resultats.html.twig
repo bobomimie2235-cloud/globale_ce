@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats pour "{{ q }}"{% endblock %}
+
+{% block body %}
+    <h1>Résultats pour "{{ q }}"</h1>
+
+    {% set total = articles|length + produits|length + coupons|length %}
+
+    {% if q is empty %}
+        <p>Veuillez saisir un terme de recherche.</p>
+
+    {% elseif total == 0 %}
+        <p>Aucun résultat pour "<strong>{{ q }}</strong>".</p>
+
+    {% else %}
+        <p>{{ total }} résultat(s) trouvé(s)</p>
+
+        {# ===== ARTICLES ===== #}
+        {% if articles is not empty %}
+            <h2>Offres Cartes ({{ articles|length }})</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Logo</th>
+                        <th>Titre</th>
+                        <th>Catégorie</th>
+                        <th>Offre</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td>
+                                {% if article.imgLogo %}
+                                    <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" style="max-height:40px;">
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ article.titre }}</td>
+                            <td>{{ article.articleCategorie ? article.articleCategorie.intitule : '-' }}</td>
+                            <td>{{ article.offreCommerciale }}</td>
+                            <td>
+                                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        {# ===== PRODUITS ===== #}
+        {% if produits is not empty %}
+            <h2>Billetterie ({{ produits|length }})</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Logo</th>
+                        <th>Intitulé</th>
+                        <th>Prix</th>
+                        <th>Stock</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produit in produits %}
+                        <tr>
+                            <td>
+                                {% if produit.logo %}
+                                    <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" style="max-height:40px;">
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ produit.intitule }}</td>
+                            <td>{{ produit.prixPublic }} €</td>
+                            <td>
+                                {% if produit.stock > 0 %}
+                                    <span class="badge bg-success">{{ produit.stock }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rupture</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        {# ===== COUPONS ===== #}
+        {% if coupons is not empty %}
+            <h2>Coupons Réduction ({{ coupons|length }})</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Logo</th>
+                        <th>Intitulé</th>
+                        <th>Ville</th>
+                        <th>Offre</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coupon in coupons %}
+                        <tr>
+                            <td>
+                                {% if coupon.logo %}
+                                    <img src="{{ asset('uploads/logos/' ~ coupon.logo) }}" style="max-height:40px;">
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ coupon.intitule }}</td>
+                            <td>{{ coupon.ville }}</td>
+                            <td>{{ coupon.offreCommerciale }}</td>
+                            <td>
+                                <a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    {% endif %}
+{% endblock %}
