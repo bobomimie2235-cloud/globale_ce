@@ -15,11 +15,11 @@
 			<tr>
 				<th>Id</th>
 				<th>Logo</th>
-                <th>Référence</th>
+				<th>Référence</th>
 				<th>Intitulé</th>
-                <th>Catégorie</th>
+				<th>Catégorie</th>
 				<th>Description</th>
-                <th>Prix Public</th>
+				<th>Prix Public</th>
 				<th>Prix Unitaire</th>
 				<th>Stock</th>
 				<th>Date création</th>
@@ -29,7 +29,7 @@
 		<tbody>
 			{% for produit in produits %}
 				<tr>
-                    <td>{{ produit.id }}</td>
+					<td>{{ produit.id }}</td>
 					<td>
 						{% if produit.logo %}
 							<img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="Logo {{ produit.intitule }}" style="max-height: 80px;">
@@ -37,13 +37,15 @@
 							<span>Aucun logo</span>
 						{% endif %}
 					</td>
-					
+
 					<td>{{ produit.reference }}</td>
 					<td>{{ produit.intitule }}</td>
-                    <td>{{ produit.produitCategorie ? produit.produitCategorie.intitule : '-' }}</td>
+					<td>{{ produit.produitCategorie ? produit.produitCategorie.intitule : '-' }}</td>
 					<td>{{ produit.description }}</td>
-                    <td>{{ produit.prixPublic }} €</td>
-					<td>{{ produit.prixUnitaire }} €</td>
+					<td>{{ produit.prixPublic }}
+						€</td>
+					<td>{{ produit.prixUnitaire }}
+						€</td>
 					<td>
 						{% if produit.stock > 0 %}
 							<span class="badge bg-success">{{ produit.stock }}</span>
@@ -54,6 +56,13 @@
 					<td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
 					<td>
 						<a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
+
+						{% if is_granted('ROLE_USER') and produit.stock > 0 %}
+							<form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" style="display:inline;">
+								<input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" style="width:60px;">
+								<button type="submit" class="btn btn-primary btn-sm">Ajouter</button>
+							</form>
+						{% endif %}
 
 						{% if is_granted('ROLE_ADMIN') %}
 							<a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>

@@ -30,7 +30,7 @@
                     <a href="{{ path('app_commande_show', {'id': commande.id}) }}" class="btn btn-info btn-sm">Voir</a>
 
                     {% if is_granted('ROLE_ADMIN') or app.user == commande.utilisateur %}
-                        <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        {# <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-warning btn-sm">Modifier</a> #}
                     {% endif %}
 
                     {% if is_granted('ROLE_ADMIN') %}

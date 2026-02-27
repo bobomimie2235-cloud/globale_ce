@@ -1,71 +1,86 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produit
-{% endblock %}
+{% block title %}Produit{% endblock %}
 
 {% block body %}
-	<h1>Produit</h1>
+    <h1>Produit</h1>
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Logo</th>
-				<td>
-					{% if produit.logo %}
-						<img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="Logo {{ produit.intitule }}" style="max-height: 80px;">
-					{% else %}
-						<span>Aucun logo</span>
-					{% endif %}
-				</td>
-			</tr>
-			<tr>
-				<th>Id</th>
-				<td>{{ produit.id }}</td>
-			</tr>
-			<tr>
-				<th>Référence</th>
-				<td>{{ produit.reference }}</td>
-			</tr>
-			<tr>
-				<th>Intitulé</th>
-				<td>{{ produit.intitule }}</td>
-			</tr>
-			<tr>
-				<th>Description</th>
-				<td>{{ produit.description }}</td>
-			</tr>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <table class="table">
+        <tbody>
             <tr>
-				<th>Prix Public</th>
-				<td>{{ produit.prixPublic }}
-					€</td>
-			</tr>
-			<tr>
-				<th>Prix Unitaire</th>
-				<td>{{ produit.prixUnitaire }}
-					€</td>
-			</tr>
-			<tr>
-				<th>Stock</th>
-				<td>
-					{% if produit.stock > 0 %}
-						<span class="badge bg-success">{{ produit.stock }}</span>
-					{% else %}
-						<span class="badge bg-danger">Rupture de stock</span>
-					{% endif %}
-				</td>
-			</tr>
-			<tr>
-				<th>Date création</th>
-				<td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
-			</tr>
-		</tbody>
-	</table>
+                <th>Logo</th>
+                <td>
+                    {% if produit.logo %}
+                        <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="Logo {{ produit.intitule }}" style="max-height: 80px;">
+                    {% else %}
+                        <span>Aucun logo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ produit.id }}</td>
+            </tr>
+            <tr>
+                <th>Référence</th>
+                <td>{{ produit.reference }}</td>
+            </tr>
+            <tr>
+                <th>Intitulé</th>
+                <td>{{ produit.intitule }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ produit.description }}</td>
+            </tr>
+            <tr>
+                <th>Prix Public</th>
+                <td>{{ produit.prixPublic }} €</td>
+            </tr>
+            <tr>
+                <th>Prix Unitaire</th>
+                <td>{{ produit.prixUnitaire }} €</td>
+            </tr>
+            <tr>
+                <th>Stock</th>
+                <td>
+                    {% if produit.stock > 0 %}
+                        <span class="badge bg-success">{{ produit.stock }}</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rupture de stock</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Date création</th>
+                <td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
+            </tr>
+        </tbody>
+    </table>
 
-	<a href="{{ path('app_produit_index') }}">Retour à la liste</a>
+    <a href="{{ path('app_produit_index') }}">Retour à la liste</a>
 
-	{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-	{% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+    {% endif %}
 
-	{{ include('produit/_delete_form.html.twig') }}
+    {# ===== Ajout au panier ===== #}
+    {% if is_granted('ROLE_USER') and produit.stock > 0 %}
+        <form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" style="display:inline;">
+            <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" style="width:60px;">
+            <button type="submit" class="btn btn-primary">Ajouter à ma commande</button>
+        </form>
+        <a href="{{ path('app_commande_en_cours') }}" class="btn btn-info btn-sm">Voir ma commande</a>
+    {% elseif produit.stock == 0 %}
+        <span class="badge bg-danger">Rupture de stock — commande impossible</span>
+    {% endif %}
+
+    {{ include('produit/_delete_form.html.twig') }}
 {% endblock %}

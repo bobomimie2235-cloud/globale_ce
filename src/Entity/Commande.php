@@ -38,6 +38,9 @@ class Commande
     public function __construct()
     {
         $this->commandeProduits = new ArrayCollection();
+        $this->dateCommande = new \DateTime();
+        $this->statut = 'en_cours';
+        $this->totalTTC = '0.00';
     }
 
     public function getId(): ?int

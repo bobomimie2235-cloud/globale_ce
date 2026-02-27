@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Utilisateur;
 use App\Entity\UtilisateurAdresse;
 use App\Form\UtilisateurAdresseType;
+use App\Repository\CommandeRepository;
 use App\Repository\UtilisateurCouponRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,8 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class ProfilController extends AbstractController
 {
     #[Route('/', name: 'app_profil')]
-    public function index(Request $request, EntityManagerInterface $em, UtilisateurCouponRepository $utilisateurCouponRepository): Response
-    {
+    public function index(
+        Request $request,
+        EntityManagerInterface $em,
+        UtilisateurCouponRepository $utilisateurCouponRepository,
+        CommandeRepository $commandeRepository
+    ): Response {
         /** @var Utilisateur $user */
         $user = $this->getUser();
 
@@ -45,11 +50,17 @@ class ProfilController extends AbstractController
             'utilise' => true,
         ]);
 
+        // ===== Commandes validées =====
+        $commandes = $commandeRepository->findBy(
+            ['utilisateur' => $user, 'statut' => 'validee'],
+            ['dateCommande' => 'DESC']  // les plus récentes en premier
+        );
+
         return $this->render('profil/index.html.twig', [
             'user' => $user,
             'formAdresse' => $form->createView(),
             'adresses' => $user->getUtilisateurAdresses(),
-            'commandes' => [],  // à compléter quand tu auras la relation commandes
+            'commandes' => $commandes,
             'coupons' => $utilisateurCoupons,
         ]);
     }

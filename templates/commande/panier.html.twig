@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Billetterie{% endblock %}
+
+{% block body %}
+    <h1>Billetterie</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <a href="{{ path('app_commande_en_cours') }}" class="btn btn-info btn-sm">
+        Voir ma commande en cours
+    </a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>Référence</th>
+                <th>Intitulé</th>
+                <th>Catégorie</th>
+                <th>Prix public</th>
+                <th>Stock</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for produit in produits %}
+            {% if produit.stock > 0 %}
+                <tr>
+                    <td>
+                        {% if produit.logo %}
+                            <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="Logo" style="max-height: 40px;">
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ produit.reference }}</td>
+                    <td>{{ produit.intitule }}</td>
+                    <td>{{ produit.produitCategorie ? produit.produitCategorie.intitule : '-' }}</td>
+                    <td>{{ produit.prixPublic }} €</td>
+                    <td><span class="badge bg-success">{{ produit.stock }}</span></td>
+                    <td>
+                        <form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}">
+                            <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" style="width:60px;">
+                            <button type="submit" class="btn btn-primary btn-sm">Ajouter</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="7">Aucun produit disponible.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
