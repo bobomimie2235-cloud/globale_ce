@@ -1,0 +1,33 @@
+// ===== components/_forms.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    padding: $spacing-sm;
+    border: 1px solid #ccc;
+    border-radius: $border-radius;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: $color-primary;
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-weight: bold;
+    font-size: $font-size-sm;
+}
+
+.form-group {
+    margin-bottom: $spacing-md;
+}

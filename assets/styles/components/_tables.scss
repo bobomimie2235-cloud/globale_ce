@@ -1,0 +1,29 @@
+// ===== components/_tables.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: $color-white;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+    margin-top: $spacing-md;
+
+    th, td {
+        padding: 0.75rem $spacing-md;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+
+    thead th {
+        background: $color-nav-dark;
+        color: $color-white;
+        font-weight: 600;
+    }
+
+    tbody tr:hover {
+        background: #f9f9f9;
+    }
+}

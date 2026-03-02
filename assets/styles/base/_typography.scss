@@ -1,0 +1,31 @@
+// ===== base/_typography.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+h1 {
+    margin-bottom: $spacing-md;
+    color: $color-bg-dark;
+    font-size: 1.8rem;
+}
+
+h2 {
+    margin: $spacing-lg 0 $spacing-sm;
+    color: $color-nav-dark;
+    font-size: 1.4rem;
+}
+
+h3 {
+    margin: $spacing-md 0 $spacing-sm;
+    color: $color-nav-dark;
+    font-size: 1.2rem;
+}
+
+p {
+    line-height: 1.6;
+}
+
+hr {
+    margin: $spacing-lg 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}

@@ -1,0 +1,25 @@
+// ===== base/_reset.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: $font-family;
+    font-size: $font-size-base;
+    background: $color-light;
+    color: $color-text;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}

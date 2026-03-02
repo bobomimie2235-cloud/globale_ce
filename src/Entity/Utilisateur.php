@@ -343,4 +343,28 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    // Mot de Passe oublié :
+
+    #[ORM\Column(length: 255, nullable: true)]
+private ?string $resetToken = null;
+
+#[ORM\Column(nullable: true)]
+private ?\DateTimeImmutable $resetTokenExpiry = null;
+
+public function getResetToken(): ?string { return $this->resetToken; }
+public function setResetToken(?string $resetToken): static
+{
+    $this->resetToken = $resetToken;
+    return $this;
 }
+
+public function getResetTokenExpiry(): ?\DateTimeImmutable { return $this->resetTokenExpiry; }
+public function setResetTokenExpiry(?\DateTimeImmutable $resetTokenExpiry): static
+{
+    $this->resetTokenExpiry = $resetTokenExpiry;
+    return $this;
+}
+
+
+    }

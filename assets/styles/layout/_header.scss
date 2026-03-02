@@ -1,0 +1,123 @@
+// ===== layout/_header.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+header {
+    background: $color-bg-dark;
+    color: $color-white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: $shadow-md;
+
+    .header-top {
+        @include flex(row, space-between, center, $spacing-md);
+        padding: 0.8rem $spacing-xl;
+
+        .header-logo img {
+            max-height: $logo-height;
+        }
+
+        .header-user {
+            font-size: $font-size-sm;
+            color: $color-grey;
+            white-space: nowrap;
+
+            strong { color: $color-primary; }
+        }
+    }
+
+    // ===== BARRE DE RECHERCHE =====
+    .search-form {
+        @include flex(row, flex-start, center, $spacing-sm);
+        flex: 1;
+        max-width: 600px;
+
+        select {
+            padding: $spacing-sm;
+            border-radius: $border-radius;
+            border: none;
+            background: $color-white;
+            cursor: pointer;
+        }
+
+        .search-input-wrapper {
+            @include flex(row, flex-start, center);
+            flex: 1;
+            background: $color-white;
+            border-radius: $border-radius;
+            overflow: hidden;
+
+            input {
+                flex: 1;
+                padding: $spacing-sm $spacing-md;
+                border: none;
+                outline: none;
+                font-size: 0.95rem;
+                width: auto;
+            }
+
+            button {
+                padding: $spacing-sm $spacing-md;
+                background: $color-primary;
+                color: $color-white;
+                border: none;
+                cursor: pointer;
+                font-size: $font-size-base;
+
+                &:hover { background: $color-primary-dark; }
+            }
+        }
+    }
+
+    // ===== NAVIGATION =====
+    nav {
+        background: $color-nav-dark;
+        padding: 0 $spacing-xl;
+
+        ul {
+            @include flex(row, flex-start, center);
+            flex-wrap: wrap;
+
+            li {
+                position: relative;
+
+                a {
+                    display: block;
+                    padding: $nav-link-padding;
+                    color: $color-grey;
+                    font-size: $font-size-sm;
+                    transition: background 0.2s, color 0.2s;
+
+                    &:hover {
+                        background: $color-primary;
+                        color: $color-white;
+                    }
+                }
+
+                // ===== SOUS-MENUS =====
+                &.has-submenu .submenu {
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    background: $color-bg-dark;
+                    min-width: 200px;
+                    box-shadow: $shadow-lg;
+                    z-index: 200;
+                    flex-direction: column;
+
+                    li a {
+                        padding: 0.6rem 1.2rem;
+                        white-space: nowrap;
+                        border-bottom: 1px solid $color-nav-dark;
+                    }
+                }
+
+                &.has-submenu:hover .submenu {
+                    display: flex;
+                }
+            }
+        }
+    }
+}

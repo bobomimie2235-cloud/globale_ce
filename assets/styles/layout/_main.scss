@@ -1,0 +1,15 @@
+// ===== layout/_main.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+main {
+    padding: $spacing-xl;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.flash-container {
+    padding: 0 $spacing-xl;
+    max-width: 1200px;
+    margin: $spacing-md auto 0;
+}

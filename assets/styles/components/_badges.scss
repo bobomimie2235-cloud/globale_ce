@@ -1,0 +1,16 @@
+// ===== components/_badges.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.badge {
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: bold;
+
+    &.bg-success   { @include badge-color($color-success); }
+    &.bg-danger    { @include badge-color($color-danger); }
+    &.bg-warning   { @include badge-color($color-warning, #000); }
+    &.bg-info      { @include badge-color($color-info); }
+    &.bg-secondary { @include badge-color($color-secondary); }
+}

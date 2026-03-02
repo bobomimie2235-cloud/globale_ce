@@ -1,0 +1,14 @@
+// ===== components/_alert.scss =====
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.alert {
+    padding: 0.75rem $spacing-md;
+    border-radius: $border-radius;
+    margin-bottom: $spacing-sm;
+
+    &-success { @include alert-color(#d4edda, #155724); }
+    &-warning { @include alert-color(#fff3cd, #856404); }
+    &-danger  { @include alert-color(#f8d7da, #721c24); }
+    &-info    { @include alert-color(#d1ecf1, #0c5460); }
+}

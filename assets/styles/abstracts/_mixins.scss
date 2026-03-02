@@ -1,0 +1,52 @@
+// ===== abstracts/_mixins.scss =====
+@use 'variables' as *;
+
+// ===== FLEXBOX =====
+@mixin flex($direction: row, $justify: flex-start, $align: center, $gap: 0) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    gap: $gap;
+}
+
+// ===== BOUTON DE BASE =====
+@mixin btn-base {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: $border-radius;
+    border: none;
+    cursor: pointer;
+    font-size: $font-size-sm;
+    text-decoration: none;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.85; }
+}
+
+// ===== BOUTON COULEUR =====
+@mixin btn-color($bg, $color: $color-white) {
+    background: $bg;
+    color: $color;
+}
+
+// ===== BADGE =====
+@mixin badge-color($bg, $color: $color-white) {
+    background: $bg;
+    color: $color;
+}
+
+// ===== ALERT =====
+@mixin alert-color($bg, $color) {
+    background: $bg;
+    color: $color;
+}
+
+// ===== RESPONSIVE =====
+@mixin mobile {
+    @media (max-width: 768px) { @content; }
+}
+
+@mixin tablet {
+    @media (max-width: 1024px) { @content; }
+}
