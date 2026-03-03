@@ -3,9 +3,224 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{# ===== HERO ===== #}
+<section class="hero">
+    <div class="hero-content">
+
+        <div class="hero-text">
+            <h1>TOUTE L'OFFRE CSE<br>NATIONALE ET LOCALE,<br>EN UN SEUL ESPACE !</h1>
+            <p class="hero-subtitle">Simplifiez la gestion de votre CSE et offrez plus de pouvoir d'achat à vos salariés.</p>
+            <hr class="hero-divider">
+            <p class="hero-description">Billetterie, vacances, cartes cadeaux et services négociés pour vos salariés.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-demo">Demander une démo</a>
+                <a href="#" class="btn-offres">Voir les offres</a>
+            </div>
+        </div>
+
+        <div class="hero-info">
+            <div class="hero-info-card">
+                <p class="hero-info-title">GLOBALE C.E.</p>
+                <p>24, avenue Maréchal Foch<br>Résidence Louis Leray<br>35290 SAINT MEEN LE GRAND</p>
+                <p>Lundi, mardi, mercredi et vendredi<br>10h-12h et 14h18h<br>Jeudi sur rendez-vous</p>
+            </div>
+            <div class="hero-info-card">
+                <p class="hero-info-title">Nous contacter</p>
+                <p>09 67 35 56 32</p>
+                <a href="mailto:globale-ce@orange.fr">globale-ce@orange.fr</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{# ===== OFFRES EXCEPTIONNELLES ===== #}
+<section class="offres">
+    <div class="offres-container">
+
+        <h2 class="offres-titre">DES <span>OFFRES EXCEPTIONNELLES</span></h2>
+
+        <div class="offres-grid">
+
+            <a href="{{ is_granted('ROLE_USER') ? path('app_article_index') : path('app_login') }}" class="offre-card">
+                <div class="offre-card-header">COMMERCES</div>
+                <div class="offre-card-img">
+                    <img src="{{ asset('uploads/offres/commerces.jpg') }}" alt="Commerces">
+                </div>
+                <div class="offre-card-body">
+                    <p class="offre-card-promo">Jusqu'à -25%</p>
+                    <p>dans les commerces<br>avec la carte BREIZH C.E.</p>
+                    {% if not is_granted('ROLE_USER') %}
+                        <span class="offre-card-lock">🔒 Connexion requise</span>
+                    {% endif %}
+                </div>
+            </a>
+
+            <a href="{{ is_granted('ROLE_USER') ? path('app_coupon_reduction_index') : path('app_login') }}" class="offre-card">
+                <div class="offre-card-header">COUPON REDUCTION</div>
+                <div class="offre-card-img">
+                    <img src="{{ asset('uploads/offres/coupon.jpg') }}" alt="Coupon Réduction">
+                </div>
+                <div class="offre-card-body">
+                    <p class="offre-card-promo">Réduction Exceptionnelle</p>
+                    <p>lors de votre 1ère visite</p>
+                    {% if not is_granted('ROLE_USER') %}
+                        <span class="offre-card-lock">🔒 Connexion requise</span>
+                    {% endif %}
+                </div>
+            </a>
+
+            <a href="{{ is_granted('ROLE_USER') ? path('app_recherche') ~ '?filtre=produits&q=Loisirs' : path('app_login') }}" class="offre-card">
+                <div class="offre-card-header">LOISIRS</div>
+                <div class="offre-card-img">
+                    <img src="{{ asset('uploads/offres/loisirs.jpg') }}" alt="Loisirs">
+                </div>
+                <div class="offre-card-body">
+                    <p class="offre-card-promo">Jusqu'à -25%</p>
+                    <p>sur présentation de la Carte</p>
+                    {% if not is_granted('ROLE_USER') %}
+                        <span class="offre-card-lock">🔒 Connexion requise</span>
+                    {% endif %}
+                </div>
+            </a>
+
+            <a href="{{ is_granted('ROLE_USER') ? path('app_produit_index') : path('app_login') }}" class="offre-card">
+                <div class="offre-card-header">BILLETTERIE</div>
+                <div class="offre-card-img">
+                    <img src="{{ asset('uploads/offres/billetterie.jpg') }}" alt="Billetterie">
+                </div>
+                <div class="offre-card-body">
+                    <p class="offre-card-promo">Jusqu'à -35%</p>
+                    <p>sur de nombreux<br>Parcs de Loisirs</p>
+                    {% if not is_granted('ROLE_USER') %}
+                        <span class="offre-card-lock">🔒 Connexion requise</span>
+                    {% endif %}
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+{# ===== AVANTAGES ===== #}
+<section class="avantages">
+    <div class="avantages-container">
+
+        <h2 class="avantages-titre">LES <span>AVANTAGES</span> DE L'ABONNEMENT À GLOBALE C.E.</h2>
+
+        <div class="avantages-grid">
+
+            <div class="avantage-card">
+                <div class="avantage-card-header">
+                    <span class="avantage-icon">✅</span>
+                    <h3>Offres physique</h3>
+                </div>
+                <div class="avantage-card-body">
+                    <p class="avantage-bold">Des avantages concrets pour vos salariés.</p>
+                    <p>Catalogue annuel, 2 cartes d'abonnement et des réductions coupons partenaires exclusives dans votre catalogue.</p>
+                </div>
+            </div>
+
+            <div class="avantage-card">
+                <div class="avantage-card-header">
+                    <span class="avantage-icon">✅</span>
+                    <h3>Un espace personnalisé</h3>
+                </div>
+                <div class="avantage-card-body">
+                    <p class="avantage-bold">Une plateforme simple et dédiée à votre CSE</p>
+                    <p>Accès en ligne, sans minimum de commande, offres ciblées.</p>
+                </div>
+            </div>
+
+            <div class="avantage-card">
+                <div class="avantage-card-header">
+                    <span class="avantage-icon">✅</span>
+                    <h3>Des offres intéressantes</h3>
+                </div>
+                <div class="avantage-card-body">
+                    <p>plus de <strong>45 000 offres</strong> locales et nationales au meilleur prix</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# ===== NOUVEAUTÉ 2026 ===== #}
+<section class="nouveaute">
+    <div class="nouveaute-container">
+
+        <h2 class="nouveaute-titre"><span>NOUVEAUTÉ 2026</span> GLOBALE C.E.</h2>
+
+        <div class="nouveaute-content">
+
+            {# ===== IMAGE ÉCRAN ===== #}
+            <div class="nouveaute-screen">
+                <img src="{{ asset('uploads/offres/ecran-affichage.jpg') }}" alt="Écran d'affichage CSE">
+            </div>
+
+            {# ===== TEXTE DROITE ===== #}
+            <div class="nouveaute-text">
+                <h3>ÉCRAN D'AFFICHAGE</h3>
+                <p class="nouveaute-desc-bold">Un outil de communication interne pour valoriser les offres CSE directement auprès de vos salariés.</p>
+                <hr class="nouveaute-divider">
+                <p class="nouveaute-desc">Passer à la vitesse supérieur avec un écran d'affichage personnalisé pour vos salariés</p>
+                <a href="#" class="btn-devis">Demander votre Devis</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# ===== FORMULAIRE DE CONTACT ===== #}
+<section class="contact" id="contact">
+    <div class="contact-container">
+
+        <h2 class="contact-titre"><span>FORMULAIRE</span> DE CONTACT</h2>
+
+        <div class="contact-card">
+            <h3>Parlons de votre CSE</h3>
+            <p class="contact-subtitle">Un conseiller vous répond sous 24h ouvrées</p>
+
+            <form method="post" action="{{ path('app_contact') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('contact') }}">
+
+                <div class="contact-grid">
+                    <div class="contact-field">
+                        <input type="text" name="nom" placeholder="Nom, Prénom *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="text" name="fonction" placeholder="Fonction *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="text" name="groupe" placeholder="Nom du Groupe *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="text" name="ville" placeholder="Ville *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="tel" name="telephone" placeholder="Téléphone *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="email" name="email" placeholder="Email *" required>
+                    </div>
+                </div>
+
+                <div class="contact-field contact-field-full">
+                    <textarea name="message" placeholder="Votre message *" rows="6" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-contact">Être recontacté</button>
+
+                <p class="contact-required"><span>*</span> Champs obligatoire</p>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<div class="message-final">
+    <p>à bientôt chez</p><p class="titre-global">GLOBALE C.E.</p>
+</div>
 
 {% endblock %}

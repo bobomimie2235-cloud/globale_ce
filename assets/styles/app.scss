@@ -9,6 +9,7 @@
 // ===== LAYOUT =====
 @use 'layout/header';
 @use 'layout/main';
+@use 'layout/footer';
 
 // ===== COMPONENTS =====
 @use 'components/buttons';
@@ -22,3 +23,4 @@
 @use 'pages/login';
 @use 'pages/profil';
 @use 'pages/commande';
+@use 'pages/accueil';

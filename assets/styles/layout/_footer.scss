@@ -1,0 +1,111 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+footer {
+    background: $footer-bg;
+    color: $footer-text;
+    padding: $spacing-xl;
+    margin-top: $spacing-xl;
+
+    // ===== CONTENU FOOTER =====
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: $spacing-xl;
+        max-width: 1400px;
+        margin: 0 auto $spacing-lg;
+
+        // ===== COLONNE =====
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+
+            h4 {
+                color: $color-white;
+                font-family: $font-subtitle;
+                font-size: $font-size-base;
+                margin-bottom: $spacing-md;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            ul {
+                display: flex;
+                flex-direction: column;
+                gap: $spacing-xs;
+
+                li a {
+                    color: $footer-text;
+                    font-size: $font-size-sm;
+                    font-family: $font-text;
+                    transition: color 0.2s;
+
+                    &:hover {
+                        color: $color-primary;
+                    }
+                }
+            }
+
+            p {
+                font-size: $font-size-sm;
+                line-height: 1.8;
+                color: $footer-text;
+            }
+
+            // ===== CONTACT =====
+            .footer-contact {
+                display: flex;
+                flex-direction: column;
+                gap: $spacing-xs;
+                font-size: $font-size-sm;
+
+                a {
+                    color: $color-white;
+
+                    &:hover {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+
+    // ===== SÉPARATEUR =====
+    .footer-divider {
+        border: none;
+        border-top: 1px solid rgba($color-white, 0.1);
+        margin: $spacing-md 0;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    // ===== BAS DE FOOTER =====
+    .footer-bottom {
+        text-align: center;
+        font-size: $font-size-xs;
+        color: rgba($color-white, 0.5);
+        max-width: 1400px;
+        margin: 0 auto;
+
+        span {
+            color: $color-white;
+            font-weight: bold;
+        }
+    }
+
+    // ===== RESPONSIVE MOBILE =====
+    @include mobile {
+        padding: $spacing-lg $spacing-md;
+
+        .footer-content {
+            flex-direction: column;
+            gap: $spacing-lg;
+
+            .footer-col {
+                min-width: 100%;
+            }
+        }
+    }
+}

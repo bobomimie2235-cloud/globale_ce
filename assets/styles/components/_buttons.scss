@@ -5,13 +5,13 @@
 .btn {
     @include btn-base;
 
-    &-sm { padding: 0.3rem 0.6rem; font-size: $font-size-xs; }
-    &-lg { padding: 0.6rem 1.2rem; font-size: 1.1rem; }
+    &-sm  { padding: 0.3rem 0.6rem; font-size: $font-size-xs; }
+    &-lg  { padding: 0.6rem 1.2rem; font-size: 1.1rem; }
 
     &-primary   { @include btn-color($color-primary); }
     &-secondary { @include btn-color($color-secondary); }
     &-success   { @include btn-color($color-success); }
     &-danger    { @include btn-color($color-danger); }
     &-warning   { @include btn-color($color-warning, #000); }
-    &-info      { @include btn-color($color-info); }
+    &-info      { @include btn-color($color-nav); }
 }
