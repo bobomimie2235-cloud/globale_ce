@@ -71,6 +71,10 @@ class ArticleType extends AbstractType
                     )
                 ],
             ])
+            ->add('offre', TextType::class, [
+                'label' => 'Offre (ex: -5%, -25%...)',
+                'required' => false,
+            ])
             ->add('offreCommerciale', TextareaType::class, [
                 'label' => 'Offre commerciale',
                 'required' => false,

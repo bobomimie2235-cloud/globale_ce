@@ -1,0 +1,124 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// MENTIONS LEGALES
+
+.mentions {
+    padding: $spacing-xl * 2 $spacing-xl;
+    background: $color-light;
+
+    .mentions-container {
+        max-width: 900px;
+        margin: 0 auto;
+
+        h1 {
+            font-family: $font-title;
+            font-size: 2rem;
+            color: $color-bg-dark;
+            margin-bottom: $spacing-xl;
+            padding-bottom: $spacing-md;
+            border-bottom: 3px solid $color-primary;
+        }
+    }
+
+    // ===== CARTE =====
+    .mentions-card {
+        background: $color-white;
+        border-radius: $border-radius-lg;
+        padding: $spacing-xl;
+        margin-bottom: $spacing-lg;
+        box-shadow: $shadow-sm;
+        border-left: 4px solid $color-nav;
+
+        h2 {
+            font-family: $font-subtitle;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: $color-nav;
+            margin-bottom: $spacing-md;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            font-family: $font-text;
+            font-size: $font-size-base;
+            color: $color-text-dark;
+            line-height: 1.8;
+            margin-bottom: $spacing-sm;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        a {
+            color: $color-primary;
+            transition: color 0.2s;
+
+            &:hover {
+                color: $color-nav;
+                text-decoration: underline;
+            }
+        }
+
+        em {
+            color: $color-text-grey;
+            font-size: $font-size-sm;
+        }
+    }
+
+    // ===== BOUTON RETOUR =====
+    .btn-retour {
+        display: inline-block;
+        margin-top: $spacing-md;
+        padding: 0.6rem 1.5rem;
+        background: $color-nav;
+        color: $color-white;
+        border-radius: $border-radius-pill;
+        font-family: $font-text;
+        font-size: $font-size-sm;
+        font-weight: bold;
+        transition: background 0.2s, transform 0.1s;
+
+        &:hover {
+            background: $color-bg-dark;
+            transform: translateY(-1px);
+        }
+    }
+
+    @include mobile {
+        padding: $spacing-xl $spacing-md;
+
+        .mentions-card {
+            padding: $spacing-md;
+        }
+    }
+}
+
+// POLITIQUE ET CONFIDENTIALITE
+
+// ===== LISTES ET SOUS-TITRES =====
+.mentions-card {
+
+    h3 {
+        font-family: $font-subtitle;
+        font-size: 1rem;
+        font-weight: 700;
+        color: $color-text-dark;
+        margin: $spacing-md 0 $spacing-sm;
+    }
+
+    ul {
+        list-style: disc;
+        padding-left: $spacing-xl;
+        margin-bottom: $spacing-md;
+
+        li {
+            font-family: $font-text;
+            font-size: $font-size-base;
+            color: $color-text-dark;
+            line-height: 1.8;
+        }
+    }
+}

@@ -75,6 +75,9 @@ class Article
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?CouponReduction $couponReduction = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $offre = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -223,4 +226,15 @@ class Article
 
         return $this;
     }
+
+    public function getOffre(): ?string
+{
+    return $this->offre;
+}
+
+public function setOffre(?string $offre): static
+{
+    $this->offre = $offre;
+    return $this;
+}
 }

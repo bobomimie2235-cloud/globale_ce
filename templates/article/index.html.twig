@@ -1,90 +1,76 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article index
-{% endblock %}
+{% block title %}Offres Cartes{% endblock %}
 
 {% block body %}
-	<h1>Article index</h1>
+<section class="articles-page">
+    <div class="articles-container">
 
-	{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('app_article_new') }}" class="btn btn-primary btn-sm">Créer un article</a>
-	{% endif %}
+        <h1 class="articles-titre">Offres <span>Cartes Commerçants</span></h1>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Logo</th>
-				<th>Id</th>
-				<th>Titre</th>
-				<th>Adresse</th>
-				<th>Catégorie</th>
-				<th>InfosActivite</th>
-				<th>SiteWeb</th>
-				{# <th>ImgPhotosDevanture</th>
-				<th>ImgPhotosInterieur</th> #}
-				<th>OffreCommerciale</th>
-				<th>Horaires</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for article in articles %}
-				<tr>
-					<td>
-						{% if article.imgLogo %}
-							<img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="Logo" style="max-height: 80px;">
-						{% else %}
-							-
-						{% endif %}
-					</td>
-					<td>{{ article.id }}</td>
-					<td>{{ article.titre }}</td>
-					<td>{{ article.description }}</td>
-					<td>{{ article.articleCategorie ? article.articleCategorie.intitule : '-' }}</td>
-					<td>{{ article.infosActivite }}</td>
-					<td>
-						{% if article.siteWeb %}
-							<a href="{{ article.siteWeb }}" target="_blank">{{ article.siteWeb }}</a>
-						{% else %}
-							-
-						{% endif %}
-					</td>
-					{# <td>
-						{% if article.imgPhotosDevanture %}
-							<img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}" alt="Devanture" style="max-height: 80px;">
-						{% else %}
-							-
-						{% endif %}
-					</td>
-					<td>
-						{% if article.imgPhotosInterieur %}
-							<img src="{{ asset('uploads/articles/' ~ article.imgPhotosInterieur) }}" alt="Intérieur" style="max-height: 80px;">
-						{% else %}
-							-
-						{% endif %}
-					</td> #}
-					<td>{{ article.offreCommerciale }}</td>
-					<td>{{ article.horaires }}</td>
-					<td>
-						<a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-info btn-sm">Voir</a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="articles-admin-bar">
+                <a href="{{ path('app_article_new') }}" class="btn btn-primary btn-sm">+ Nouvel article</a>
+            </div>
+        {% endif %}
 
-						{% if is_granted('ROLE_ADMIN') or app.user == article.utilisateur %}
-							<a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-						{% endif %}
+        {% if articles is empty %}
+            <div class="articles-empty">
+                <p>Aucun article disponible pour le moment.</p>
+            </div>
+        {% else %}
+            <div class="articles-grid">
+                {% for article in articles %}
+                    <div class="article-card">
 
-						{% if is_granted('ROLE_ADMIN') %}
-							<form method="post" action="{{ path('app_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');" style="display:inline;">
-								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-								<button class="btn btn-danger btn-sm">Supprimer</button>
-							</form>
-						{% endif %}
-					</td>
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="11">Aucun article trouvé.</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+                        {# ===== ÉTIQUETTE OFFRE ===== #}
+                        {% if article.offre %}
+                            <div class="article-card-badge">{{ article.offre }}</div>
+                        {% endif %}
+
+                        {# ===== IMAGE PRINCIPALE ===== #}
+                        <div class="article-card-img">
+                            {% if article.imgLogo %}
+                                <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="{{ article.titre }}">
+                            {% elseif article.imgPhotosDevanture %}
+                                <img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}" alt="{{ article.titre }}">
+                            {% else %}
+                                <div class="article-card-img-placeholder">📷</div>
+                            {% endif %}
+                        </div>
+
+                        {# ===== CATÉGORIE ===== #}
+                        {% if article.articleCategorie %}
+                            <div class="article-card-categorie">
+                                🏷️ {{ article.articleCategorie.intitule }}
+                            </div>
+                        {% endif %}
+
+                        {# ===== INFOS ===== #}
+                        <div class="article-card-body">
+                            <h3 class="article-card-titre">{{ article.titre }}</h3>
+                            {% if article.description %}
+                                <p class="article-card-desc">{{ article.description|truncate(60, true, '...') }}</p>
+                            {% endif %}
+
+                            <hr class="article-card-divider">
+
+                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="article-card-link">
+                                Voir la fiche
+                            </a>
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="article-card-admin">
+                                    <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+</section>
 {% endblock %}

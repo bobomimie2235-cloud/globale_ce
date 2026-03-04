@@ -1,6 +1,7 @@
 <header>
-    {# ===== LIGNE PRINCIPALE : LOGO + NAV + CONNEXION ===== #}
-	<div class="header-top">
+	{# ===== LIGNE PRINCIPALE : LOGO + NAV + CONNEXION ===== #}
+	<div
+		class="header-top">
 
 		{# ===== LOGO ===== #}
 		<a href="{{ path('app_accueil') }}" class="header-logo">
@@ -18,13 +19,23 @@
 				{% if is_granted('ROLE_ADMIN') %}
 					<li class="has-submenu">
 						<a href="#">Administration ▾</a>
-                        <ul class="submenu">
-                            <li><a href="{{ path('app_utilisateur_index') }}">Utilisateurs</a></li>
-                            <li><a href="{{ path('app_utilisateur_groupe_index') }}">Groupes</a></li>
-                            <li><a href="{{ path('app_article_categorie_index') }}">Catégories Articles</a></li>
-                            <li><a href="{{ path('app_produit_categorie_index') }}">Catégories Produits</a></li>
-                            <li><a href="{{ path('app_coupon_categorie_index') }}">Catégories Coupons</a></li>
-                        </ul>
+						<ul class="submenu">
+							<li>
+								<a href="{{ path('app_utilisateur_index') }}">Utilisateurs</a>
+							</li>
+							<li>
+								<a href="{{ path('app_utilisateur_groupe_index') }}">Groupes</a>
+							</li>
+							<li>
+								<a href="{{ path('app_article_categorie_index') }}">Catégories Articles</a>
+							</li>
+							<li>
+								<a href="{{ path('app_produit_categorie_index') }}">Catégories Produits</a>
+							</li>
+							<li>
+								<a href="{{ path('app_coupon_categorie_index') }}">Catégories Coupons</a>
+							</li>
+						</ul>
 					</li>
 				{% endif %}
 
@@ -33,79 +44,146 @@
 					{# ===== BILLETTERIE ===== #}
 					<li class="has-submenu">
 						<a href="{{ path('app_produit_index') }}">Billetterie ▾</a>
-                        <ul class="submenu">
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Cinémas">Cinémas</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Festivals">Festivals</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Karting">Karting</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Parcs de Loisirs">Parcs de Loisirs</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Pâtinoires">Pâtinoires</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Piscines">Piscines</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Spas">Spas et Thalassos</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Sports">Sports</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=produits&q=Zoos">Zoos</a></li>
-                        </ul>
+						<ul class="submenu">
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Cinémas">Cinémas</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Festivals">Festivals</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Karting">Karting</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Parcs de Loisirs">Parcs de Loisirs</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Pâtinoires">Pâtinoires</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Piscines">Piscines</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Spas">Spas et Thalassos</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Sports">Sports</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=produits&q=Zoos">Zoos</a>
+							</li>
+						</ul>
 					</li>
 
 					{# ===== COMMERÇANTS CARTE ===== #}
 					<li class="has-submenu">
 						<a href="{{ path('app_article_index') }}">Offres Cartes ▾</a>
-                        <ul class="submenu">
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Ameublement">Ameublement</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Automobile">Automobile</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Bijoux">Bijoux</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Chaussures">Chaussures</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Fleuriste">Fleuriste</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Opticien">Opticien</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Parfumerie">Parfumerie</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Prêt à Porter">Prêt à Porter</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=articles&q=Restaurant">Restaurant</a></li>
-                        </ul>
+						<ul class="submenu">
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Ameublement">Ameublement</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Automobile">Automobile</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Bijoux">Bijoux</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Chaussures">Chaussures</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Fleuriste">Fleuriste</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Opticien">Opticien</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Parfumerie">Parfumerie</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Prêt à Porter">Prêt à Porter</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=articles&q=Restaurant">Restaurant</a>
+							</li>
+						</ul>
 					</li>
 
 					{# ===== COUPONS RÉDUCTION ===== #}
 					<li class="has-submenu">
 						<a href="{{ path('app_coupon_reduction_index') }}">Coupons Réduction ▾</a>
-                        <ul class="submenu">
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Ameublement">Ameublement</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Automobile">Automobile</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Bijoux">Bijoux</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Chaussures">Chaussures</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Fleuriste">Fleuriste</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Opticien">Opticien</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Parfumerie">Parfumerie</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Prêt à Porter">Prêt à Porter</a></li>
-                            <li><a href="{{ path('app_recherche') }}?filtre=coupons&q=Restaurant">Restaurant</a></li>
-                        </ul>
+						<ul class="submenu">
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Ameublement">Ameublement</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Automobile">Automobile</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Bijoux">Bijoux</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Chaussures">Chaussures</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Fleuriste">Fleuriste</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Opticien">Opticien</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Parfumerie">Parfumerie</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Prêt à Porter">Prêt à Porter</a>
+							</li>
+							<li>
+								<a href="{{ path('app_recherche') }}?filtre=coupons&q=Restaurant">Restaurant</a>
+							</li>
+						</ul>
 					</li>
 
 					{# ===== TV CSE ===== #}
-					<li><a href="#">TV CSE</a></li>
+					<li>
+						<a href="#">TV CSE</a>
+					</li>
 
 					{# ===== CONTACT ===== #}
-					<li><a href="#">Contactez-Nous</a></li>
+					<li>
+						<a href="#">Contactez-Nous</a>
+					</li>
 
 					{# ===== MON COMPTE ===== #}
 					<li class="has-submenu">
 						<a href="#">Mon Compte ▾</a>
-                        <ul class="submenu">
-                            <li><a href="{{ path('app_profil') }}">Mon Profil</a></li>
-                            <li><a href="{{ path('app_commande_index') }}">Mes Commandes</a></li>
-                            <li><a href="{{ path('app_commande_en_cours') }}">Panier 🛒</a></li>
-                            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
-                        </ul>
+						<ul class="submenu">
+							<li>
+								<a href="{{ path('app_profil') }}">Mon Profil</a>
+							</li>
+							<li>
+								<a href="{{ path('app_commande_index') }}">Mes Commandes</a>
+							</li>
+							<li>
+								<a href="{{ path('app_commande_en_cours') }}">Panier 🛒</a>
+							</li>
+							<li>
+								<a href="{{ path('app_logout') }}">Déconnexion</a>
+							</li>
+						</ul>
 					</li>
-                {% endif %}
+				{% endif %}
 
-				</ul>
-			</nav>
+			</ul>
+		</nav>
 
-			{# ===== DROITE : RECHERCHE + CONNEXION ===== #}
-			<div class="header-right">
+		{# ===== DROITE : RECHERCHE + CONNEXION ===== #}
+		<div
+			class="header-right">
 
-				{# ===== INFO UTILISATEUR ===== #}
-				{% if app.user %}
-					<div class="info-user">
-                    <p>
+			{# ===== INFO UTILISATEUR ===== #}
+			{% if app.user %}
+				<div class="info-user">
+					<p>
 						Bienvenue
 						{{ app.user.nom }}
 						{{ app.user.prenom }}, tu es bien connecté(e).
@@ -115,32 +193,35 @@
 						et tu fais partie du groupe
 						<strong>{{ app.user.utilisateurGroupe.nomGroupe }}</strong>.
 					</p>
-                    </div>
-				{% else %}
-                    <a href="{{ path('app_register') }}" class="btn-inscription">Inscription</a>
-					<a href="{{ path('app_login') }}" class="btn-connexion">Connexion</a>
-				{% endif %}
-			</div>
+				</div>
+			{% else %}
+				<a href="{{ path('app_register') }}" class="btn-inscription">Inscription</a>
+				<a href="{{ path('app_login') }}" class="btn-connexion">Connexion</a>
+			{% endif %}
 		</div>
+	</div>
 
-                {# ===== LIGNE SECONDAIRE : BARRE DE RECHERCHE ===== #}
-    {% if is_granted('ROLE_USER') %}
-        <div class="header-search">
-            <form class="search-form" method="get" action="{{ path('app_recherche') }}">
-                {# <select name="filtre">
-                    <option value="tout" {{ app.request.query.get('filtre') == 'tout' ? 'selected' : '' }}>Tout</option>
-                    <option value="articles" {{ app.request.query.get('filtre') == 'articles' ? 'selected' : '' }}>Articles</option>
-                    <option value="produits" {{ app.request.query.get('filtre') == 'produits' ? 'selected' : '' }}>Produits</option>
-                    <option value="coupons" {{ app.request.query.get('filtre') == 'coupons' ? 'selected' : '' }}>Coupons</option>
-                </select> #}
-                <div class="search-input-wrapper">
-                    <input type="text" name="q"
-                        placeholder="Rechercher un produit, une offre, un coupon..."
-                        value="{{ app.request.query.get('q') }}"
-                        autocomplete="off">
-                    <button type="submit">🔍</button>
-                </div>
-            </form>
-        </div>
-    {% endif %}
-	</header>
+	{# ===== LIGNE SECONDAIRE : BARRE DE RECHERCHE ===== #}
+	{% if is_granted('ROLE_USER') %}
+		<div class="header-search">
+			<form
+				class="search-form" method="get" action="{{ path('app_recherche') }}">
+				{# <select name="filtre">
+				<option value="tout" {{ app.request.query.get('filtre') == 'tout' ? 'selected' : '' }}>Tout</option>
+				<option value="articles" {{ app.request.query.get('filtre') == 'articles' ? 'selected' : '' }}>Articles</option>
+				<option value="produits" {{ app.request.query.get('filtre') == 'produits' ? 'selected' : '' }}>Produits</option>
+				<option value="coupons" {{ app.request.query.get('filtre') == 'coupons' ? 'selected' : '' }}>Coupons</option>
+				</select> #}
+				<div class="search-input-wrapper">
+					<input type="text" name="q" placeholder="Rechercher un produit, une offre, un coupon..." value="{{ app.request.query.get('q') }}" autocomplete="off">
+					<button type="submit" aria-label="Rechercher">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="11" cy="11" r="8"/>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"/>
+						</svg>
+					</button>
+				</div>
+			</form>
+		</div>
+	{% endif %}
+</header>
