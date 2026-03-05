@@ -43,4 +43,11 @@ class ContactController extends AbstractController
         $this->addFlash('success', 'Votre message a bien été envoyé. Un conseiller vous répondra sous 24h ouvrées.');
         return $this->redirectToRoute('app_accueil', ['#' => 'contact']);
     }
+
+    // ROUTE PAGE CONTACT - FORMULAIRE
+    #[Route('/contactez-nous', name: 'app_contactez_nous', methods: ['GET'])]
+    public function contactezNous(): Response
+    {
+        return $this->render('contact/index.html.twig');
+    }
 }

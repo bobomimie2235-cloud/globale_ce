@@ -3,6 +3,8 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
+
+{% if not is_granted('ROLE_USER') %}
 {# ===== HERO ===== #}
 <section class="hero">
     <div class="hero-content">
@@ -13,8 +15,7 @@
             <hr class="hero-divider">
             <p class="hero-description">Billetterie, vacances, cartes cadeaux et services négociés pour vos salariés.</p>
             <div class="hero-buttons">
-                <a href="#" class="btn-demo">Demander une démo</a>
-                <a href="#" class="btn-offres">Voir les offres</a>
+                <a href="{{ path('app_contactez_nous') }}" class="btn-demo">Contactez-Nous</a>
             </div>
         </div>
 
@@ -33,6 +34,7 @@
 
     </div>
 </section>
+{% endif %}
 
 {# ===== OFFRES EXCEPTIONNELLES ===== #}
 <section class="offres">
@@ -102,6 +104,7 @@
     </div>
 </section>
 
+{% if not is_granted('ROLE_USER') %}
 {# ===== AVANTAGES ===== #}
 <section class="avantages">
     <div class="avantages-container">
@@ -145,12 +148,15 @@
         </div>
     </div>
 </section>
+{% endif %}
+
+<hr class="section-divider">
 
 {# ===== NOUVEAUTÉ 2026 ===== #}
 <section class="nouveaute">
     <div class="nouveaute-container">
 
-        <h2 class="nouveaute-titre"><span>NOUVEAUTÉ 2026</span> GLOBALE C.E.</h2>
+        <h2 class="nouveaute-titre"><span>NOUVEAUTÉ 2026</span> <span class="nouveaute-titre-suffix">GLOBALE C.E.</span></h2>
 
         <div class="nouveaute-content">
 
@@ -172,6 +178,41 @@
     </div>
 </section>
 
+<hr class="section-divider">
+
+{% if is_granted('ROLE_USER') %}
+{# ===== HERO ===== #}
+<section class="hero">
+    <div class="hero-content">
+
+        <div class="hero-text">
+            <h1>VOUS SOUHAITEZ<br>UN RENSEIGNEMENT</h1>
+            <p class="hero-subtitle">N'hésitez pas à contacter un conseiller.</p>
+            <hr class="hero-divider">
+            <p class="hero-description">Directement chez nous, par téléphone ou par mail.</p>
+            <div class="hero-buttons">
+                <a href="{{ path('app_contactez_nous') }}" class="btn-demo">Contactez-Nous</a>
+            </div>
+        </div>
+
+        <div class="hero-info">
+            <div class="hero-info-card">
+                <p class="hero-info-title">GLOBALE C.E.</p>
+                <p>24, avenue Maréchal Foch<br>Résidence Louis Leray<br>35290 SAINT MEEN LE GRAND</p>
+                <p>Lundi, mardi, mercredi et vendredi<br>10h-12h et 14h18h<br>Jeudi sur rendez-vous</p>
+            </div>
+            <div class="hero-info-card">
+                <p class="hero-info-title">Nous contacter</p>
+                <p>09 67 35 56 32</p>
+                <a href="mailto:globale-ce@orange.fr">globale-ce@orange.fr</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endif %}
+
+{% if not is_granted('ROLE_USER') %}
 {# ===== FORMULAIRE DE CONTACT ===== #}
 <section class="contact" id="contact">
     <div class="contact-container">
@@ -179,7 +220,7 @@
         <h2 class="contact-titre"><span>FORMULAIRE</span> DE CONTACT</h2>
 
         <div class="contact-card">
-            <h3>Parlons de votre CSE</h3>
+            <h3>Parlons de votre Groupe</h3>
             <p class="contact-subtitle">Un conseiller vous répond sous 24h ouvrées</p>
 
             <form method="post" action="{{ path('app_contact') }}">
@@ -218,6 +259,7 @@
 
     </div>
 </section>
+{% endif %}
 
 <div class="message-final">
     <p>à bientôt chez</p><p class="titre-global">GLOBALE C.E.</p>

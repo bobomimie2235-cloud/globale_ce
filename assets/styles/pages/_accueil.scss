@@ -5,7 +5,7 @@
 // ===== HERO =====
 .hero {
     background: linear-gradient(135deg, $color-bg-dark 0%, $color-nav 100%);
-    padding: $spacing-xl * 2 $spacing-xl;
+    padding: $spacing-md * 2 $spacing-xl;
     min-height: 400px;
 
     .hero-content {
@@ -50,6 +50,9 @@
             font-size: 1rem;
             font-family: $font-text;
             margin-bottom: $spacing-xl;
+            @include mobile {
+                margin-bottom: $spacing-md;
+            }
         }
 
         // ===== BOUTONS =====
@@ -138,36 +141,73 @@
         }
     }
 
-    // ===== RESPONSIVE MOBILE =====
+    // ===== RESPONSIVE MOBILE ===== ✅ un seul bloc en bas du .hero
     @include mobile {
-        padding: $spacing-xl $spacing-md;
+        padding: $spacing-md $spacing-sm;
+        margin-top: 10px;
 
         .hero-content {
             flex-direction: column;
+            gap: $spacing-md;
         }
 
-        .hero-text h1 {
-            font-size: 1.8rem;
+        .hero-text {
+            width: 100%;
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-subtitle,
+            .hero-description {
+                font-size: 0.8rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
         }
 
         .hero-info {
+            flex-direction: row;
             width: 100%;
             min-width: unset;
+            gap: $spacing-sm;
+
+            .hero-info-card {
+                flex: 1;
+                padding: $spacing-sm;
+
+                .hero-info-title {
+                    font-size: $font-size-xs;
+                    margin-bottom: 0.3rem;
+                }
+
+                p, a {
+                    font-size: 0.65rem;
+                    line-height: 1.5;
+                }
+            }
         }
     }
-} // FIN BLOC PRESENTATION
 
-    // ===== OFFRES EXCEPTIONNELLES =====
+} // ===== FIN BLOC HERO =====
+
+.section-divider {
+    display: none;
+}
+
+// ===== OFFRES EXCEPTIONNELLES =====
 .offres {
-    padding: $spacing-xl * 2 $spacing-xl;
+    padding: $spacing-md * 2 $spacing-xl;
     background: $color-white;
+    margin: $spacing-md $spacing-sm;
 
     .offres-container {
         max-width: 1400px;
         margin: 0 auto;
     }
 
-    // ===== TITRE =====
     .offres-titre {
         font-family: $font-title;
         font-size: 1.6rem;
@@ -180,7 +220,6 @@
         }
     }
 
-    // ===== GRILLE 4 CARTES =====
     .offres-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -191,11 +230,11 @@
         }
 
         @include mobile {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
+            gap: $spacing-xs;
         }
     }
 
-    // ===== CARTE =====
     .offre-card {
         border: 1px solid #e0e0e0;
         border-radius: $border-radius-lg;
@@ -209,7 +248,6 @@
             box-shadow: $shadow-md;
         }
 
-        // ===== EN-TÊTE NOIRE =====
         .offre-card-header {
             background: $color-text-dark;
             color: $color-white;
@@ -221,7 +259,6 @@
             letter-spacing: 1px;
         }
 
-        // ===== IMAGE =====
         .offre-card-img {
             width: 100%;
             height: 180px;
@@ -239,7 +276,6 @@
             }
         }
 
-        // ===== CORPS =====
         .offre-card-body {
             padding: $spacing-md;
             text-align: center;
@@ -259,7 +295,111 @@
             }
         }
     }
+
+    // ===== RESPONSIVE MOBILE =====
+    @include mobile {
+        padding: $spacing-sm;
+        margin: $spacing-xs 0;
+
+        .offres-titre {
+            font-size: 1rem;
+            margin-bottom: $spacing-sm;
+        }
+
+        .offre-card {
+
+            .offre-card-header {
+                font-size: 0.7rem;
+                padding: 0.4rem $spacing-sm;
+                letter-spacing: 0;
+            }
+
+            .offre-card-img {
+                height: 100px;
+            }
+
+            .offre-card-body {
+                padding: $spacing-sm;
+
+                .offre-card-promo {
+                    font-size: 0.85rem;
+                    margin-bottom: 0.2rem;
+                }
+
+                p {
+                    font-size: 0.7rem;
+                    line-height: 1.3;
+                }
+            }
+        }
+    }
 }
+
+// ===== CARTE =====
+.offre-card {
+    border: 1px solid #e0e0e0;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: $color-white;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $shadow-md;
+    }
+
+    // ===== EN-TÊTE NOIRE =====
+    .offre-card-header {
+        background: $color-text-dark;
+        color: $color-white;
+        font-family: $font-title;
+        font-weight: 700;
+        font-size: 1rem;
+        text-align: center;
+        padding: 0.6rem $spacing-md;
+        letter-spacing: 1px;
+    }
+
+    // ===== IMAGE =====
+    .offre-card-img {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        &:hover img {
+            transform: scale(1.05);
+        }
+    }
+
+    // ===== CORPS =====
+    .offre-card-body {
+        padding: $spacing-md;
+        text-align: center;
+
+        .offre-card-promo {
+            font-family: $font-title;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: $color-text-dark;
+            margin-bottom: $spacing-xs;
+        }
+
+        p {
+            font-size: $font-size-sm;
+            color: $color-text-grey;
+            line-height: 1.5;
+        }
+    }
+}
+
 
 // ===== CARTE CLIQUABLE =====
 a.offre-card {
@@ -278,7 +418,9 @@ a.offre-card {
     background: #f0f0f0;
     padding: 0.2rem 0.6rem;
     border-radius: $border-radius-pill;
-} // FIN DU BLOC CARTES SERVICES
+}
+
+// FIN DU BLOC CARTES SERVICES
 
 // ===== AVANTAGES =====
 .avantages {
@@ -375,7 +517,16 @@ a.offre-card {
             }
         }
     }
-} // FIN BLOC DESCRIPTION DES AVANTAGES
+}
+
+// FIN BLOC DESCRIPTION DES AVANTAGES
+
+hr {
+    border: none;
+    border-top: 2px solid $color-nav;
+    width: 75%;
+    margin: $spacing-s auto;
+}
 
 // ===== NOUVEAUTÉ 2026 =====
 .nouveaute {
@@ -412,6 +563,7 @@ a.offre-card {
 
         @include mobile {
             flex-direction: column;
+            gap: $spacing-md;
         }
     }
 
@@ -459,7 +611,7 @@ a.offre-card {
             border: none;
             border-top: 3px solid $color-primary;
             width: 80%;
-            margin: $spacing-md auto;
+            margin: $spacing-sm auto;
         }
 
         .nouveaute-desc {
@@ -488,7 +640,55 @@ a.offre-card {
             }
         }
     }
-} // FIN BLOC NOUVEAUTES 2026 - OFFRES TV
+
+    // ===== RESPONSIVE MOBILE ===== ✅ un seul bloc en bas
+    @include mobile {
+        padding: $spacing-md $spacing-sm;
+
+        .nouveaute-titre-suffix {
+            display: none;
+        }
+
+        .nouveaute-titre {
+            font-size: 1.1rem;
+            margin-bottom: $spacing-xs;
+        }
+
+        .nouveaute-screen {
+            max-width: 100%;
+
+            img {
+                border-radius: $border-radius;
+                box-shadow: $shadow-sm;
+            }
+        }
+
+        .nouveaute-text {
+
+            h3 {
+                font-size: 1.2rem;
+                margin: $spacing-xs 0;
+            }
+
+            .nouveaute-desc-bold {
+                font-size: 0.9rem;
+            }
+
+            .nouveaute-desc {
+                font-size: 0.85rem;
+                margin-bottom: $spacing-md;
+            }
+
+            .btn-devis {
+                padding: 0.6rem 1.5rem;
+                font-size: $font-size-sm;
+            }
+        }
+    }
+
+}
+
+// ===== FIN BLOC NOUVEAUTÉ 2026 =====
 
 // ===== FORMULAIRE DE CONTACT =====
 .contact {
@@ -614,7 +814,9 @@ a.offre-card {
             font-weight: bold;
         }
     }
-} // FIN BLOC FORMULAIRE DE CONTACT
+}
+
+// FIN BLOC FORMULAIRE DE CONTACT
 
 // MESSAGE FINALE DE LA PAGE
 
@@ -622,6 +824,7 @@ a.offre-card {
     display: flex;
     justify-content: center;
     gap: 8px;
+    margin-top: 10px;
 
     p {
         text-transform: uppercase;
@@ -629,12 +832,17 @@ a.offre-card {
         text-align: center;
         font-family: $font-subtitle;
         font-size: $font-size-subtitle;
+
+        @include mobile {
+        font-size: $font-size-base;
     }
+    }
+
     .titre-global {
         text-transform: uppercase;
         font-weight: 900;
         text-align: center;
         font-family: $font-subtitle;
-        color : $color-nav;
+        color: $color-nav;
     }
 }

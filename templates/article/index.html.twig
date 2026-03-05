@@ -1,76 +1,114 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Offres Cartes{% endblock %}
+{% block title %}Offres Cartes
+{% endblock %}
 
 {% block body %}
-<section class="articles-page">
-    <div class="articles-container">
+	<section class="articles-page">
+		<div class="articles-container">
 
-        <h1 class="articles-titre">Offres <span>Cartes Commerçants</span></h1>
+			<h1 class="articles-titre">Offres
+				<span>Cartes Commerçants</span>
+			</h1>
 
-        {% if is_granted('ROLE_ADMIN') %}
-            <div class="articles-admin-bar">
-                <a href="{{ path('app_article_new') }}" class="btn btn-primary btn-sm">+ Nouvel article</a>
-            </div>
-        {% endif %}
+			{% if is_granted('ROLE_ADMIN') %}
+				<div class="articles-admin-bar">
+					<a href="{{ path('app_article_new') }}" class="btn btn-primary btn-sm">+ Nouvel article</a>
+				</div>
+			{% endif %}
+			<div
+				class="articles-layout">
 
-        {% if articles is empty %}
-            <div class="articles-empty">
-                <p>Aucun article disponible pour le moment.</p>
-            </div>
-        {% else %}
-            <div class="articles-grid">
-                {% for article in articles %}
-                    <div class="article-card">
+				{# ===== MENU CATÉGORIES GAUCHE ===== #}
+				<aside class="articles-sidebar">
+					<div class="sidebar-header">
+						<h3>Catégories</h3>
+						<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Afficher/Masquer">
+							<span id="sidebar-toggle-label">Afficher ▾</span>
+						</button>
+					</div>
 
-                        {# ===== ÉTIQUETTE OFFRE ===== #}
-                        {% if article.offre %}
-                            <div class="article-card-badge">{{ article.offre }}</div>
-                        {% endif %}
+					<ul id="sidebar-menu">
+						<li>
+							<a href="{{ path('app_article_index') }}" class="{{ categorieActive is null ? 'active' : '' }}">
+								Toutes les offres
+							</a>
+						</li>
+						{% for categorie in categories %}
+							<li>
+								<a href="{{ path('app_article_index') }}?categorie={{ categorie.id }}" class="{{ categorieActive == categorie.id ? 'active' : '' }}">
+									{{ categorie.intitule }}
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</aside>
 
-                        {# ===== IMAGE PRINCIPALE ===== #}
-                        <div class="article-card-img">
-                            {% if article.imgLogo %}
-                                <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="{{ article.titre }}">
-                            {% elseif article.imgPhotosDevanture %}
-                                <img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}" alt="{{ article.titre }}">
-                            {% else %}
-                                <div class="article-card-img-placeholder">📷</div>
-                            {% endif %}
-                        </div>
+				{# ===== GRILLE ARTICLES ===== #}
+				<div class="articles-main">
+					{% if articles is empty %}
+						<div class="articles-empty">
+							<p>Aucun article disponible pour le moment.</p>
+						</div>
+					{% else %}
+						<div class="articles-grid">
+							{% for article in articles %}
+								<div class="article-card">
 
-                        {# ===== CATÉGORIE ===== #}
-                        {% if article.articleCategorie %}
-                            <div class="article-card-categorie">
-                                🏷️ {{ article.articleCategorie.intitule }}
-                            </div>
-                        {% endif %}
+									<a
+										href="{{ path('app_article_show', {'id': article.id}) }}" class="article-card">
+										{# ===== ÉTIQUETTE OFFRE ===== #}
+										{% if article.offre %}
+											<div class="article-card-badge">{{ article.offre }}</div>
+										{% endif %}
 
-                        {# ===== INFOS ===== #}
-                        <div class="article-card-body">
-                            <h3 class="article-card-titre">{{ article.titre }}</h3>
-                            {% if article.description %}
-                                <p class="article-card-desc">{{ article.description|truncate(60, true, '...') }}</p>
-                            {% endif %}
+										{# ===== IMAGE PRINCIPALE ===== #}
+										<div class="article-card-img">
+											{% if article.imgLogo %}
+												<img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="{{ article.titre }}">
+											{% elseif article.imgPhotosDevanture %}
+												<img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}" alt="{{ article.titre }}">
+											{% else %}
+												<div class="article-card-img-placeholder">📷</div>
+											{% endif %}
+										</div>
+									</a>
+									{# ===== CATÉGORIE ===== #}
+									{% if article.articleCategorie %}
+										<div class="article-card-categorie">
+											🏷️
+											{{ article.articleCategorie.intitule }}
+										</div>
+									{% endif %}
 
-                            <hr class="article-card-divider">
+									{# ===== INFOS ===== #}
+									<div class="article-card-body">
+										<h3 class="article-card-titre">{{ article.titre }}</h3>
+										{% if article.description %}
+											<p class="article-card-desc">{{ article.description|slice(0, 60) }}
+												{% if article.description|length > 60 %}...
+												{% endif %}
+											</p>
+										{% endif %}
 
-                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="article-card-link">
-                                Voir la fiche
-                            </a>
+										<hr class="article-card-divider">
 
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <div class="article-card-admin">
-                                    <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
-                                </div>
-                            {% endif %}
-                        </div>
+										<a href="{{ path('app_article_show', {'id': article.id}) }}" class="article-card-link">Voir la fiche</a>
 
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+										{% if is_granted('ROLE_ADMIN') %}
+											<div class="article-card-admin">
+												<a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+											</div>
+										{% endif %}
+									</div>
 
-    </div>
-</section>
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+				</div>
+
+			</div>
+		</div>
+	</section>
 {% endblock %}

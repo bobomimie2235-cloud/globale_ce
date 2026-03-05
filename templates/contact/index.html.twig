@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contactez-Nous — Globale C.E.{% endblock %}
+
+{% block body %}
+<section class="contact" id="contact">
+    <div class="contact-container">
+
+        <h1 class="contact-titre"><span>FORMULAIRE</span> DE CONTACT</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        <div class="contact-card">
+            <h3>Parlons de votre CSE</h3>
+            <p class="contact-subtitle">Un conseiller vous répond sous 24h ouvrées</p>
+
+            <form method="post" action="{{ path('app_contact') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('contact') }}">
+
+                <div class="contact-grid">
+                    <div class="contact-field">
+                        <input type="text" name="nom" placeholder="Nom, Prénom *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="text" name="fonction" placeholder="Fonction *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="text" name="groupe" placeholder="Nom du Groupe *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="text" name="ville" placeholder="Ville *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="tel" name="telephone" placeholder="Téléphone *" required>
+                    </div>
+                    <div class="contact-field">
+                        <input type="email" name="email" placeholder="Email *" required>
+                    </div>
+                </div>
+
+                <div class="contact-field contact-field-full">
+                    <textarea name="message" placeholder="Votre message *" rows="6" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-contact">Être recontacté</button>
+
+                <p class="contact-required"><span>*</span> Champs obligatoire</p>
+            </form>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

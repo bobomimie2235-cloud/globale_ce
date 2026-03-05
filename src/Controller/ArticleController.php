@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
+use App\Repository\ArticleCategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +17,26 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[Route('/article')]
 final class ArticleController extends AbstractController
 {
-    #[Route(name: 'app_article_index', methods: ['GET'])]
-    public function index(ArticleRepository $articleRepository): Response
-    {
-        return $this->render('article/index.html.twig', [
-            'articles' => $articleRepository->findAll(),
-        ]);
+    #[Route('/', name: 'app_article_index', methods: ['GET'])]
+public function index(
+    ArticleRepository $articleRepository,
+    ArticleCategorieRepository $articleCategorieRepository,
+    Request $request
+): Response {
+    $categorieId = $request->query->get('categorie');
+
+    if ($categorieId) {
+        $articles = $articleRepository->findBy(['articleCategorie' => $categorieId]);
+    } else {
+        $articles = $articleRepository->findAll();
     }
+
+    return $this->render('article/index.html.twig', [
+        'articles'   => $articles,
+        'categories' => $articleCategorieRepository->findAll(),
+        'categorieActive' => $categorieId,
+    ]);
+}
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]

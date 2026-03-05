@@ -13,6 +13,9 @@ h2 {
     color: $color-bg-dark;
     font-size: 1.4rem;
     font-family: $font-subtitle;
+    @include mobile {
+        margin : $spacing-xs $spacing-s;
+    }
 }
 
 h3 {

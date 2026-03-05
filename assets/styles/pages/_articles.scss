@@ -2,6 +2,118 @@
 @use '../abstracts/mixins' as *;
 @use 'sass:color';
 
+// ===== LAYOUT SIDEBAR + GRILLE =====
+.articles-layout {
+    display: flex;
+    gap: $spacing-xl;
+    align-items: flex-start;
+
+    @include mobile {
+        flex-direction: column;
+    }
+}
+
+// ===== TOGGLE SIDEBAR MOBILE =====
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .sidebar-toggle {
+        display: none;
+        background: $color-primary;
+        color: $color-white;
+        border: none;
+        border-radius: $border-radius-pill;
+        padding: 0.3rem 0.8rem;
+        font-size: $font-size-xs;
+        font-family: $font-text;
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
+// ===== SIDEBAR CATÉGORIES =====
+.articles-sidebar {
+    flex-shrink: 0;
+    width: 220px;
+    background: $color-white;
+    border: 2px solid $color-nav;
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    position: sticky;
+    top: 80px;
+
+    h3 {
+        font-family: $font-subtitle;
+        font-size: 1rem;
+        font-weight: 700;
+        color: $color-bg-dark;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: $spacing-md;
+        padding-bottom: $spacing-sm;
+        border-bottom: 2px solid $color-primary;
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+
+        li a {
+            display: block;
+            padding: 0.5rem $spacing-sm;
+            border-radius: $border-radius-sm;
+            font-size: $font-size-sm;
+            font-family: $font-text;
+            color: $color-text-dark;
+            transition: background 0.2s, color 0.2s;
+
+            &:hover {
+                background: color.adjust($color-primary, $lightness: 38%);
+                color: $color-primary;
+            }
+
+            &.active {
+                background: $color-primary;
+                color: $color-white;
+                font-weight: bold;
+            }
+        }
+    }
+
+    @include mobile {
+        width: 100%;
+        position: static;
+        padding: $spacing-s $spacing-md;
+
+        h3 {
+            margin: $spacing-xs 0;
+        }
+
+        .sidebar-header {
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+
+        #sidebar-menu {
+            display: none;
+
+            &.open {
+                display: flex;
+            }
+        }
+    }
+}
+
+// ===== ZONE PRINCIPALE =====
+.articles-main {
+    flex: 1;
+    min-width: 0;
+}
+
 .articles-page {
     padding: $spacing-xl * 2 $spacing-xl;
     background: $color-light;
@@ -21,6 +133,11 @@
 
         span {
             color: $color-nav;
+        }
+
+        @include mobile {
+            font-size: 1.3rem;
+            margin-bottom: $spacing-sm;
         }
     }
 
@@ -48,11 +165,19 @@
         }
 
         @include mobile {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
+            gap: $spacing-md $spacing-sm;
         }
     }
 
     // ===== CARTE =====
+    a.article-card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
     .article-card {
         position: relative;
         background: $color-white;
@@ -86,7 +211,6 @@
             box-shadow: $shadow-md;
             z-index: 10;
 
-            // ===== FIL DU BADGE =====
             &::before {
                 content: '';
                 position: absolute;
@@ -145,28 +269,30 @@
 
         // ===== CORPS =====
         .article-card-body {
-            padding: $spacing-md;
+            padding: $spacing-sm;
 
             .article-card-titre {
+                text-align: center;
                 font-family: $font-title;
                 font-style: italic;
                 font-weight: 700;
                 font-size: 1rem;
                 color: $color-bg-dark;
-                margin-bottom: $spacing-xs;
+                margin: $spacing-s;
             }
 
             .article-card-desc {
+                text-align: center;
                 font-size: $font-size-sm;
                 color: $color-text-grey;
                 line-height: 1.5;
-                margin-bottom: $spacing-sm;
+                margin-bottom: $spacing-s;
             }
 
             .article-card-divider {
                 border: none;
                 border-top: 2px solid $color-nav;
-                margin: $spacing-sm 0;
+                margin: $spacing-xs 0;
             }
 
             .article-card-link {
@@ -190,9 +316,44 @@
                 text-align: center;
             }
         }
-    }
+
+        // ===== CARTE MOBILE =====
+        @include mobile {
+
+            .article-card-badge {
+                width: 38px;
+                height: 38px;
+                font-size: 0.65rem;
+                top: -10px;
+                right: 8px;
+            }
+
+            .article-card-img {
+                height: 100px;
+            }
+
+            .article-card-body {
+                padding: $spacing-xs;
+
+                .article-card-titre {
+                    font-size: 0.8rem;
+                    margin: $spacing-xs;
+                }
+
+                .article-card-desc {
+                    font-size: 0.7rem;
+                }
+
+                .article-card-link {
+                    font-size: $font-size-sm;
+                }
+            }
+        }
+
+    } // ===== FIN .article-card =====
 
     @include mobile {
-        padding: $spacing-xl $spacing-md;
+        padding: 0 $spacing-md $spacing-md $spacing-md;
     }
-}
+
+} // ===== FIN .articles-page =====
