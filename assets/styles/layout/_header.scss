@@ -44,6 +44,7 @@ header {
 
                 .info-user-bienvenue {
                     color: $color-text-grey;
+
                     strong {
                         color: $color-bg-dark;
                         font-weight: bold;
@@ -53,12 +54,18 @@ header {
                 .info-user-role {
                     color: $color-primary;
                     font-weight: bold;
-                    &::before { content: '✦ '; }
+
+                    &::before {
+                        content: '✦ ';
+                    }
                 }
 
                 .info-user-groupe {
                     color: $color-text-grey;
-                    &::before { content: '✦ '; }
+
+                    &::before {
+                        content: '✦ ';
+                    }
                 }
             }
 
@@ -394,6 +401,17 @@ header {
                             padding: 0.8rem $spacing-md;
                             border-bottom: 1px solid rgba($color-white, 0.1);
                             white-space: normal;
+
+                            &.li-deconnexion {
+                                color: $color-danger;
+                                font-weight: bold;
+
+                                &:hover {
+                                    background: color.adjust($color-danger, $lightness: 38%);
+                                    color: $color-danger;
+                                    padding-left: 1.5rem;
+                                }
+                            }
                         }
 
                         li.has-submenu {
@@ -405,7 +423,9 @@ header {
                                 border-radius: 0;
                                 background: rgba(0, 0, 0, 0.15);
 
-                                &.open { display: flex; }
+                                &.open {
+                                    display: flex;
+                                }
 
                                 li a {
                                     color: $color-white;
@@ -419,7 +439,9 @@ header {
                                 }
                             }
 
-                            &:hover .submenu { display: none; }
+                            &:hover .submenu {
+                                display: none;
+                            }
                         }
                     }
                 }
@@ -431,4 +453,19 @@ header {
         }
     }
 
-} // ===== FIN header =====
+}
+
+// ===== FIN header =====
+
+a.li-deconnexion {
+    color: $color-danger !important;
+    font-weight: bold;
+
+        &:hover {
+        background: $color-danger !important;
+        color: $color-white !important;
+        font-weight: 800;
+        padding-left: 1.5rem !important;
+    }
+
+}

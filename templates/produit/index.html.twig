@@ -1,84 +1,134 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produit index
-{% endblock %}
+{% block title %}Billetterie{% endblock %}
 
 {% block body %}
-	<h1>Produit index</h1>
+<section class="articles-page">
+    <div class="articles-container">
 
-	{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('app_produit_new') }}" class="btn btn-primary btn-sm">Créer un produit</a>
-	{% endif %}
+        <h1 class="articles-titre">Offres <span>Billetterie</span></h1>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Logo</th>
-				<th>Référence</th>
-				<th>Intitulé</th>
-				<th>Catégorie</th>
-				<th>Description</th>
-				<th>Prix Public</th>
-				<th>Prix Unitaire</th>
-				<th>Stock</th>
-				<th>Date création</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for produit in produits %}
-				<tr>
-					<td>{{ produit.id }}</td>
-					<td>
-						{% if produit.logo %}
-							<img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="Logo {{ produit.intitule }}" style="max-height: 80px;">
-						{% else %}
-							<span>Aucun logo</span>
-						{% endif %}
-					</td>
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="articles-admin-bar">
+                <a href="{{ path('app_produit_new') }}" class="btn btn-primary btn-sm">+ Créer un produit</a>
+            </div>
+        {% endif %}
 
-					<td>{{ produit.reference }}</td>
-					<td>{{ produit.intitule }}</td>
-					<td>{{ produit.produitCategorie ? produit.produitCategorie.intitule : '-' }}</td>
-					<td>{{ produit.description }}</td>
-					<td>{{ produit.prixPublic }}
-						€</td>
-					<td>{{ produit.prixUnitaire }}
-						€</td>
-					<td>
-						{% if produit.stock > 0 %}
-							<span class="badge bg-success">{{ produit.stock }}</span>
-						{% else %}
-							<span class="badge bg-danger">Rupture</span>
-						{% endif %}
-					</td>
-					<td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
-					<td>
-						<a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
+        <div class="articles-layout">
 
-						{% if is_granted('ROLE_USER') and produit.stock > 0 %}
-							<form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" style="display:inline;">
-								<input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" style="width:60px;">
-								<button type="submit" class="btn btn-primary btn-sm">Ajouter</button>
-							</form>
-						{% endif %}
+            {# ===== SIDEBAR CATÉGORIES ===== #}
+            <aside class="articles-sidebar">
+                <div class="sidebar-header">
+                    <h3>Catégories</h3>
+                    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Afficher/Masquer">
+                        <span id="sidebar-toggle-label">Afficher ▾</span>
+                    </button>
+                </div>
 
-						{% if is_granted('ROLE_ADMIN') %}
-							<a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                <span class="sidebar-active-label">
+                    {% if categorieActive is null %}
+                        Toutes les offres
+                    {% else %}
+                        {% for categorie in categories %}
+                            {% if categorieActive == categorie.id %}
+                                {{ categorie.intitule }}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </span>
 
-							<form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');" style="display:inline;">
-								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
-								<button class="btn btn-danger btn-sm">Supprimer</button>
-							</form>
-						{% endif %}
-					</td>
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="8">Aucun produit trouvé.</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+                <ul id="sidebar-menu">
+                    <li>
+                        <a href="{{ path('app_produit_index') }}" class="{{ categorieActive is null ? 'active' : '' }}">
+                            Toutes les offres
+                        </a>
+                    </li>
+                    {% for categorie in categories %}
+                        <li>
+                            <a href="{{ path('app_produit_index') }}?categorie={{ categorie.id }}"
+                               class="{{ categorieActive == categorie.id ? 'active' : '' }}">
+                                {{ categorie.intitule }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </aside>
+
+            {# ===== GRILLE PRODUITS ===== #}
+            <div class="articles-main">
+                {% if produits is empty %}
+                    <div class="articles-empty">
+                        <p>Aucun produit disponible pour le moment.</p>
+                    </div>
+                {% else %}
+                    <div class="articles-grid">
+                        {% for produit in produits %}
+                            <div class="article-card">
+
+                                {% if produit.stock <= 0 %}
+                                    <div class="article-card-badge" style="background: #dc3545;">Rupture</div>
+                                {% endif %}
+
+                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}">
+                                    <div class="article-card-img">
+                                        {% if produit.logo %}
+                                            <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="{{ produit.intitule }}">
+                                        {% else %}
+                                            <div class="article-card-img-placeholder">🎟️</div>
+                                        {% endif %}
+                                    </div>
+                                </a>
+
+                                {% if produit.produitCategorie %}
+                                    <div class="article-card-categorie">
+                                        🏷️ {{ produit.produitCategorie.intitule }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="article-card-body">
+                                    <h3 class="article-card-titre">{{ produit.intitule }}</h3>
+
+                                    {% if produit.description %}
+                                        <p class="article-card-desc">
+                                            {{ produit.description|slice(0, 60) }}{% if produit.description|length > 60 %}...{% endif %}
+                                        </p>
+                                    {% endif %}
+
+                                    <div class="produit-prix">
+                                        <span class="produit-prix-public">{{ produit.prixPublic }} €</span>
+                                        <span class="produit-prix-unitaire">{{ produit.prixUnitaire }} €</span>
+                                    </div>
+
+                                    <hr class="article-card-divider">
+
+                                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="article-card-link">Voir la fiche</a>
+
+                                    {% if is_granted('ROLE_USER') and produit.stock > 0 %}
+                                        <form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" class="produit-form-panier">
+                                            <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" class="produit-qty">
+                                            <button type="submit" class="btn-panier">🛒 Ajouter</button>
+                                        </form>
+                                    {% endif %}
+
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <div class="article-card-admin">
+                                            <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                            <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}"
+                                                onsubmit="return confirm('Supprimer ce produit ?');" style="display:inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                                                <button class="btn btn-danger btn-sm">Supprimer</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
 {% endblock %}

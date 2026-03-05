@@ -50,6 +50,7 @@
             font-size: 1rem;
             font-family: $font-text;
             margin-bottom: $spacing-xl;
+
             @include mobile {
                 margin-bottom: $spacing-md;
             }
@@ -183,7 +184,8 @@
                     margin-bottom: 0.3rem;
                 }
 
-                p, a {
+                p,
+                a {
                     font-size: 0.65rem;
                     line-height: 1.5;
                 }
@@ -191,7 +193,9 @@
         }
     }
 
-} // ===== FIN BLOC HERO =====
+}
+
+// ===== FIN BLOC HERO =====
 
 .section-divider {
     display: none;
@@ -286,6 +290,11 @@
                 font-size: 1.1rem;
                 color: $color-text-dark;
                 margin-bottom: $spacing-xs;
+
+            }
+
+            .offre-a-venir {
+                color: $color-danger;
             }
 
             p {
@@ -834,8 +843,8 @@ hr {
         font-size: $font-size-subtitle;
 
         @include mobile {
-        font-size: $font-size-base;
-    }
+            font-size: $font-size-base;
+        }
     }
 
     .titre-global {

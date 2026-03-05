@@ -1,74 +1,97 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article
-{% endblock %}
+{% block title %}{{ article.titre }}{% endblock %}
 
 {% block body %}
-	<h1>Article</h1>
+<section class="article-show">
+    <div class="article-show-container">
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Logo</th>
-				<td>
-						{% if article.imgLogo %}
-							<img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="Logo" style="max-height: 80px;">
-						{% else %}
-							-
-						{% endif %}
-					</td>
-					</tr>
-				<th>Id</th>
-				<td>{{ article.id }}</td>
-			</tr>
-			<tr>
-				<th>Titre</th>
-				<td>{{ article.titre }}</td>
-			</tr>
-			<tr>
-				<th>Description</th>
-				<td>{{ article.description }}</td>
-			</tr>
-			<tr>
-				<th>Categorie</th>
-				<td>{{ article.articleCategorie ? article.articleCategorie.intitule : '-' }}</td>
-			</tr>
-			<tr>
-				<th>InfosActivite</th>
-				<td>{{ article.infosActivite }}</td>
-			</tr>
-			<tr>
-				<th>SiteWeb</th>
-				<td>{{ article.siteWeb }}</td>
-			</tr>
-			<tr>
-				<th>ImgLogo</th>
-				<td>{{ article.imgLogo }}</td>
-			</tr>
-			<tr>
-				<th>ImgPhotosDevanture</th>
-				<td>{{ article.imgPhotosDevanture }}</td>
-			</tr>
-			<tr>
-				<th>ImgPhotosInterieur</th>
-				<td>{{ article.imgPhotosInterieur }}</td>
-			</tr>
-			<tr>
-				<th>OffreCommerciale</th>
-				<td>{{ article.offreCommerciale }}</td>
-			</tr>
-			<tr>
-				<th>Horaires</th>
-				<td>{{ article.horaires }}</td>
-			</tr>
-		</tbody>
-	</table>
+        {# ===== BOUTON FERMER ===== #}
+        <div class="article-show-close">
+            <a href="{{ path('app_article_index') }}" class="btn-close-show">✕</a>
+        </div>
 
-	<a href="{{ path('app_article_index') }}">Retour à la liste</a>
+        <div class="article-show-content">
 
-	{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
-	{% endif %}
+            {# ===== COLONNE GAUCHE : IMAGES ===== #}
+            <div class="article-show-images">
+                {% if article.imgLogo %}
+                    <div class="article-show-logo">
+                        <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="{{ article.titre }}">
+                    </div>
+                {% endif %}
+                {% if article.imgPhotosDevanture %}
+                    <div class="article-show-photo">
+                        <img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}" alt="Devanture">
+                    </div>
+                {% endif %}
+                {% if article.imgPhotosInterieur %}
+                    <div class="article-show-photo">
+                        <img src="{{ asset('uploads/articles/' ~ article.imgPhotosInterieur) }}" alt="Intérieur">
+                    </div>
+                {% endif %}
+            </div>
 
-	{{ include('article/_delete_form.html.twig') }}
+            {# ===== COLONNE DROITE : INFOS ===== #}
+            <div class="article-show-infos">
+
+                <h1 class="article-show-titre">{{ article.titre }}</h1>
+
+                {% if article.articleCategorie %}
+                    <p class="article-show-gerant">Offre gérée par <strong>{{ article.articleCategorie.intitule }}</strong></p>
+                {% endif %}
+
+                <ul class="article-show-details">
+
+                    {% if article.infosActivite %}
+                        <li>
+                            <span class="detail-icon">🏷️</span>
+                            <span class="detail-text"><strong>{{ article.infosActivite }}</strong></span>
+                        </li>
+                    {% endif %}
+
+                    {% if article.offreCommerciale %}
+                        <li>
+                            <span class="detail-icon">☆</span>
+                            <div class="detail-text">
+                                <strong>{{ article.offreCommerciale }}</strong>
+                            </div>
+                        </li>
+                    {% endif %}
+
+                    {% if article.description %}
+                        <li>
+                            <span class="detail-icon">🗺️</span>
+                            <span class="detail-text">{{ article.description }}</span>
+                        </li>
+                    {% endif %}
+
+                    {% if article.horaires %}
+                        <li>
+                            <span class="detail-icon">🕐</span>
+                            <span class="detail-text">{{ article.horaires }}</span>
+                        </li>
+                    {% endif %}
+
+                    {% if article.siteWeb %}
+                        <li>
+                            <span class="detail-icon">🌐</span>
+                            <a href="{{ article.siteWeb }}" target="_blank" class="detail-link">{{ article.siteWeb }}</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+
+                {# ===== ACTIONS ADMIN ===== #}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="article-show-admin">
+                        <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                        {{ include('article/_delete_form.html.twig') }}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

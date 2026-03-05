@@ -1,73 +1,133 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}CouponReduction index{% endblock %}
+{% block title %}Coupons Réduction
+{% endblock %}
 
 {% block body %}
-    <h1>CouponReduction index</h1>
+	<section class="articles-page">
+		<div class="articles-container">
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_coupon_reduction_new') }}" class="btn btn-primary btn-sm">Créer un coupon</a>
-    {% endif %}
+			<h1 class="articles-titre">Offres
+				<span>Coupons Réduction</span>
+			</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Logo</th>
-                <th>Id</th>
-                <th>Référence</th>
-                <th>Intitulé</th>
-                <th>Coupon Catégorie</th>
-                <th>Ville</th>
-                <th>Adresse</th>
-                <th>Offre Commerciale</th>
-                <th>Actif</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for coupon_reduction in coupon_reductions %}
-            <tr>
-            <td>
-						{% if coupon_reduction.logo %}
-							<img src="{{ asset('uploads/logos/' ~ coupon_reduction.logo) }}" alt="Logo" style="max-height: 80px;">
+			{% if is_granted('ROLE_ADMIN') %}
+				<div class="articles-admin-bar">
+					<a href="{{ path('app_coupon_reduction_new') }}" class="btn btn-primary btn-sm">+ Créer un coupon</a>
+				</div>
+			{% endif %}
+
+			<div
+				class="articles-layout">
+
+				{# ===== SIDEBAR CATÉGORIES ===== #}
+				<aside class="articles-sidebar">
+					<div class="sidebar-header">
+						<h3>Catégories</h3>
+						<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Afficher/Masquer">
+							<span id="sidebar-toggle-label">Afficher ▾</span>
+						</button>
+					</div>
+
+					<span class="sidebar-active-label">
+						{% if categorieActive is null %}
+							Toutes les offres
 						{% else %}
-							-
+							{% for categorie in categories %}
+								{% if categorieActive == categorie.id %}
+									{{ categorie.categorie }}
+								{% endif %}
+							{% endfor %}
 						{% endif %}
-					</td>
-                <td>{{ coupon_reduction.id }}</td>
-                <td>{{ coupon_reduction.reference }}</td>
-                <td>{{ coupon_reduction.intitule }}</td>
-                <td>{{ coupon_reduction.couponCategorie ? coupon_reduction.couponCategorie.categorie : '-' }}</td>
-                <td>{{ coupon_reduction.ville }}</td>
-                <td>{{ coupon_reduction.adresse }}</td>
-                <td>{{ coupon_reduction.offreCommerciale }}</td>
-                <td>
-                    {% if coupon_reduction.actif %}
-                        <span class="badge bg-success">Actif</span>
-                    {% else %}
-                        <span class="badge bg-secondary">Inactif</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('app_coupon_reduction_show', {'id': coupon_reduction.id}) }}" class="btn btn-info btn-sm">Voir</a>
+					</span>
 
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_coupon_reduction_edit', {'id': coupon_reduction.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+					<ul id="sidebar-menu">
+						<li>
+							<a href="{{ path('app_coupon_reduction_index') }}" class="{{ categorieActive is null ? 'active' : '' }}">
+								Toutes les offres
+							</a>
+						</li>
+						{% for categorie in categories %}
+							<li>
+								<a href="{{ path('app_coupon_reduction_index') }}?categorie={{ categorie.id }}" class="{{ categorieActive == categorie.id ? 'active' : '' }}">
+									{{ categorie.categorie }}
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</aside>
 
-                        <form method="post" action="{{ path('app_coupon_reduction_delete', {'id': coupon_reduction.id}) }}"
-                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce coupon ?');"
-                            style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ coupon_reduction.id) }}">
-                            <button class="btn btn-danger btn-sm">Supprimer</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">Aucun coupon trouvé.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+				{# ===== GRILLE COUPONS ===== #}
+				<div class="articles-main">
+					{% if coupon_reductions is empty %}
+						<div class="articles-empty">
+							<p>Aucun coupon disponible pour le moment.</p>
+						</div>
+					{% else %}
+						<div class="articles-grid">
+							{% for coupon in coupon_reductions %}
+								<div
+									class="article-card">
+
+									{# ===== BADGE OFFRE ===== #}
+									{% if coupon.offre %}
+										<div class="article-card-badge">{{ coupon.offre }}</div>
+									{% endif %}
+
+									{# ===== BADGE INACTIF ===== #}
+									{% if not coupon.actif %}
+										<div class="article-card-badge" style="background: #6c757d;">Inactif</div>
+									{% endif %}
+
+									{# ===== IMAGE ===== #}
+									<a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}">
+										<div class="article-card-img">
+											{% if coupon.logo %}
+												<img src="{{ asset('uploads/logos/' ~ coupon.logo) }}" alt="{{ coupon.intitule }}">
+											{% else %}
+												<div class="article-card-img-placeholder">🎫</div>
+											{% endif %}
+										</div>
+									</a>
+
+									{# ===== CATÉGORIE ===== #}
+									{% if coupon.couponCategorie %}
+										<div class="article-card-categorie">
+											🏷️
+											{{ coupon.couponCategorie.categorie }}
+										</div>
+									{% endif %}
+
+									{# ===== CORPS ===== #}
+									<div class="article-card-body">
+										<h3 class="article-card-titre">{{ coupon.intitule }}</h3>
+
+										<p class="article-card-desc">
+											{{ coupon.ville }}
+										</p>
+
+										<hr class="article-card-divider">
+
+										<a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}" class="article-card-link">Voir la fiche</a>
+
+										{% if is_granted('ROLE_ADMIN') %}
+											<div class="article-card-admin">
+												<a href="{{ path('app_coupon_reduction_edit', {'id': coupon.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+												<form method="post" action="{{ path('app_coupon_reduction_delete', {'id': coupon.id}) }}" onsubmit="return confirm('Supprimer ce coupon ?');" style="display:inline;">
+													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ coupon.id) }}">
+													<button class="btn btn-danger btn-sm">Supprimer</button>
+												</form>
+											</div>
+										{% endif %}
+									</div>
+
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+				</div>
+
+			</div>
+		</div>
+	</section>
 {% endblock %}

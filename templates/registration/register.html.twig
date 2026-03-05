@@ -1,26 +1,64 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <h1>Inscription</h1>
+<section class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
 
-    {{ form_errors(registrationForm) }}
+            <h1 class="auth-titre">Inscription</h1>
+            <p class="auth-subtitle">Créez votre espace personnel</p>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.nom) }}
-        {{ form_row(registrationForm.prenom) }}
-        {{ form_row(registrationForm.referenceGroupe, {
-            label: 'Référence du Groupe'
-        }) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Mot de Passe'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms, {
-            label: 'Accepter les conditions'
-        }) }}
+            {{ form_errors(registrationForm) }}
 
-        <button type="submit" class="btn">Inscription</button>
-    {{ form_end(registrationForm) }}
+            {{ form_start(registrationForm, {'attr': {'class': 'auth-form'}}) }}
+
+                <div class="auth-field">
+                    {{ form_label(registrationForm.email) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'placeholder': 'votre@email.fr'}}) }}
+                    {{ form_errors(registrationForm.email) }}
+                </div>
+
+                <div class="auth-field">
+                    {{ form_label(registrationForm.nom) }}
+                    {{ form_widget(registrationForm.nom, {'attr': {'placeholder': 'Votre nom'}}) }}
+                    {{ form_errors(registrationForm.nom) }}
+                </div>
+
+                <div class="auth-field">
+                    {{ form_label(registrationForm.prenom) }}
+                    {{ form_widget(registrationForm.prenom, {'attr': {'placeholder': 'Votre prénom'}}) }}
+                    {{ form_errors(registrationForm.prenom) }}
+                </div>
+
+                <div class="auth-field">
+                    {{ form_label(registrationForm.referenceGroupe, 'Référence du Groupe') }}
+                    {{ form_widget(registrationForm.referenceGroupe, {'attr': {'placeholder': 'Référence de votre groupe'}}) }}
+                    {{ form_errors(registrationForm.referenceGroupe) }}
+                </div>
+
+                <div class="auth-field">
+                    {{ form_label(registrationForm.plainPassword, 'Mot de Passe') }}
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'placeholder': '••••••••'}}) }}
+                    {{ form_errors(registrationForm.plainPassword) }}
+                </div>
+
+                <div class="auth-remember">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    {{ form_label(registrationForm.agreeTerms, 'Accepter les conditions') }}
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                </div>
+
+                <button type="submit" class="btn-auth">Inscription</button>
+
+                <div class="auth-links">
+                    <a href="{{ path('app_login') }}">Déjà un compte ? Connexion</a>
+                </div>
+
+            {{ form_end(registrationForm) }}
+
+        </div>
+    </div>
+</section>
 {% endblock %}

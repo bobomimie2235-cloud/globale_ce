@@ -28,6 +28,19 @@
 						</button>
 					</div>
 
+					{# ===== CATÉGORIE ACTIVE MOBILE ===== #}
+					<span class="sidebar-active-label">
+						{% if categorieActive is null %}
+							Toutes les offres
+						{% else %}
+							{% for categorie in categories %}
+								{% if categorieActive == categorie.id %}
+									{{ categorie.intitule }}
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+					</span>
+
 					<ul id="sidebar-menu">
 						<li>
 							<a href="{{ path('app_article_index') }}" class="{{ categorieActive is null ? 'active' : '' }}">

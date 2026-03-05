@@ -36,6 +36,10 @@ class CouponReductionType extends AbstractType
                     )
                 ],
             ])
+            ->add('offre', TextType::class, [
+                'label' => 'Offre (ex: -5%, -25%...)',
+                'required' => false,
+            ])
             ->add('actif', CheckboxType::class, [
                 'label' => 'Coupon actif',
                 'required' => false,

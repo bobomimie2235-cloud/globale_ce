@@ -68,6 +68,9 @@ class CouponReduction
     #[ORM\OneToMany(targetEntity: UtilisateurCoupon::class, mappedBy: 'couponReduction')]
     private Collection $utilisateurCoupons;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $offre = null;
+
     public function __construct()
     {
         $this->utilisateurCoupons = new ArrayCollection();
@@ -215,4 +218,15 @@ class CouponReduction
 
         return $this;
     }
+
+        public function getOffre(): ?string
+{
+    return $this->offre;
+}
+
+public function setOffre(?string $offre): static
+{
+    $this->offre = $offre;
+    return $this;
+}
 }

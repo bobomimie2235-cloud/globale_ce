@@ -8,6 +8,7 @@ use App\Form\CouponReductionType;
 use App\Entity\UtilisateurCoupon;
 use App\Repository\UtilisateurCouponRepository;
 use App\Repository\CouponReductionRepository;
+use App\Repository\CouponCategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,12 +21,22 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class CouponReductionController extends AbstractController
 {
     #[Route(name: 'app_coupon_reduction_index', methods: ['GET'])]
-    public function index(CouponReductionRepository $couponReductionRepository): Response
-    {
-        return $this->render('coupon_reduction/index.html.twig', [
-            'coupon_reductions' => $couponReductionRepository->findAll(),
-        ]);
-    }
+public function index(
+    CouponReductionRepository $couponReductionRepository,
+    CouponCategorieRepository $couponCategorieRepository,
+    Request $request
+): Response {
+    $categorieId = $request->query->get('categorie');
+    $coupon_reductions = $categorieId
+        ? $couponReductionRepository->findBy(['couponCategorie' => $categorieId])
+        : $couponReductionRepository->findAll();
+
+    return $this->render('coupon_reduction/index.html.twig', [
+        'coupon_reductions' => $coupon_reductions,
+        'categories'        => $couponCategorieRepository->findAll(),
+        'categorieActive'   => $categorieId,
+    ]);
+}
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_coupon_reduction_new', methods: ['GET', 'POST'])]

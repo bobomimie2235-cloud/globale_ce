@@ -1,86 +1,109 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produit{% endblock %}
+{% block title %}{{ produit.intitule }}{% endblock %}
 
 {% block body %}
-    <h1>Produit</h1>
+<section class="article-show">
+    <div class="article-show-container">
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
+        {# ===== FLASH MESSAGES ===== #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Logo</th>
-                <td>
-                    {% if produit.logo %}
-                        <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="Logo {{ produit.intitule }}" style="max-height: 80px;">
-                    {% else %}
-                        <span>Aucun logo</span>
+        {# ===== BOUTON FERMER ===== #}
+        <div class="article-show-close">
+            <a href="{{ path('app_produit_index') }}" class="btn-close-show">✕</a>
+        </div>
+
+        <div class="article-show-content">
+
+            {# ===== COLONNE GAUCHE : IMAGE ===== #}
+            <div class="article-show-images">
+                {% if produit.logo %}
+                    <div class="article-show-logo">
+                        <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="{{ produit.intitule }}">
+                    </div>
+                {% else %}
+                    <div class="article-show-logo">
+                        <span style="font-size: 4rem;">🎟️</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# ===== COLONNE DROITE : INFOS ===== #}
+            <div class="article-show-infos">
+
+                <h1 class="article-show-titre">{{ produit.intitule }}</h1>
+
+                {% if produit.produitCategorie %}
+                    <p class="article-show-gerant">Offre gérée par <strong>{{ produit.produitCategorie.intitule }}</strong></p>
+                {% endif %}
+
+                <ul class="article-show-details">
+
+                    {% if produit.description %}
+                        <li>
+                            <span class="detail-icon">🏷️</span>
+                            <span class="detail-text">{{ produit.description }}</span>
+                        </li>
                     {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ produit.id }}</td>
-            </tr>
-            <tr>
-                <th>Référence</th>
-                <td>{{ produit.reference }}</td>
-            </tr>
-            <tr>
-                <th>Intitulé</th>
-                <td>{{ produit.intitule }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ produit.description }}</td>
-            </tr>
-            <tr>
-                <th>Prix Public</th>
-                <td>{{ produit.prixPublic }} €</td>
-            </tr>
-            <tr>
-                <th>Prix Unitaire</th>
-                <td>{{ produit.prixUnitaire }} €</td>
-            </tr>
-            <tr>
-                <th>Stock</th>
-                <td>
-                    {% if produit.stock > 0 %}
-                        <span class="badge bg-success">{{ produit.stock }}</span>
-                    {% else %}
-                        <span class="badge bg-danger">Rupture de stock</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Date création</th>
-                <td>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y H:i') : '-' }}</td>
-            </tr>
-        </tbody>
-    </table>
 
-    <a href="{{ path('app_produit_index') }}">Retour à la liste</a>
+                    <li>
+                        <span class="detail-icon">💰</span>
+                        <div class="detail-text">
+                            <strong>Prix CE : {{ produit.prixUnitaire }} €</strong>
+                            <span>Prix public : {{ produit.prixPublic }} €</span>
+                        </div>
+                    </li>
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-    {% endif %}
+                    <li>
+                        <span class="detail-icon">📦</span>
+                        <div class="detail-text">
+                            {% if produit.stock > 0 %}
+                                <strong style="color: green;">{{ produit.stock }} disponible(s)</strong>
+                            {% else %}
+                                <strong style="color: #dc3545;">Rupture de stock</strong>
+                            {% endif %}
+                        </div>
+                    </li>
 
-    {# ===== Ajout au panier ===== #}
-    {% if is_granted('ROLE_USER') and produit.stock > 0 %}
-        <form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" style="display:inline;">
-            <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" style="width:60px;">
-            <button type="submit" class="btn btn-primary">Ajouter à ma commande</button>
-        </form>
-        <a href="{{ path('app_commande_en_cours') }}" class="btn btn-info btn-sm">Voir ma commande</a>
-    {% elseif produit.stock == 0 %}
-        <span class="badge bg-danger">Rupture de stock — commande impossible</span>
-    {% endif %}
+                    <li>
+                        <span class="detail-icon">📅</span>
+                        <span class="detail-text">{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y') : '-' }}</span>
+                    </li>
 
-    {{ include('produit/_delete_form.html.twig') }}
+                    <li>
+                        <span class="detail-icon">🔖</span>
+                        <span class="detail-text">Réf. {{ produit.reference }}</span>
+                    </li>
+
+                </ul>
+
+                {# ===== AJOUTER AU PANIER ===== #}
+                {% if is_granted('ROLE_USER') and produit.stock > 0 %}
+                    <form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" class="produit-form-panier">
+                        <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" class="produit-qty">
+                        <button type="submit" class="btn-panier">🛒 Ajouter à ma commande</button>
+                    </form>
+                    <a href="{{ path('app_commande_en_cours') }}" class="btn-voir-commande">Voir ma commande</a>
+                {% elseif produit.stock == 0 %}
+                    <p class="produit-rupture">Rupture de stock — commande impossible</p>
+                {% endif %}
+
+                {# ===== ACTIONS ADMIN ===== #}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="article-show-admin">
+                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        {{ include('produit/_delete_form.html.twig') }}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\ProduitRepository;
+use App\Repository\ProduitCategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,10 +18,20 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class ProduitController extends AbstractController
 {
     #[Route(name: 'app_produit_index', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository): Response
-    {
+    public function index(
+        ProduitRepository $produitRepository,
+        ProduitCategorieRepository $produitCategorieRepository,
+        Request $request
+    ): Response {
+        $categorieId = $request->query->get('categorie');
+        $produits = $categorieId
+            ? $produitRepository->findBy(['produitCategorie' => $categorieId])
+            : $produitRepository->findAll();
+
         return $this->render('produit/index.html.twig', [
-            'produits' => $produitRepository->findAll(),
+            'produits' => $produits,
+            'categories' => $produitCategorieRepository->findAll(),
+            'categorieActive' => $categorieId,
         ]);
     }
 
@@ -34,23 +45,23 @@ final class ProduitController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $logoFile = $form->get('logo')->getData();
-        if ($logoFile) {
-            $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
-            $logoFile->move(
-                $this->getParameter('logos_directory'),
-                $newFilename
-            );
-            $produit->setLogo($newFilename);
-        }
+            if ($logoFile) {
+                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+                $logoFile->move(
+                    $this->getParameter('logos_directory'),
+                    $newFilename
+                );
+                $produit->setLogo($newFilename);
+            }
             $entityManager->persist($produit);
             $entityManager->flush();
 
             $this->addFlash('success', 'Produit ajouté avec succès !');
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
-    }
+        }
 
         return $this->render('produit/new.html.twig', [
             'produit' => $produit,
@@ -75,17 +86,17 @@ final class ProduitController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-        $logoFile = $form->get('logo')->getData();
-        if ($logoFile) {
-            $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
-            $logoFile->move(
-                $this->getParameter('logos_directory'),
-                $newFilename
-            );
-            $produit->setLogo($newFilename);
-        }
+            $logoFile = $form->get('logo')->getData();
+            if ($logoFile) {
+                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+                $logoFile->move(
+                    $this->getParameter('logos_directory'),
+                    $newFilename
+                );
+                $produit->setLogo($newFilename);
+            }
 
             $entityManager->flush();
 
@@ -102,7 +113,7 @@ final class ProduitController extends AbstractController
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $produit->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($produit);
             $entityManager->flush();
         }
