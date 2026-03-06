@@ -1,3 +1,232 @@
-// ===== pages/profil.scss =====
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
+@use 'sass:color';
+
+// ===== PAGE PROFIL =====
+.profil-page {
+    min-height: 70vh;
+    background: $color-light;
+    padding: $spacing-xl;
+}
+
+.profil-container {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+}
+
+// ===== CARTE =====
+.profil-card {
+    background: $color-white;
+    border: 2px solid $color-nav;
+    border-radius: $border-radius-lg * 2;
+    box-shadow: $shadow-md;
+    overflow: hidden;
+
+    &__header {
+        @include flex(row, space-between, center, $spacing-md);
+        padding: $spacing-lg $spacing-xl;
+        border-bottom: 1px solid $color-grey;
+    }
+
+    &__actions {
+        @include flex(row, flex-end, center, $spacing-sm);
+    }
+}
+
+// ===== TITRE =====
+.profil-titre {
+    font-family: $font-title;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $color-text-dark;
+    margin: 0;
+}
+
+// ===== BOUTON TOGGLE =====
+.profil-toggle {
+    width: 100%;
+    @include flex(row, space-between, center, 0);
+    padding: $spacing-lg $spacing-xl;
+    background: none;
+    border: none;
+    font-family: $font-subtitle;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $color-text-dark;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: rgba($color-nav, 0.06);
+    }
+
+    &__icon {
+        font-size: $font-size-sm;
+        color: $color-primary;
+        transition: transform 0.2s;
+    }
+}
+
+// ===== BLOC MASQUABLE =====
+.profil-bloc {
+    padding: $spacing-lg $spacing-xl;
+    border-top: 1px solid $color-grey;
+
+    &--hidden {
+        display: none;
+    }
+}
+
+// ===== TABLEAU =====
+.profil-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $font-text;
+    font-size: $font-size-base;
+    margin-bottom: $spacing-md;
+
+    thead tr {
+        background: $color-nav;
+        color: $color-white;
+    }
+
+    thead th {
+        padding: $spacing-sm $spacing-md;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    tbody {
+        tr:nth-child(even) {
+            background: rgba($color-nav, 0.05);
+        }
+
+        td, th {
+            padding: $spacing-sm $spacing-md;
+            border-bottom: 1px solid $color-grey;
+            color: $color-text-dark;
+            vertical-align: middle;
+        }
+
+        th {
+            font-weight: 600;
+            width: 35%;
+            color: $color-text-grey;
+        }
+    }
+}
+
+// ===== LOGO COUPON =====
+.profil-logo {
+    max-height: 40px;
+    object-fit: contain;
+}
+
+// ===== TEXTE VIDE =====
+.profil-empty {
+    color: $color-text-grey;
+    font-style: italic;
+    font-size: $font-size-sm;
+    margin: 0;
+}
+
+// ===== FORMULAIRE ADRESSE (style auth) =====
+.profil-form-card {
+    background: $color-white;
+    border: 2px solid $color-nav;
+    border-radius: $border-radius-lg * 2;
+    padding: $spacing-xl * 1.5;
+    box-shadow: $shadow-md;
+    margin-top: $spacing-lg;
+
+    .auth-titre {
+        font-family: $font-title;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: $color-text-dark;
+        margin-bottom: $spacing-lg;
+        text-align: center;
+    }
+
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+    }
+
+    .auth-field {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+
+        label {
+            font-size: $font-size-sm;
+            font-weight: 600;
+            color: $color-text-dark;
+            font-family: $font-text;
+        }
+
+        input {
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #d0d0d0;
+            border-radius: $border-radius-pill;
+            font-family: $font-text;
+            font-size: $font-size-base;
+            color: $color-text-dark;
+            background: $color-white;
+            transition: border-color 0.2s;
+
+            &::placeholder { color: $color-text-grey; }
+            &:focus {
+                outline: none;
+                border-color: $color-nav;
+            }
+        }
+    }
+
+    .btn-auth {
+        width: 100%;
+        padding: 1rem;
+        background: $color-primary;
+        color: $color-white;
+        border: none;
+        border-radius: $border-radius-pill;
+        font-family: $font-text;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        margin-top: $spacing-sm;
+
+        &:hover {
+            background: color.adjust($color-primary, $lightness: -10%);
+            transform: translateY(-1px);
+        }
+    }
+}
+
+// ===== MOBILE =====
+@include mobile {
+    .profil-page {
+        padding: $spacing-md;
+    }
+
+    .profil-card {
+        border-radius: $border-radius-lg;
+    }
+
+    .profil-toggle,
+    .profil-bloc,
+    .profil-card__header {
+        padding: $spacing-md;
+    }
+
+    .profil-form-card {
+        padding: $spacing-lg;
+        border-radius: $border-radius-lg;
+    }
+}

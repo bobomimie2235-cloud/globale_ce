@@ -3,143 +3,201 @@
 {% block title %}Profil{% endblock %}
 
 {% block body %}
-    <h1>Mon profil</h1>
+<section class="profil-page">
+    <div class="profil-container">
 
-    {# ===== Informations personnelles ===== #}
-    <h2>Mes informations personnelles</h2>
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Email</th>
-                <td>{{ app.user.email }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ app.user.nom }}</td>
-            </tr>
-            <tr>
-                <th>Prénom</th>
-                <td>{{ app.user.prenom }}</td>
-            </tr>
-            <tr>
-                <th>Date d'inscription</th>
-                <td>{{ app.user.dateInscription|date('d/m/Y H:i') }}</td>
-            </tr>
-            <tr>
-                <th>Groupe</th>
-                <td>{{ app.user.utilisateurGroupe ? app.user.utilisateurGroupe.nomGroupe : '-' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        {# ===== INFORMATIONS PERSONNELLES ===== #}
+        <div class="profil-card">
+            <div class="profil-card__header">
+                <h1 class="profil-titre">Mon profil</h1>
+                <div class="profil-card__actions">
+                    <a href="{{ path('app_utilisateur_edit', {'id': app.user.id}) }}" class="btn btn-warning btn-sm">✏️ Modifier</a>
+                </div>
+            </div>
 
-    <a href="{{ path('app_utilisateur_show', {'id': app.user.id}) }}" class="btn btn-info btn-sm">Voir</a>
-    <a href="{{ path('app_utilisateur_edit', {'id': app.user.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-
-    <hr>
-
-    {# ===== Adresses ===== #}
-    <h2>Mes adresses</h2>
-
-    {% if adresses is empty %}
-        <p>Aucune adresse enregistrée.</p>
-    {% else %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Adresse</th>
-                    <th>Code postal</th>
-                    <th>Ville</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for adresse in adresses %}
+            <table class="profil-table">
+                <tbody>
                     <tr>
-                        <td>{{ adresse.adresse }}</td>
-                        <td>{{ adresse.codePostal }}</td>
-                        <td>{{ adresse.ville }}</td>
+                        <th>Email</th>
+                        <td>{{ app.user.email }}</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-
-    <h3>Ajouter une nouvelle adresse</h3>
-    {{ form_start(formAdresse) }}
-        {{ form_widget(formAdresse) }}
-        <button type="submit" class="btn btn-primary">Ajouter</button>
-    {{ form_end(formAdresse) }}
-
-    <hr>
-
-    {# ===== Commandes ===== #}
-    <h2>Mes commandes</h2>
-
-    {% if commandes is defined and commandes is not empty %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Référence</th>
-                    <th>Statut</th>
-                    <th>Total TTC</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for commande in commandes %}
                     <tr>
-                        <td>#{{ commande.id }}</td>
-                        <td>{{ commande.statut }}</td>
-                        <td>{{ commande.totalTTC }} €</td>
-                        <td>{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y H:i') : '-' }}</td>
-                        <td>
-                            <a href="{{ path('app_commande_show', {'id': commande.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                        </td>
+                        <th>Nom</th>
+                        <td>{{ app.user.nom }}</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucune commande.</p>
-    {% endif %}
+                    <tr>
+                        <th>Prénom</th>
+                        <td>{{ app.user.prenom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Inscription</th>
+                        <td>{{ app.user.dateInscription|date('d/m/Y') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Groupe</th>
+                        <td>{{ app.user.utilisateurGroupe ? app.user.utilisateurGroupe.nomGroupe : '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <hr>
+        {# ===== ADRESSES ===== #}
+        <div class="profil-card">
+            <button class="profil-toggle" data-target="bloc-adresses">
+                📍 Mes adresses
+                <span class="profil-toggle__icon">▼</span>
+            </button>
+            <div id="bloc-adresses" class="profil-bloc profil-bloc--hidden">
 
-    {# ===== Coupons utilisés ===== #}
-<h2>Mes coupons utilisés</h2>
+                {% if adresses is empty %}
+                    <p class="profil-empty">Aucune adresse enregistrée.</p>
+                {% else %}
+                    <table class="profil-table">
+                        <thead>
+                            <tr>
+                                <th>Adresse</th>
+                                <th>Code postal</th>
+                                <th>Ville</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for adresse in adresses %}
+                                <tr>
+                                    <td>{{ adresse.adresse }}</td>
+                                    <td>{{ adresse.codePostal }}</td>
+                                    <td>{{ adresse.ville }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
 
-{% if coupons is not empty %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Logo</th>
-                <th>Référence</th>
-                <th>Intitulé</th>
-                <th>Offre</th>
-                <th>Date d'utilisation</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for utilisateurCoupon in coupons %}
-                <tr>
-                    <td>
-                        {% if utilisateurCoupon.couponReduction.logo %}
-                            <img src="{{ asset('uploads/logos/' ~ utilisateurCoupon.couponReduction.logo) }}"
-                                alt="Logo" style="max-height: 40px;">
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>{{ utilisateurCoupon.couponReduction.reference }}</td>
-                    <td>{{ utilisateurCoupon.couponReduction.intitule }}</td>
-                    <td>{{ utilisateurCoupon.couponReduction.offreCommerciale }}</td>
-                    <td>{{ utilisateurCoupon.dateUtilisation ? utilisateurCoupon.dateUtilisation|date('d/m/Y') : '-' }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Aucun coupon utilisé.</p>
-{% endif %}
+                {# Formulaire nouvelle adresse — style auth-card #}
+                <div class="auth-card profil-form-card">
+                    <h3 class="auth-titre">Ajouter une adresse</h3>
+                    {{ form_start(formAdresse, {'attr': {'class': 'auth-form'}}) }}
+                        {% for field in formAdresse %}
+                            <div class="auth-field">
+                                {{ form_label(field) }}
+                                {{ form_widget(field) }}
+                                {{ form_errors(field) }}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn-auth">Ajouter</button>
+                    {{ form_end(formAdresse) }}
+                </div>
 
+            </div>
+        </div>
+
+        {# ===== COMMANDES ===== #}
+        <div class="profil-card">
+            <button class="profil-toggle" data-target="bloc-commandes">
+                🛒 Mes commandes
+                <span class="profil-toggle__icon">▼</span>
+            </button>
+            <div id="bloc-commandes" class="profil-bloc profil-bloc--hidden">
+
+                {% if commandes is defined and commandes is not empty %}
+                    <table class="profil-table">
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Statut</th>
+                                <th>Total TTC</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for commande in commandes %}
+                                <tr>
+                                    <td>#{{ '%05d'|format(commande.id) }}</td>
+                                    <td>
+                                        <span class="statut-badge statut-{{ commande.statut }}">
+                                            {% if commande.statut == 'validee' %}Validée
+                                            {% elseif commande.statut == 'en_cours' %}En cours
+                                            {% else %}{{ commande.statut }}
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>{{ commande.totalTTC|number_format(2, ',', ' ') }} €</td>
+                                    <td>{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y') : '-' }}</td>
+                                    <td>
+                                        <a href="{{ path('app_commande_show', {'id': commande.id}) }}"
+                                           class="btn btn-info btn-sm">🧾 Facture</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="profil-empty">Aucune commande.</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+        {# ===== COUPONS ===== #}
+        <div class="profil-card">
+            <button class="profil-toggle" data-target="bloc-coupons">
+                🎟️ Mes coupons utilisés
+                <span class="profil-toggle__icon">▼</span>
+            </button>
+            <div id="bloc-coupons" class="profil-bloc profil-bloc--hidden">
+
+                {% if coupons is not empty %}
+                    <table class="profil-table">
+                        <thead>
+                            <tr>
+                                <th>Logo</th>
+                                <th>Référence</th>
+                                <th>Intitulé</th>
+                                <th>Offre</th>
+                                <th>Utilisé le</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for utilisateurCoupon in coupons %}
+                                <tr>
+                                    <td>
+                                        {% if utilisateurCoupon.couponReduction.logo %}
+                                            <img src="{{ asset('uploads/logos/' ~ utilisateurCoupon.couponReduction.logo) }}"
+                                                 alt="Logo" class="profil-logo">
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ utilisateurCoupon.couponReduction.reference }}</td>
+                                    <td>{{ utilisateurCoupon.couponReduction.intitule }}</td>
+                                    <td>{{ utilisateurCoupon.couponReduction.offreCommerciale }}</td>
+                                    <td>{{ utilisateurCoupon.dateUtilisation ? utilisateurCoupon.dateUtilisation|date('d/m/Y') : '-' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="profil-empty">Aucun coupon utilisé.</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts_body %}
+<script>
+document.querySelectorAll('.profil-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        const icon   = btn.querySelector('.profil-toggle__icon');
+        const isOpen = !target.classList.contains('profil-bloc--hidden');
+
+        target.classList.toggle('profil-bloc--hidden', isOpen);
+        icon.textContent = isOpen ? '▼' : '▲';
+    });
+});
+</script>
 {% endblock %}
