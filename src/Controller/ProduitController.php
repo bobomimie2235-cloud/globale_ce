@@ -6,6 +6,7 @@ use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\ProduitRepository;
 use App\Repository\ProduitCategorieRepository;
+use App\Repository\DepartementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,18 +22,33 @@ final class ProduitController extends AbstractController
     public function index(
         ProduitRepository $produitRepository,
         ProduitCategorieRepository $produitCategorieRepository,
+        DepartementRepository $departementRepository,
         Request $request
     ): Response {
-        $categorieId = $request->query->get('categorie');
-        $produits = $categorieId
-            ? $produitRepository->findBy(['produitCategorie' => $categorieId])
-            : $produitRepository->findAll();
+        $categorieIds   = array_filter(array_map('intval', $request->query->all('categories')));
+        $departementIds = array_filter(array_map('intval', $request->query->all('departements')));
+        $search         = trim((string) $request->query->get('search', '')) ?: null;
 
-        return $this->render('produit/index.html.twig', [
-            'produits' => $produits,
-            'categories' => $produitCategorieRepository->findAll(),
-            'categorieActive' => $categorieId,
-        ]);
+        $produits = $produitRepository->findByFiltres(
+            array_values($categorieIds),
+            array_values($departementIds),
+            $search
+        );
+
+        $templateData = [
+            'produits'           => $produits,
+            'categories'         => $produitCategorieRepository->findAll(),
+            'departements'       => $departementRepository->findAll(),
+            'categoriesActives'  => $categorieIds,
+            'departementsActifs' => $departementIds,
+            'search'             => $search,
+        ];
+
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            return $this->render('produit/_grille.html.twig', $templateData);
+        }
+
+        return $this->render('produit/index.html.twig', $templateData);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -46,35 +62,24 @@ final class ProduitController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $logoFile = $form->get('logo')->getData();
             if ($logoFile) {
-                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
-                $logoFile->move(
-                    $this->getParameter('logos_directory'),
-                    $newFilename
-                );
+                $safeFilename = $slugger->slug(pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME));
+                $newFilename  = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+                $logoFile->move($this->getParameter('logos_directory'), $newFilename);
                 $produit->setLogo($newFilename);
             }
             $entityManager->persist($produit);
             $entityManager->flush();
-
             $this->addFlash('success', 'Produit ajouté avec succès !');
-
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('produit/new.html.twig', [
-            'produit' => $produit,
-            'form' => $form,
-        ]);
+        return $this->render('produit/new.html.twig', ['produit' => $produit, 'form' => $form]);
     }
 
     #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
     public function show(Produit $produit): Response
     {
-        return $this->render('produit/show.html.twig', [
-            'produit' => $produit,
-        ]);
+        return $this->render('produit/show.html.twig', ['produit' => $produit]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -85,28 +90,18 @@ final class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $logoFile = $form->get('logo')->getData();
             if ($logoFile) {
-                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
-                $logoFile->move(
-                    $this->getParameter('logos_directory'),
-                    $newFilename
-                );
+                $safeFilename = $slugger->slug(pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME));
+                $newFilename  = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+                $logoFile->move($this->getParameter('logos_directory'), $newFilename);
                 $produit->setLogo($newFilename);
             }
-
             $entityManager->flush();
-
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('produit/edit.html.twig', [
-            'produit' => $produit,
-            'form' => $form,
-        ]);
+        return $this->render('produit/edit.html.twig', ['produit' => $produit, 'form' => $form]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -117,7 +112,6 @@ final class ProduitController extends AbstractController
             $entityManager->remove($produit);
             $entityManager->flush();
         }
-
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
 }

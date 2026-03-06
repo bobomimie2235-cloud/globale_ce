@@ -1,0 +1,79 @@
+{# templates/article/_grille.html.twig #}
+{# Fragment renvoyé en AJAX — ne pas étendre base.html.twig #}
+
+{# --- Badges filtres actifs --- #}
+{% if categoriesActives is not empty or departementsActifs is not empty %}
+    <div class="articles-filtres-actifs">
+        <span>Filtres actifs :</span>
+        {% for categorie in categories %}
+            {% if categorie.id in categoriesActives %}
+                <span class="filtre-tag">🏷️ {{ categorie.intitule }}</span>
+            {% endif %}
+        {% endfor %}
+        {% for departement in departements %}
+            {% if departement.id in departementsActifs %}
+                <span class="filtre-tag">📍 {{ departement.numero }} - {{ departement.nom }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if articles is empty %}
+    <div class="articles-empty">
+        <p>Aucun article disponible pour ces critères.</p>
+    </div>
+{% else %}
+    <div class="articles-grid">
+        {% for article in articles %}
+            <div class="article-card">
+
+                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="article-card">
+                    {% if article.offre %}
+                        <div class="article-card-badge">{{ article.offre }}</div>
+                    {% endif %}
+                    <div class="article-card-img">
+                        {% if article.imgLogo %}
+                            <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="{{ article.titre }}">
+                        {% elseif article.imgPhotosDevanture %}
+                            <img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}" alt="{{ article.titre }}">
+                        {% else %}
+                            <div class="article-card-img-placeholder">📷</div>
+                        {% endif %}
+                    </div>
+                </a>
+
+                {% if article.articleCategorie %}
+                    <div class="article-card-categorie">
+                        🏷️ {{ article.articleCategorie.intitule }}
+                    </div>
+                {% endif %}
+
+                {% if article.departement %}
+                    <div class="article-card-departement">
+                        📍 {{ article.departement.numero }} - {{ article.departement.nom }}
+                    </div>
+                {% endif %}
+
+                <div class="article-card-body">
+                    <h3 class="article-card-titre">{{ article.titre }}</h3>
+                    {% if article.description %}
+                        <p class="article-card-desc">{{ article.description|slice(0, 60) }}
+                            {% if article.description|length > 60 %}...{% endif %}
+                        </p>
+                    {% endif %}
+
+                    <hr class="article-card-divider">
+
+                    <a href="{{ path('app_article_show', {'id': article.id}) }}" class="article-card-link">Voir la fiche</a>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="article-card-admin">
+                            <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

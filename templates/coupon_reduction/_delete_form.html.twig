@@ -1,6 +1,6 @@
 {% if is_granted('ROLE_ADMIN') %}
 <form method="post" action="{{ path('app_coupon_reduction_delete', {'id': coupon_reduction.id}) }}" onsubmit="return confirm('Voulez vous supprimer ce Coupon Réduction ?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ coupon_reduction.id) }}">
-    <button class="btn">Supprimer</button>
+    <button class="btn btn-delete">Supprimer</button>
 </form>
 {% endif %}

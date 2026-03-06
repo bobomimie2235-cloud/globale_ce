@@ -86,6 +86,10 @@ class Produit
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
 
+    #[ORM\ManyToOne(inversedBy: 'produits')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Departement $departement = null;
+
     public function __construct()
     {
         $this->commandeProduits = new ArrayCollection();
@@ -230,6 +234,16 @@ class Produit
     public function setLogo(?string $logo): static
     {
         $this->logo = $logo;
+        return $this;
+    }
+
+    public function getDepartement(): ?Departement
+    {
+        return $this->departement;
+    }
+    public function setDepartement(?Departement $departement): static
+    {
+        $this->departement = $departement;
         return $this;
     }
 }

@@ -1,59 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Utilisateur index{% endblock %}
+{% block title %}Utilisateurs{% endblock %}
 
 {% block body %}
-    <h1>Utilisateur index</h1>
+<section class="articles-page">
+    <div class="articles-container">
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_utilisateur_new') }}" class="btn btn-primary btn-sm">Créer un utilisateur</a>
-    {% endif %}
+        <h1 class="articles-titre">Gestion des <span>Utilisateurs</span></h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Date inscription</th>
-                <th>Groupe</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for utilisateur in utilisateurs %}
-            <tr>
-                <td>{{ utilisateur.id }}</td>
-                <td>{{ utilisateur.email }}</td>
-                <td>{{ utilisateur.roles ? utilisateur.roles|join(', ') : '-' }}</td>
-                <td>{{ utilisateur.nom }}</td>
-                <td>{{ utilisateur.prenom }}</td>
-                <td>{{ utilisateur.dateInscription ? utilisateur.dateInscription|date('d/m/Y H:i') : '-' }}</td>
-                <td>{{ utilisateur.utilisateurGroupe ? utilisateur.utilisateurGroupe.nomGroupe : '-' }}</td>
-                <td>
-                    <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-info btn-sm">Voir</a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="articles-admin-bar">
+                <a href="{{ path('app_utilisateur_new') }}" class="btn btn-primary btn-sm">+ Créer un utilisateur</a>
+            </div>
+        {% endif %}
 
-                    {% if is_granted('ROLE_ADMIN') or app.user == utilisateur %}
-                        <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                    {% endif %}
+        <div class="utilisateurs-table-wrap">
+            <table class="utilisateurs-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Inscription</th>
+                        <th>Groupe</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for utilisateur in utilisateurs %}
+                    <tr>
+                        <td class="utilisateurs-id">{{ utilisateur.id }}</td>
+                        <td class="utilisateurs-email">{{ utilisateur.email }}</td>
+                        <td>
+                            {% for role in utilisateur.roles %}
+                                {% if role == 'ROLE_ADMIN' %}
+                                    <span class="role-badge role-badge--admin">Admin</span>
+                                {% elseif role == 'ROLE_USER' %}
+                                    <span class="role-badge role-badge--user">User</span>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ utilisateur.nom }}</td>
+                        <td>{{ utilisateur.prenom }}</td>
+                        <td class="utilisateurs-date">
+                            {{ utilisateur.dateInscription ? utilisateur.dateInscription|date('d/m/Y') : '-' }}<br>
+                            <small>{{ utilisateur.dateInscription ? utilisateur.dateInscription|date('H:i') : '' }}</small>
+                        </td>
+                        <td>
+                            {% if utilisateur.utilisateurGroupe %}
+                                <span class="utilisateurs-groupe">{{ utilisateur.utilisateurGroupe.nomGroupe }}</span>
+                            {% else %}
+                                <span class="utilisateurs-no-groupe">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="utilisateurs-actions">
+                            <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}"
+                               class="btn btn-info btn-sm">Voir</a>
 
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <form method="post" action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}"
-                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');"
-                            style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
-                            <button class="btn btn-danger btn-sm">Supprimer</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">Aucun utilisateur trouvé.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                            {% if is_granted('ROLE_ADMIN') or app.user == utilisateur %}
+                                <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}"
+                                   class="btn btn-warning btn-sm">Modifier</a>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <form method="post"
+                                      action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}"
+                                      onsubmit="return confirm('Supprimer cet utilisateur ?');"
+                                      style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
+                                    <button class="btn btn-delete btn-sm">Supprimer</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="utilisateurs-empty">Aucun utilisateur trouvé.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
 {% endblock %}

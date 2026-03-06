@@ -1,15 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Utilisateur{% endblock %}
+{% block title %}Nouvel Utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Create new Utilisateur</h1>
+<section class="auth-page">
+    <div class="auth-container auth-container--lg">
+        <div class="auth-card">
 
-    {% if is_granted('ROLE_ADMIN') %}
-        {{ include('utilisateur/_form.html.twig') }}
-    {% else %}
-        <p class="alert alert-warning">Vous n'avez pas les droits pour créer un utilisateur.</p>
-    {% endif %}
+            <a href="{{ path('app_utilisateur_index') }}" class="auth-back">← Retour à la liste</a>
 
-    <a href="{{ path('app_utilisateur_index') }}">Retour à la liste</a>
+            <h1 class="auth-titre">Nouvel Utilisateur</h1>
+            <p class="auth-subtitle">Créer un nouveau compte utilisateur</p>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                {{ include('utilisateur/_form.html.twig', {'button_label': 'Créer l\'utilisateur'}) }}
+            {% else %}
+                <p class="auth-warning">Vous n'avez pas les droits pour créer un utilisateur.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
 {% endblock %}

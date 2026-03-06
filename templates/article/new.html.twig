@@ -1,15 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Article{% endblock %}
+{% block title %}Nouvel Article{% endblock %}
 
 {% block body %}
-    <h1>Créer Nouveau Article</h1>
+<section class="auth-page">
+    <div class="auth-container auth-container--lg">
+        <div class="auth-card">
 
-    {% if is_granted('ROLE_ADMIN') %}
-        {{ include('article/_form.html.twig') }}
-    {% else %}
-        <p class="alert alert-warning">Vous n'avez pas les droits pour créer un article.</p>
-    {% endif %}
+            <a href="{{ path('app_article_index') }}" class="auth-back">← Retour à la liste</a>
 
-    <a href="{{ path('app_article_index') }}">Retour à la liste</a>
+            <h1 class="auth-titre">Nouvel Article</h1>
+            <p class="auth-subtitle">Créer une nouvelle fiche commerçant</p>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                {{ include('article/_form.html.twig', {'button_label': 'Créer l\'article'}) }}
+            {% else %}
+                <p class="auth-warning">Vous n'avez pas les droits pour créer un article.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
 {% endblock %}

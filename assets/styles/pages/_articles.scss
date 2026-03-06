@@ -13,33 +13,7 @@
     }
 }
 
-// ===== TOGGLE SIDEBAR MOBILE =====
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .sidebar-header-right {
-        display: flex;
-        align-items: center;
-        gap: $spacing-sm;
-    }
-
-    .sidebar-toggle {
-        display: none;
-        background: $color-primary;
-        color: $color-white;
-        border: none;
-        border-radius: $border-radius-pill;
-        padding: 0.3rem 0.8rem;
-        font-size: $font-size-xs;
-        font-family: $font-text;
-        font-weight: bold;
-        cursor: pointer;
-    }
-}
-
-// ===== SIDEBAR CATÉGORIES =====
+// ===== SIDEBAR =====
 .articles-sidebar {
     flex-shrink: 0;
     width: 220px;
@@ -50,19 +24,28 @@
     position: sticky;
     top: 80px;
 
-    .sidebar-active-label {
-        display: none;
-
-        @include mobile {
-            display: block;
-            font-size: $font-size-xs;
-            color: $color-primary;
-            font-weight: bold;
-            font-family: $font-text;
-            margin-top: $spacing-xs;
-            padding-bottom: $spacing-xs;
-        }
+    @include mobile {
+        width: 100%;
+        position: static;
+        padding: $spacing-s $spacing-md;
     }
+}
+
+// ===== BLOC ACCORDION =====
+.sidebar-bloc {
+    margin-bottom: $spacing-xs;
+}
+
+.sidebar-accordion-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
 
     h3 {
         font-family: $font-subtitle;
@@ -71,61 +54,93 @@
         color: $color-bg-dark;
         text-transform: uppercase;
         letter-spacing: 1px;
-        margin-bottom: $spacing-md;
+        margin: 0 0 $spacing-sm 0;
         padding-bottom: $spacing-sm;
         border-bottom: 2px solid $color-primary;
+        flex: 1;
     }
 
-    ul {
-        display: flex;
-        flex-direction: column;
-        gap: $spacing-xs;
-
-        li a {
-            display: block;
-            padding: 0.5rem $spacing-sm;
-            border-radius: $border-radius-sm;
-            font-size: $font-size-sm;
-            font-family: $font-text;
-            color: $color-text-dark;
-            transition: background 0.2s, color 0.2s;
-
-            &:hover {
-                background: color.adjust($color-primary, $lightness: 38%);
-                color: $color-primary;
-            }
-
-            &.active {
-                background: $color-primary;
-                color: $color-white;
-                font-weight: bold;
-            }
-        }
+    .sidebar-accordion-icon {
+        font-size: 1rem;
+        color: $color-primary;
+        margin-left: $spacing-sm;
+        margin-bottom: $spacing-sm;
+        transition: transform 0.2s;
+        flex-shrink: 0;
     }
 
-    @include mobile {
+    &:hover h3 {
+        color: $color-primary;
+    }
+}
+
+// ===== CONTENU ACCORDION =====
+.sidebar-accordion-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    margin-top: $spacing-xs;
+    padding-bottom: $spacing-xs;
+
+    // HTML hidden attribute → display none
+    &[hidden] {
+        display: none;
+    }
+}
+
+// ===== CHECKBOXES =====
+.sidebar-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: 0.4rem $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-family: $font-text;
+    color: $color-text-dark;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: color.adjust($color-primary, $lightness: 38%);
+        color: $color-primary;
+    }
+
+    input[type="checkbox"] {
+        accent-color: $color-primary;
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+
+    // Label actif (coché)
+    &:has(input:checked) {
+        background: color.adjust($color-primary, $lightness: 38%);
+        color: $color-primary;
+        font-weight: bold;
+    }
+}
+
+// ===== SÉPARATEUR =====
+.sidebar-divider {
+    border: none;
+    border-top: 2px solid $color-nav;
+    margin: $spacing-md 0;
+    opacity: 0.4;
+}
+
+// ===== BOUTONS ACTION SIDEBAR =====
+.sidebar-actions {
+    margin-top: $spacing-md;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    .btn-block {
+        display: block;
         width: 100%;
-        position: static;
-        padding: $spacing-s $spacing-md;
-
-        h3 {
-            margin: $spacing-xs 0;
-            font-size: 0.8rem;
-        }
-
-        .sidebar-header {
-            .sidebar-toggle {
-                display: block;
-            }
-        }
-
-        #sidebar-menu {
-            display: none;
-
-            &.open {
-                display: flex;
-            }
-        }
+        text-align: center;
     }
 }
 
@@ -135,6 +150,41 @@
     min-width: 0;
 }
 
+// ===== BANDEAU FILTRES ACTIFS =====
+.articles-filtres-actifs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+    padding: $spacing-sm $spacing-md;
+    background: rgba($color-primary, 0.06);
+    border-left: 3px solid $color-primary;
+    border-radius: 0 $border-radius-sm $border-radius-sm 0;
+    font-size: $font-size-sm;
+    font-family: $font-text;
+    color: $color-text-grey;
+
+    .filtre-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xs;
+        background: $color-primary;
+        color: $color-white;
+        font-size: $font-size-xs;
+        font-weight: bold;
+        font-family: $font-text;
+        padding: 0.25rem 0.7rem;
+        border-radius: $border-radius-pill;
+    }
+
+    @include mobile {
+        font-size: $font-size-xs;
+        padding: $spacing-xs $spacing-sm;
+    }
+}
+
+// ===== PAGE ARTICLES =====
 .articles-page {
     padding: $spacing-xl * 2 $spacing-xl;
     background: $color-light;
@@ -144,7 +194,6 @@
         margin: 0 auto;
     }
 
-    // ===== TITRE =====
     .articles-titre {
         font-family: $font-title;
         font-size: 1.8rem;
@@ -162,12 +211,10 @@
         }
     }
 
-    // ===== BARRE ADMIN =====
     .articles-admin-bar {
         margin-bottom: $spacing-lg;
     }
 
-    // ===== ÉTAT VIDE =====
     .articles-empty {
         text-align: center;
         padding: $spacing-xl * 2;
@@ -213,7 +260,6 @@
             box-shadow: $shadow-md;
         }
 
-        // ===== BADGE OFFRE =====
         .article-card-badge {
             position: absolute;
             top: -15px;
@@ -245,7 +291,6 @@
             }
         }
 
-        // ===== IMAGE =====
         .article-card-img {
             width: 100%;
             height: 160px;
@@ -276,7 +321,6 @@
             }
         }
 
-        // ===== CATÉGORIE =====
         .article-card-categorie {
             background: rgba($color-bg-dark, 0.85);
             color: $color-white;
@@ -293,7 +337,22 @@
             }
         }
 
-        // ===== CORPS =====
+        .article-card-departement {
+            background: rgba($color-nav, 0.85);
+            color: $color-white;
+            font-size: $font-size-xs;
+            font-family: $font-text;
+            padding: 0.3rem $spacing-md;
+            display: flex;
+            align-items: center;
+            gap: $spacing-xs;
+
+            @include mobile {
+                font-size: $font-size-xxs;
+                padding: 0.3rem $spacing-s;
+            }
+        }
+
         .article-card-body {
             padding: $spacing-xs;
 
@@ -344,7 +403,6 @@
             }
         }
 
-        // ===== CARTE MOBILE =====
         @include mobile {
 
             .article-card-badge {
@@ -376,18 +434,12 @@
                 }
             }
         }
-
     }
-
-    // ===== FIN .article-card =====
 
     @include mobile {
         padding: 0 $spacing-md $spacing-md $spacing-md;
     }
-
 }
-
-// ===== FIN .articles-page =====
 
 // ===== PAGE SHOW ARTICLE =====
 .article-show {
@@ -405,7 +457,6 @@
         position: relative;
     }
 
-    // ===== BOUTON FERMER =====
     .article-show-close {
         position: absolute;
         top: $spacing-md;
@@ -430,7 +481,6 @@
         }
     }
 
-    // ===== LAYOUT DEUX COLONNES =====
     .article-show-content {
         display: flex;
         gap: $spacing-xs;
@@ -441,7 +491,6 @@
         }
     }
 
-    // ===== COLONNE IMAGES =====
     .article-show-images {
         flex-shrink: 0;
         width: 280px;
@@ -473,7 +522,6 @@
         }
     }
 
-    // ===== COLONNE INFOS =====
     .article-show-infos {
         flex: 1;
 
@@ -495,7 +543,6 @@
             margin-bottom: $spacing-lg;
         }
 
-        // ===== LISTE DÉTAILS =====
         .article-show-details {
             list-style: none;
             display: flex;
@@ -552,7 +599,6 @@
             }
         }
 
-        // ===== ADMIN =====
         .article-show-admin {
             display: flex;
             gap: $spacing-md;
@@ -626,10 +672,6 @@
     }
 }
 
-// FIN PRODUITS
-
-// PAGES PRODUITS SHOW
-
 // ===== BOUTON VOIR COMMANDE =====
 .btn-voir-commande {
     display: inline-block;
@@ -655,10 +697,7 @@
     font-size: $font-size-sm;
 }
 
-// FIN PAGES PRODUITS SHOW
-
-// PAGES COUPON REDUCTION - BOUTON
-
+// ===== COUPON RÉDUCTION =====
 .btn-panier-green {
     padding: 0.6rem 1.5rem;
     background: #28a745;
@@ -675,4 +714,19 @@
     }
 }
 
-// FIN PAGE COUPON REDUCTION BOUTON
+.sidebar-search-input {
+    width: 100%;
+    padding: 0.45rem $spacing-sm;
+    border: 1.5px solid $color-nav;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-family: $font-text;
+    color: $color-text-dark;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+
+    &:focus {
+        border-color: $color-primary;
+    }
+}

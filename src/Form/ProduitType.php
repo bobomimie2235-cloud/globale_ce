@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Produit;
 use App\Entity\ProduitCategorie;
+use App\Entity\Departement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,6 +21,12 @@ class ProduitType extends AbstractType
             ->add('reference', TextType::class)
             ->add('intitule', TextType::class)
             ->add('description', TextType::class)
+            ->add('departement', EntityType::class, [
+                'class'        => Departement::class,
+                'choice_label' => fn(Departement $d) => $d->getNumero() . ' - ' . $d->getNom(),
+                'placeholder'  => '-- Sélectionner un département --',
+                'required'     => false,
+            ])
             ->add('prixPublic', TextType::class)
             ->add('prixUnitaire', TextType::class)
             ->add('stock', TextType::class)

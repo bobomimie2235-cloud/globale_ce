@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Article;
 use App\Entity\CouponReduction;
 use App\Entity\CouponCategorie;
+use App\Entity\Departement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,6 +24,12 @@ class CouponReductionType extends AbstractType
             ->add('intitule', TextType::class)
             ->add('ville', TextType::class)
             ->add('adresse', TextType::class)
+            ->add('departement', EntityType::class, [
+                'class'        => Departement::class,
+                'choice_label' => fn(Departement $d) => $d->getNumero() . ' - ' . $d->getNom(),
+                'placeholder'  => '-- Sélectionner un département --',
+                'required'     => false,
+            ])
             ->add('offreCommerciale', TextType::class)
             ->add('logo', FileType::class, [
                 'label' => 'Logo du Coupon Réduction (PNG, JPG)',

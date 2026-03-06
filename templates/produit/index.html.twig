@@ -16,119 +16,174 @@
 
         <div class="articles-layout">
 
-            {# ===== SIDEBAR CATÉGORIES ===== #}
+            {# ===== SIDEBAR FILTRES ===== #}
             <aside class="articles-sidebar">
-                <div class="sidebar-header">
-                    <h3>Catégories</h3>
-                    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Afficher/Masquer">
-                        <span id="sidebar-toggle-label">Afficher ▾</span>
-                    </button>
-                </div>
+                <form method="GET" action="{{ path('app_produit_index') }}" id="form-filtres">
 
-                <span class="sidebar-active-label">
-                    {% if categorieActive is null %}
-                        Toutes les offres
-                    {% else %}
-                        {% for categorie in categories %}
-                            {% if categorieActive == categorie.id %}
-                                {{ categorie.intitule }}
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </span>
+                <div class="sidebar-search">
+    <input type="text"
+           name="search"
+           id="sidebar-search-input"
+           placeholder="Rechercher..."
+           value="{{ search ?? '' }}"
+           class="sidebar-search-input">
+</div>
+<hr class="sidebar-divider">
 
-                <ul id="sidebar-menu">
-                    <li>
-                        <a href="{{ path('app_produit_index') }}" class="{{ categorieActive is null ? 'active' : '' }}">
-                            Toutes les offres
+                    {# ----- CATÉGORIES ----- #}
+                    <div class="sidebar-bloc">
+                        <button type="button"
+                                class="sidebar-accordion-toggle"
+                                aria-expanded="true"
+                                aria-controls="bloc-categories">
+                            <h3>Catégories</h3>
+                            <span class="sidebar-accordion-icon">▴</span>
+                        </button>
+
+                        <ul id="bloc-categories" class="sidebar-accordion-content">
+                            {% for categorie in categories %}
+                                <li>
+                                    <label class="sidebar-checkbox-label">
+                                        <input type="checkbox"
+                                               name="categories[]"
+                                               value="{{ categorie.id }}"
+                                               {% if categorie.id in categoriesActives %}checked{% endif %}>
+                                        <span>{{ categorie.intitule }}</span>
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <hr class="sidebar-divider">
+
+                    {# ----- DÉPARTEMENTS ----- #}
+                    <div class="sidebar-bloc">
+                        <button type="button"
+                                class="sidebar-accordion-toggle"
+                                aria-expanded="true"
+                                aria-controls="bloc-departements">
+                            <h3>Départements</h3>
+                            <span class="sidebar-accordion-icon">▴</span>
+                        </button>
+
+                        <ul id="bloc-departements" class="sidebar-accordion-content">
+                            {% for departement in departements %}
+                                <li>
+                                    <label class="sidebar-checkbox-label">
+                                        <input type="checkbox"
+                                               name="departements[]"
+                                               value="{{ departement.id }}"
+                                               {% if departement.id in departementsActifs %}checked{% endif %}>
+                                        <span>{{ departement.numero }} - {{ departement.nom }}</span>
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    {# ----- RESET ----- #}
+                    <div class="sidebar-actions" id="sidebar-reset-wrap" style="display:none">
+                        <a href="{{ path('app_produit_index') }}"
+                           class="btn btn-secondary btn-sm btn-block">
+                            ✕ Réinitialiser
                         </a>
-                    </li>
-                    {% for categorie in categories %}
-                        <li>
-                            <a href="{{ path('app_produit_index') }}?categorie={{ categorie.id }}"
-                               class="{{ categorieActive == categorie.id ? 'active' : '' }}">
-                                {{ categorie.intitule }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
+                    </div>
+
+                </form>
             </aside>
 
-            {# ===== GRILLE PRODUITS ===== #}
-            <div class="articles-main">
-                {% if produits is empty %}
-                    <div class="articles-empty">
-                        <p>Aucun produit disponible pour le moment.</p>
-                    </div>
-                {% else %}
-                    <div class="articles-grid">
-                        {% for produit in produits %}
-                            <div class="article-card">
-
-                                {% if produit.stock <= 0 %}
-                                    <div class="article-card-badge" style="background: #dc3545;">Rupture</div>
-                                {% endif %}
-
-                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}">
-                                    <div class="article-card-img">
-                                        {% if produit.logo %}
-                                            <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="{{ produit.intitule }}">
-                                        {% else %}
-                                            <div class="article-card-img-placeholder">🎟️</div>
-                                        {% endif %}
-                                    </div>
-                                </a>
-
-                                {% if produit.produitCategorie %}
-                                    <div class="article-card-categorie">
-                                        🏷️ {{ produit.produitCategorie.intitule }}
-                                    </div>
-                                {% endif %}
-
-                                <div class="article-card-body">
-                                    <h3 class="article-card-titre">{{ produit.intitule }}</h3>
-
-                                    {% if produit.description %}
-                                        <p class="article-card-desc">
-                                            {{ produit.description|slice(0, 60) }}{% if produit.description|length > 60 %}...{% endif %}
-                                        </p>
-                                    {% endif %}
-
-                                    <div class="produit-prix">
-                                        <span class="produit-prix-public">{{ produit.prixPublic }} €</span>
-                                        <span class="produit-prix-unitaire">{{ produit.prixUnitaire }} €</span>
-                                    </div>
-
-                                    <hr class="article-card-divider">
-
-                                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="article-card-link">Voir la fiche</a>
-
-                                    {% if is_granted('ROLE_USER') and produit.stock > 0 %}
-                                        <form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" class="produit-form-panier">
-                                            <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" class="produit-qty">
-                                            <button type="submit" class="btn-panier">🛒 Ajouter</button>
-                                        </form>
-                                    {% endif %}
-
-                                    {% if is_granted('ROLE_ADMIN') %}
-                                        <div class="article-card-admin">
-                                            <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                                            <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}"
-                                                onsubmit="return confirm('Supprimer ce produit ?');" style="display:inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
-                                                <button class="btn btn-danger btn-sm">Supprimer</button>
-                                            </form>
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+            {# ===== GRILLE (cible AJAX) ===== #}
+            <div class="articles-main" id="articles-main">
+                {% include 'produit/_grille.html.twig' %}
             </div>
 
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const form        = document.getElementById('form-filtres');
+    const main        = document.getElementById('articles-main');
+    const resetWrap   = document.getElementById('sidebar-reset-wrap');
+    const searchInput = document.getElementById('sidebar-search-input');
+    const baseUrl     = form.getAttribute('action');
+    let debounceTimer = null;
+
+    function setLoading(on) {
+        main.style.opacity       = on ? '0.4' : '1';
+        main.style.pointerEvents = on ? 'none' : '';
+    }
+
+    function buildUrl() {
+        const params = new URLSearchParams();
+        // Checkboxes cochées
+        form.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+            params.append(cb.name, cb.value);
+        });
+        // Champ search
+        const q = searchInput ? searchInput.value.trim() : '';
+        if (q) params.set('search', q);
+
+        return params.toString() ? baseUrl + '?' + params.toString() : baseUrl;
+    }
+
+    function updateResetBtn() {
+        const hasChecked = form.querySelectorAll('input:checked').length > 0;
+        const hasSearch  = searchInput && searchInput.value.trim().length > 0;
+        resetWrap.style.display = (hasChecked || hasSearch) ? 'block' : 'none';
+    }
+
+    function fetchGrille() {
+        setLoading(true);
+        fetch(buildUrl(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.text())
+        .then(html => { main.innerHTML = html; setLoading(false); })
+        .catch(() => setLoading(false));
+    }
+
+    // Checkboxes → fetch immédiat (debounce 200ms)
+    form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            updateResetBtn();
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchGrille, 200);
+        });
+    });
+
+    // Champ search → fetch avec debounce 400ms (laisse taper)
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            updateResetBtn();
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchGrille, 400);
+        });
+    }
+
+    // Accordion toggle
+    document.querySelectorAll('.sidebar-accordion-toggle').forEach(function (btn) {
+        const content = document.getElementById(btn.getAttribute('aria-controls'));
+        const icon    = btn.querySelector('.sidebar-accordion-icon');
+
+        btn.addEventListener('click', function () {
+            const isOpen = btn.getAttribute('aria-expanded') === 'true';
+            if (isOpen) {
+                content.setAttribute('hidden', '');
+                btn.setAttribute('aria-expanded', 'false');
+                icon.textContent = '▾';
+            } else {
+                content.removeAttribute('hidden');
+                btn.setAttribute('aria-expanded', 'true');
+                icon.textContent = '▴';
+            }
+        });
+    });
+
+    updateResetBtn(); 
+});
+</script>
 {% endblock %}

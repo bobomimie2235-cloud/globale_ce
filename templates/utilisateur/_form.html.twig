@@ -1,8 +1,33 @@
 {% if is_granted('ROLE_ADMIN') %}
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
-    {{ form_end(form) }}
+{{ form_start(form, {'attr': {'class': 'auth-form'}}) }}
+
+    <div class="auth-field">
+        {{ form_label(form.email, 'Email') }}
+        {{ form_widget(form.email, {'attr': {'placeholder': 'votre@email.fr'}}) }}
+        {{ form_errors(form.email) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.nom, 'Nom') }}
+        {{ form_widget(form.nom, {'attr': {'placeholder': 'Votre nom'}}) }}
+        {{ form_errors(form.nom) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.prenom, 'Prénom') }}
+        {{ form_widget(form.prenom, {'attr': {'placeholder': 'Votre prénom'}}) }}
+        {{ form_errors(form.prenom) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.utilisateurGroupe, 'Groupe') }}
+        {{ form_widget(form.utilisateurGroupe) }}
+        {{ form_errors(form.utilisateurGroupe) }}
+    </div>
+
+    <button type="submit" class="btn-auth">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}
 {% else %}
-    <p class="alert alert-warning">Vous n'avez pas les droits pour effectuer cette action.</p>
+    <p class="auth-warning">Vous n'avez pas les droits pour effectuer cette action.</p>
 {% endif %}

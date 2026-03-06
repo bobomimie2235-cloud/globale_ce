@@ -1,17 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier CouponReduction{% endblock %}
+{% block title %}Modifier — {{ coupon_reduction.intitule }}{% endblock %}
 
 {% block body %}
-    <h1>Modifier CouponReduction</h1>
+<section class="auth-page">
+    <div class="auth-container auth-container--lg">
+        <div class="auth-card">
 
-    {% if is_granted('ROLE_ADMIN') %}
-        {{ include('coupon_reduction/_form.html.twig', {'button_label': 'Modifier'}) }}
-    {% else %}
-        <p class="alert alert-warning">Vous n'avez pas les droits pour modifier ce coupon.</p>
-    {% endif %}
+            <a href="{{ path('app_coupon_reduction_index') }}" class="auth-back">← Retour à la liste</a>
 
-    <a href="{{ path('app_coupon_reduction_index') }}">Retour à la liste</a>
+            <h1 class="auth-titre">Modifier le coupon</h1>
+            <p class="auth-subtitle">{{ coupon_reduction.intitule }}</p>
 
-    {{ include('coupon_reduction/_delete_form.html.twig') }}
+            {% if is_granted('ROLE_ADMIN') %}
+                {{ include('coupon_reduction/_form.html.twig', {'button_label': 'Enregistrer les modifications'}) }}
+
+                <hr class="auth-divider">
+
+                <div class="auth-danger">
+                    <p class="auth-danger-label">⚠️ Supprimer ce coupon (action irréversible)</p>
+                    {{ include('coupon_reduction/_delete_form.html.twig') }}
+                </div>
+            {% else %}
+                <p class="auth-warning">Vous n'avez pas les droits pour modifier ce coupon.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
 {% endblock %}

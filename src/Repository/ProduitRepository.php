@@ -16,42 +16,33 @@ class ProduitRepository extends ServiceEntityRepository
         parent::__construct($registry, Produit::class);
     }
 
-    public function search(string $q): array
-{
-    return $this->createQueryBuilder('p')
-        ->leftJoin('p.produitCategorie', 'cat')
-        ->where('p.intitule LIKE :q 
-            OR p.description LIKE :q 
-            OR p.reference LIKE :q
-            OR cat.intitule LIKE :q')
-        ->setParameter('q', '%' . $q . '%')
-        ->orderBy('p.intitule', 'ASC')
-        ->getQuery()
-        ->getResult();
-}
+    /**
+     * @param int[]       $categorieIds
+     * @param int[]       $departementIds
+     * @param string|null $search         Recherche sur intitule, reference, description
+     * @return Produit[]
+     */
+    public function findByFiltres(array $categorieIds, array $departementIds, ?string $search = null): array
+    {
+        $qb = $this->createQueryBuilder('p');
 
-    //    /**
-    //     * @return Produit[] Returns an array of Produit objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        if (!empty($categorieIds)) {
+            $qb->andWhere('p.produitCategorie IN (:categorieIds)')
+               ->setParameter('categorieIds', $categorieIds);
+        }
 
-    //    public function findOneBySomeField($value): ?Produit
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!empty($departementIds)) {
+            $qb->andWhere('p.departement IN (:departementIds)')
+               ->setParameter('departementIds', $departementIds);
+        }
+
+        if ($search) {
+            $qb->andWhere('p.intitule LIKE :search OR p.reference LIKE :search OR p.description LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->orderBy('p.intitule', 'ASC')
+                  ->getQuery()
+                  ->getResult();
+    }
 }

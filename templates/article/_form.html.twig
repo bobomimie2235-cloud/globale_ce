@@ -1,8 +1,83 @@
 {% if is_granted('ROLE_ADMIN') %}
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
-    {{ form_end(form) }}
+{{ form_start(form, {'attr': {'class': 'auth-form auth-form--grid'}}) }}
+
+    <div class="auth-field">
+        {{ form_label(form.titre, 'Titre') }}
+        {{ form_widget(form.titre, {'attr': {'placeholder': 'Nom du commerce'}}) }}
+        {{ form_errors(form.titre) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.siteWeb, 'Site web') }}
+        {{ form_widget(form.siteWeb, {'attr': {'placeholder': 'https://...'}}) }}
+        {{ form_errors(form.siteWeb) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.description, 'Description') }}
+        {{ form_widget(form.description, {'attr': {'placeholder': 'Présentation du commerce...'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.infosActivite, 'Infos activité') }}
+        {{ form_widget(form.infosActivite, {'attr': {'placeholder': 'Informations complémentaires...'}}) }}
+        {{ form_errors(form.infosActivite) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.offreCommerciale, 'Offre commerciale') }}
+        {{ form_widget(form.offreCommerciale, {'attr': {'placeholder': 'Ex: 10% de réduction sur présentation de la carte'}}) }}
+        {{ form_errors(form.offreCommerciale) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.offre, 'Étiquette offre (ex: -10%)') }}
+        {{ form_widget(form.offre, {'attr': {'placeholder': '-10%'}}) }}
+        {{ form_errors(form.offre) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.horaires, 'Horaires') }}
+        {{ form_widget(form.horaires, {'attr': {'placeholder': 'Lun-Ven 9h-18h...'}}) }}
+        {{ form_errors(form.horaires) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.articleCategorie, 'Catégorie') }}
+        {{ form_widget(form.articleCategorie) }}
+        {{ form_errors(form.articleCategorie) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.departement, 'Département') }}
+        {{ form_widget(form.departement) }}
+        {{ form_errors(form.departement) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.imgLogo, 'Logo (PNG, JPG — max 2Mo)') }}
+        {{ form_widget(form.imgLogo) }}
+        {{ form_errors(form.imgLogo) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.imgPhotosDevanture, 'Photo devanture (PNG, JPG — max 2Mo)') }}
+        {{ form_widget(form.imgPhotosDevanture) }}
+        {{ form_errors(form.imgPhotosDevanture) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.imgPhotosInterieur, 'Photo intérieur (PNG, JPG — max 2Mo)') }}
+        {{ form_widget(form.imgPhotosInterieur) }}
+        {{ form_errors(form.imgPhotosInterieur) }}
+    </div>
+
+    <div class="auth-field--full">
+        <button type="submit" class="btn-auth">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+
+{{ form_end(form) }}
 {% else %}
-    <p class="alert alert-warning">Vous n'avez pas les droits pour effectuer cette action.</p>
+    <p class="auth-warning">Vous n'avez pas les droits pour effectuer cette action.</p>
 {% endif %}

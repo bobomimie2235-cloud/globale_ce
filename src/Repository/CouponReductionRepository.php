@@ -16,43 +16,33 @@ class CouponReductionRepository extends ServiceEntityRepository
         parent::__construct($registry, CouponReduction::class);
     }
 
-    public function search(string $q): array
-{
-    return $this->createQueryBuilder('c')
-        ->leftJoin('c.couponCategorie', 'cat')
-        ->where('c.intitule LIKE :q 
-            OR c.offreCommerciale LIKE :q 
-            OR c.ville LIKE :q 
-            OR c.reference LIKE :q
-            OR cat.categorie LIKE :q')
-        ->setParameter('q', '%' . $q . '%')
-        ->orderBy('c.intitule', 'ASC')
-        ->getQuery()
-        ->getResult();
-}
+    /**
+     * @param int[]       $categorieIds
+     * @param int[]       $departementIds
+     * @param string|null $search         Recherche sur intitule, offreCommerciale, ville
+     * @return CouponReduction[]
+     */
+    public function findByFiltres(array $categorieIds, array $departementIds, ?string $search = null): array
+    {
+        $qb = $this->createQueryBuilder('c');
 
-    //    /**
-    //     * @return CouponReduction[] Returns an array of CouponReduction objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        if (!empty($categorieIds)) {
+            $qb->andWhere('c.couponCategorie IN (:categorieIds)')
+               ->setParameter('categorieIds', $categorieIds);
+        }
 
-    //    public function findOneBySomeField($value): ?CouponReduction
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!empty($departementIds)) {
+            $qb->andWhere('c.departement IN (:departementIds)')
+               ->setParameter('departementIds', $departementIds);
+        }
+
+        if ($search) {
+            $qb->andWhere('c.intitule LIKE :search OR c.offreCommerciale LIKE :search OR c.ville LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->orderBy('c.intitule', 'ASC')
+                  ->getQuery()
+                  ->getResult();
+    }
 }

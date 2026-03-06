@@ -1,8 +1,71 @@
 {% if is_granted('ROLE_ADMIN') %}
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
-    {{ form_end(form) }}
+{{ form_start(form, {'attr': {'class': 'auth-form auth-form--grid'}}) }}
+
+    <div class="auth-field">
+        {{ form_label(form.reference, 'Référence') }}
+        {{ form_widget(form.reference, {'attr': {'placeholder': 'Ex: COUP-001'}}) }}
+        {{ form_errors(form.reference) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.intitule, 'Intitulé') }}
+        {{ form_widget(form.intitule, {'attr': {'placeholder': 'Nom du coupon'}}) }}
+        {{ form_errors(form.intitule) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.ville, 'Ville') }}
+        {{ form_widget(form.ville, {'attr': {'placeholder': 'Ville du commerce'}}) }}
+        {{ form_errors(form.ville) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.adresse, 'Adresse') }}
+        {{ form_widget(form.adresse, {'attr': {'placeholder': '1 rue de la Paix'}}) }}
+        {{ form_errors(form.adresse) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.offreCommerciale, 'Offre commerciale') }}
+        {{ form_widget(form.offreCommerciale, {'attr': {'placeholder': 'Ex: 10% de réduction sur présentation du coupon'}}) }}
+        {{ form_errors(form.offreCommerciale) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.offre, 'Étiquette offre (ex: -10%)') }}
+        {{ form_widget(form.offre, {'attr': {'placeholder': '-10%'}}) }}
+        {{ form_errors(form.offre) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.couponCategorie, 'Catégorie') }}
+        {{ form_widget(form.couponCategorie) }}
+        {{ form_errors(form.couponCategorie) }}
+    </div>
+
+    <div class="auth-field">
+        {{ form_label(form.departement, 'Département') }}
+        {{ form_widget(form.departement) }}
+        {{ form_errors(form.departement) }}
+    </div>
+
+    <div class="auth-field auth-field--full">
+        {{ form_label(form.logo, 'Logo du coupon (PNG, JPG — max 2Mo)') }}
+        {{ form_widget(form.logo) }}
+        {{ form_errors(form.logo) }}
+    </div>
+
+    <div class="auth-remember">
+        {{ form_widget(form.actif) }}
+        {{ form_label(form.actif, 'Coupon actif') }}
+        {{ form_errors(form.actif) }}
+    </div>
+
+    <div class="auth-field--full">
+        <button type="submit" class="btn-auth">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+
+{{ form_end(form) }}
 {% else %}
-    <p class="alert alert-warning">Vous n'avez pas les droits pour effectuer cette action.</p>
+    <p class="auth-warning">Vous n'avez pas les droits pour effectuer cette action.</p>
 {% endif %}

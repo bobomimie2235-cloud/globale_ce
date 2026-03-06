@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
+use App\Entity\Departement;
 
 class ArticleType extends AbstractType
 {
@@ -70,6 +71,12 @@ class ArticleType extends AbstractType
                         mimeTypesMessage: 'Veuillez uploader une image valide',
                     )
                 ],
+            ])
+            ->add('departement', EntityType::class, [
+                'class'        => Departement::class,
+                'choice_label' => fn(Departement $d) => $d->getNumero() . ' - ' . $d->getNom(),
+                'placeholder'  => '-- Sélectionner un département --',
+                'required'     => false,
             ])
             ->add('offre', TextType::class, [
                 'label' => 'Offre (ex: -5%, -25%...)',

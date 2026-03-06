@@ -78,6 +78,13 @@ class Article
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $offre = null;
 
+        // ===== NOUVELLE RELATION DEPARTEMENT =====
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Departement $departement = null;
+
+    // =========================================
+
     public function getId(): ?int
     {
         return $this->id;
@@ -237,4 +244,15 @@ public function setOffre(?string $offre): static
     $this->offre = $offre;
     return $this;
 }
+
+    public function getDepartement(): ?Departement
+    {
+        return $this->departement;
+    }
+
+    public function setDepartement(?Departement $departement): static
+    {
+        $this->departement = $departement;
+        return $this;
+    }
 }

@@ -32,12 +32,12 @@ class CouponReduction
     private ?string $reference = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "L’intitulé du coupon est obligatoire")]
+    #[Assert\NotBlank(message: "L'intitulé du coupon est obligatoire")]
     #[Assert\Length(
         min: 5,
         max: 100,
-        minMessage: "L’intitulé doit contenir au moins {{ limit }} caractères",
-        maxMessage: "L’intitulé ne doit pas dépasser {{ limit }} caractères"
+        minMessage: "L'intitulé doit contenir au moins {{ limit }} caractères",
+        maxMessage: "L'intitulé ne doit pas dépasser {{ limit }} caractères"
     )]
     private ?string $intitule = null;
 
@@ -71,131 +71,54 @@ class CouponReduction
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $offre = null;
 
+    // ===== NOUVELLE RELATION DEPARTEMENT =====
+    #[ORM\ManyToOne(inversedBy: 'couponReductions')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Departement $departement = null;
+    // =========================================
+
     public function __construct()
     {
         $this->utilisateurCoupons = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getReference(): ?string
-    {
-        return $this->reference;
-    }
+    public function getReference(): ?string { return $this->reference; }
+    public function setReference(string $reference): static { $this->reference = $reference; return $this; }
 
-    public function setReference(string $reference): static
-    {
-        $this->reference = $reference;
+    public function getIntitule(): ?string { return $this->intitule; }
+    public function setIntitule(string $intitule): static { $this->intitule = $intitule; return $this; }
 
-        return $this;
-    }
+    public function isActif(): ?bool { return $this->actif; }
+    public function setActif(bool $actif): static { $this->actif = $actif; return $this; }
 
-    public function getIntitule(): ?string
-    {
-        return $this->intitule;
-    }
+    public function getArticle(): ?Article { return $this->article; }
+    public function setArticle(?Article $article): static { $this->article = $article; return $this; }
 
-    public function setIntitule(string $intitule): static
-    {
-        $this->intitule = $intitule;
+    public function getAdresse(): ?string { return $this->adresse; }
+    public function setAdresse(string $adresse): static { $this->adresse = $adresse; return $this; }
 
-        return $this;
-    }
+    public function getVille(): ?string { return $this->ville; }
+    public function setVille(string $ville): static { $this->ville = $ville; return $this; }
 
-    public function isActif(): ?bool
-    {
-        return $this->actif;
-    }
+    public function getOffreCommerciale(): ?string { return $this->offreCommerciale; }
+    public function setOffreCommerciale(string $offreCommerciale): static { $this->offreCommerciale = $offreCommerciale; return $this; }
 
-    public function setActif(bool $actif): static
-    {
-        $this->actif = $actif;
+    public function getLogo(): ?string { return $this->logo; }
+    public function setLogo(string $logo): static { $this->logo = $logo; return $this; }
 
-        return $this;
-    }
+    public function getCouponCategorie(): ?CouponCategorie { return $this->couponCategorie; }
+    public function setCouponCategorie(?CouponCategorie $couponCategorie): static { $this->couponCategorie = $couponCategorie; return $this; }
 
-    public function getArticle(): ?Article
-    {
-        return $this->article;
-    }
+    public function getOffre(): ?string { return $this->offre; }
+    public function setOffre(?string $offre): static { $this->offre = $offre; return $this; }
 
-    public function setArticle(?Article $article): static
-    {
-        $this->article = $article;
+    public function getDepartement(): ?Departement { return $this->departement; }
+    public function setDepartement(?Departement $departement): static { $this->departement = $departement; return $this; }
 
-        return $this;
-    }
-
-    public function getAdresse(): ?string
-    {
-        return $this->adresse;
-    }
-
-    public function setAdresse(string $adresse): static
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-    public function getVille(): ?string
-    {
-        return $this->ville;
-    }
-
-    public function setVille(string $ville): static
-    {
-        $this->ville = $ville;
-
-        return $this;
-    }
-
-    public function getOffreCommerciale(): ?string
-    {
-        return $this->offreCommerciale;
-    }
-
-    public function setOffreCommerciale(string $offreCommerciale): static
-    {
-        $this->offreCommerciale = $offreCommerciale;
-
-        return $this;
-    }
-
-    public function getLogo(): ?string
-    {
-        return $this->logo;
-    }
-
-    public function setLogo(string $logo): static
-    {
-        $this->logo = $logo;
-
-        return $this;
-    }
-
-    public function getCouponCategorie(): ?CouponCategorie
-    {
-        return $this->couponCategorie;
-    }
-
-    public function setCouponCategorie(?CouponCategorie $couponCategorie): static
-    {
-        $this->couponCategorie = $couponCategorie;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UtilisateurCoupon>
-     */
-    public function getUtilisateurCoupons(): Collection
-    {
-        return $this->utilisateurCoupons;
-    }
+    /** @return Collection<int, UtilisateurCoupon> */
+    public function getUtilisateurCoupons(): Collection { return $this->utilisateurCoupons; }
 
     public function addUtilisateurCoupon(UtilisateurCoupon $utilisateurCoupon): static
     {
@@ -203,30 +126,16 @@ class CouponReduction
             $this->utilisateurCoupons->add($utilisateurCoupon);
             $utilisateurCoupon->setCouponReduction($this);
         }
-
         return $this;
     }
 
     public function removeUtilisateurCoupon(UtilisateurCoupon $utilisateurCoupon): static
     {
         if ($this->utilisateurCoupons->removeElement($utilisateurCoupon)) {
-            // set the owning side to null (unless already changed)
             if ($utilisateurCoupon->getCouponReduction() === $this) {
                 $utilisateurCoupon->setCouponReduction(null);
             }
         }
-
         return $this;
     }
-
-        public function getOffre(): ?string
-{
-    return $this->offre;
-}
-
-public function setOffre(?string $offre): static
-{
-    $this->offre = $offre;
-    return $this;
-}
 }

@@ -9,6 +9,7 @@ use App\Entity\UtilisateurCoupon;
 use App\Repository\UtilisateurCouponRepository;
 use App\Repository\CouponReductionRepository;
 use App\Repository\CouponCategorieRepository;
+use App\Repository\DepartementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,22 +22,35 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class CouponReductionController extends AbstractController
 {
     #[Route(name: 'app_coupon_reduction_index', methods: ['GET'])]
-public function index(
-    CouponReductionRepository $couponReductionRepository,
-    CouponCategorieRepository $couponCategorieRepository,
-    Request $request
-): Response {
-    $categorieId = $request->query->get('categorie');
-    $coupon_reductions = $categorieId
-        ? $couponReductionRepository->findBy(['couponCategorie' => $categorieId])
-        : $couponReductionRepository->findAll();
+    public function index(
+        CouponReductionRepository $couponReductionRepository,
+        CouponCategorieRepository $couponCategorieRepository,
+        DepartementRepository $departementRepository,
+        Request $request
+    ): Response {
+        $categorieIds   = array_filter(array_map('intval', $request->query->all('categories')));
+        $departementIds = array_filter(array_map('intval', $request->query->all('departements')));
 
-    return $this->render('coupon_reduction/index.html.twig', [
-        'coupon_reductions' => $coupon_reductions,
-        'categories'        => $couponCategorieRepository->findAll(),
-        'categorieActive'   => $categorieId,
-    ]);
-}
+        $coupon_reductions = $couponReductionRepository->findByFiltres(
+            array_values($categorieIds),
+            array_values($departementIds)
+        );
+
+        $templateData = [
+            'coupon_reductions'  => $coupon_reductions,
+            'categories'         => $couponCategorieRepository->findAll(),
+            'departements'       => $departementRepository->findAll(),
+            'categoriesActives'  => $categorieIds,
+            'departementsActifs' => $departementIds,
+        ];
+
+        // Requête AJAX → fragment grille uniquement
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            return $this->render('coupon_reduction/_grille.html.twig', $templateData);
+        }
+
+        return $this->render('coupon_reduction/index.html.twig', $templateData);
+    }
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_coupon_reduction_new', methods: ['GET', 'POST'])]
@@ -47,7 +61,6 @@ public function index(
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $logoFile = $form->get('logo')->getData();
             if ($logoFile) {
                 $safeFilename = $slugger->slug(pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME));
@@ -58,7 +71,6 @@ public function index(
 
             $entityManager->persist($couponReduction);
             $entityManager->flush();
-
             $this->addFlash('success', 'Coupon réduction ajouté avec succès !');
 
             return $this->redirectToRoute('app_coupon_reduction_index', [], Response::HTTP_SEE_OTHER);
@@ -66,7 +78,7 @@ public function index(
 
         return $this->render('coupon_reduction/new.html.twig', [
             'coupon_reduction' => $couponReduction,
-            'form' => $form,
+            'form'             => $form,
         ]);
     }
 
@@ -86,7 +98,6 @@ public function index(
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $logoFile = $form->get('logo')->getData();
             if ($logoFile) {
                 $safeFilename = $slugger->slug(pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME));
@@ -94,15 +105,13 @@ public function index(
                 $logoFile->move($this->getParameter('logos_directory'), $newFilename);
                 $couponReduction->setLogo($newFilename);
             }
-
             $entityManager->flush();
-
             return $this->redirectToRoute('app_coupon_reduction_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('coupon_reduction/edit.html.twig', [
             'coupon_reduction' => $couponReduction,
-            'form' => $form,
+            'form'             => $form,
         ]);
     }
 
@@ -114,27 +123,24 @@ public function index(
             $entityManager->remove($couponReduction);
             $entityManager->flush();
         }
-
         return $this->redirectToRoute('app_coupon_reduction_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    // ===== Page admin — liste des coupons en attente de validation =====
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/valider', name: 'app_coupon_reduction_valider_page', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function validerPage(CouponReduction $couponReduction, UtilisateurCouponRepository $utilisateurCouponRepository): Response
     {
         $couponsEnAttente = $utilisateurCouponRepository->findBy([
             'couponReduction' => $couponReduction,
-            'utilise' => true,
+            'utilise'         => true,
         ]);
 
         return $this->render('coupon_reduction/valider.html.twig', [
-            'coupon_reduction' => $couponReduction,
+            'coupon_reduction'    => $couponReduction,
             'coupons_en_attente' => $couponsEnAttente,
         ]);
     }
 
-    // ===== Action validation du coupon par l'admin =====
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/utiliser/{utilisateurCouponId}', name: 'app_coupon_reduction_utiliser', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function utiliser(
@@ -155,14 +161,12 @@ public function index(
             $utilisateurCoupon->setUtilise(true);
             $utilisateurCoupon->setDateUtilisation(new \DateTimeImmutable());
             $entityManager->flush();
-
             $this->addFlash('success', 'Coupon validé avec succès !');
         }
 
         return $this->redirectToRoute('app_coupon_reduction_valider_page', ['id' => $couponReduction->getId()]);
     }
 
-    // ===== Utilisateur — utiliser son coupon directement =====
     #[IsGranted('ROLE_USER')]
     #[Route('/{id}/utiliser-mon-coupon', name: 'app_coupon_reduction_utiliser_mon_coupon', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function utiliserMonCoupon(
@@ -174,9 +178,8 @@ public function index(
         /** @var Utilisateur $user */
         $user = $this->getUser();
 
-        // Vérifie si l'utilisateur a déjà utilisé ce coupon
         $utilisateurCoupon = $utilisateurCouponRepository->findOneBy([
-            'utilisateur' => $user,
+            'utilisateur'     => $user,
             'couponReduction' => $couponReduction,
         ]);
 
@@ -186,20 +189,15 @@ public function index(
         }
 
         if ($this->isCsrfTokenValid('utiliser-mon-coupon' . $couponReduction->getId(), $request->getPayload()->getString('_token'))) {
-
-            // ===== Crée l'entrée si elle n'existe pas encore =====
             if (!$utilisateurCoupon) {
                 $utilisateurCoupon = new UtilisateurCoupon();
                 $utilisateurCoupon->setUtilisateur($user);
                 $utilisateurCoupon->setCouponReduction($couponReduction);
                 $entityManager->persist($utilisateurCoupon);
             }
-
-            // ===== Marque comme utilisé =====
             $utilisateurCoupon->setUtilise(true);
             $utilisateurCoupon->setDateUtilisation(new \DateTimeImmutable());
             $entityManager->flush();
-
             $this->addFlash('success', 'Succès, vous avez utilisé votre coupon ' . $couponReduction->getIntitule() . ' !');
         }
 

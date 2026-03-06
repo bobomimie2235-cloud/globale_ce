@@ -1,0 +1,125 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+@use 'sass:color';
+
+// ===== WRAPPER TABLE =====
+.utilisateurs-table-wrap {
+    overflow-x: auto;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-sm;
+    margin-top: $spacing-lg;
+}
+
+// ===== TABLE =====
+.utilisateurs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $font-text;
+    font-size: $font-size-sm;
+    background: $color-white;
+
+    thead tr {
+        background: $color-nav;
+        color: $color-white;
+
+        th {
+            padding: $spacing-md $spacing-lg;
+            text-align: left;
+            font-weight: 700;
+            font-size: $font-size-sm;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+    }
+
+    tbody tr {
+        border-bottom: 1px solid rgba($color-nav, 0.12);
+        transition: background 0.15s;
+
+        &:hover {
+            background: rgba($color-primary, 0.04);
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: $spacing-md $spacing-lg;
+            color: $color-text-dark;
+            vertical-align: middle;
+        }
+    }
+}
+
+// ===== CELLULES SPÉCIFIQUES =====
+.utilisateurs-id {
+    font-weight: 700;
+    color: $color-text-grey;
+    width: 40px;
+}
+
+.utilisateurs-email {
+    font-weight: 600;
+    color: $color-nav;
+}
+
+.utilisateurs-date {
+    font-size: $font-size-sm;
+    color: $color-text-dark;
+    white-space: nowrap;
+
+    small {
+        color: $color-text-grey;
+        font-size: $font-size-xs;
+    }
+}
+
+.utilisateurs-groupe {
+    display: inline-block;
+    background: rgba($color-nav, 0.1);
+    color: $color-nav;
+    font-weight: 600;
+    font-size: $font-size-xs;
+    padding: 0.2rem 0.7rem;
+    border-radius: $border-radius-pill;
+}
+
+.utilisateurs-no-groupe {
+    color: $color-text-grey;
+}
+
+.utilisateurs-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+    white-space: nowrap;
+}
+
+.utilisateurs-empty {
+    text-align: center;
+    padding: $spacing-xl !important;
+    color: $color-text-grey;
+    font-style: italic;
+}
+
+// ===== BADGES RÔLES =====
+.role-badge {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: $border-radius-pill;
+    font-size: $font-size-xs;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+
+    &--admin {
+        background: rgba($color-primary, 0.15);
+        color: $color-primary;
+    }
+
+    &--user {
+        background: rgba($color-nav, 0.12);
+        color: $color-nav;
+    }
+}

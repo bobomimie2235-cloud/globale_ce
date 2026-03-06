@@ -21,6 +21,10 @@
         border-radius: $border-radius-lg * 2;
         padding: $spacing-xl * 1.5;
         box-shadow: $shadow-md;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     // ===== TITRE =====
@@ -44,6 +48,7 @@
     .auth-form {
         display: flex;
         flex-direction: column;
+        align-items: center;
         gap: $spacing-md;
     }
 
@@ -51,6 +56,7 @@
         display: flex;
         flex-direction: column;
         gap: $spacing-xs;
+        width: 100%;
 
         label {
             font-size: $font-size-sm;
@@ -77,6 +83,7 @@
                 outline: none;
                 border-color: $color-nav;
             }
+
         }
     }
 
@@ -113,7 +120,7 @@
         font-weight: bold;
         cursor: pointer;
         transition: background 0.2s, transform 0.1s;
-        margin-top: $spacing-sm;
+        margin-top: auto;
 
         &:hover {
             background: color.adjust($color-primary, $lightness: -10%);
@@ -149,5 +156,150 @@
         .auth-titre {
             font-size: 1.4rem;
         }
+    }
+}
+
+// ===== CONTAINER LARGE (formulaires admin) =====
+.auth-container--lg {
+    max-width: 860px;
+}
+
+// ===== LIEN RETOUR =====
+.auth-back {
+    display: inline-block;
+    font-size: $font-size-sm;
+    font-family: $font-text;
+    color: $color-text-grey;
+    margin-bottom: $spacing-md;
+    transition: color 0.2s;
+
+    &:hover {
+        color: $color-primary;
+    }
+}
+
+// ===== FORMULAIRE EN GRILLE 2 COLONNES =====
+.auth-form--grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-lg $spacing-xl;
+
+    @include mobile {
+        grid-template-columns: 1fr;
+        gap: $spacing-md;
+    }
+
+    // Champ pleine largeur
+    .auth-field--full,
+    .auth-remember {
+        grid-column: 1 / -1;
+    }
+}
+
+// ===== CHAMP PLEINE LARGEUR STANDALONE =====
+.auth-field--full {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    button.btn-auth {
+        margin-top: $spacing-sm;
+    }
+}
+
+// ===== SELECT & TEXTAREA dans auth-field =====
+.auth-field {
+
+    select,
+    textarea {
+        padding: 0.9rem 1.2rem;
+        border: 1px solid #d0d0d0;
+        border-radius: $border-radius-pill;
+        font-family: $font-text;
+        font-size: $font-size-base;
+        color: $color-text-dark;
+        background: $color-white;
+        transition: border-color 0.2s;
+        width: 100%;
+        box-sizing: border-box;
+
+        &:focus {
+            outline: none;
+            border-color: $color-nav;
+        }
+    }
+
+    textarea {
+        border-radius: $border-radius-lg;
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    input[type="file"] {
+        padding: 0.6rem 1rem;
+        border: 1px dashed #d0d0d0;
+        border-radius: $border-radius-lg;
+        font-family: $font-text;
+        font-size: $font-size-sm;
+        color: $color-text-grey;
+        background: $color-light;
+        cursor: pointer;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+// ===== SÉPARATEUR =====
+.auth-divider {
+    border: none;
+    border-top: 2px solid $color-nav;
+    opacity: 0.2;
+    margin: $spacing-xl 0 $spacing-lg;
+}
+
+// ===== ZONE DANGER =====
+.auth-danger {
+    background: rgba(#dc3545, 0.05);
+    border: 1.5px solid #dc3545;
+    border-radius: $border-radius-lg;
+    padding: $spacing-md $spacing-lg;
+}
+
+.auth-danger-label {
+    font-size: $font-size-sm;
+    font-weight: 700;
+    color: #dc3545;
+    font-family: $font-text;
+    margin-bottom: $spacing-sm;
+}
+
+// ===== MESSAGE AVERTISSEMENT =====
+.auth-warning {
+    background: rgba(#ffc107, 0.15);
+    border: 1.5px solid #ffc107;
+    border-radius: $border-radius-lg;
+    padding: $spacing-md;
+    font-size: $font-size-sm;
+    font-family: $font-text;
+    color: #856404;
+}
+
+// BOUTON COLOR :
+
+.btn-delete {
+    background: #dc3545;
+    color: $color-white;
+    border: none;
+    border-radius: $border-radius-pill;
+    padding: 0.5rem 1.2rem;
+    font-family: $font-text;
+    font-size: $font-size-sm;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+
+    &:hover {
+        background: color.adjust(#dc3545, $lightness: -10%);
+        transform: translateY(-1px);
     }
 }

@@ -19,13 +19,11 @@ class UtilisateurType extends AbstractType
             ->add('email', TextType::class)
             ->add('nom', TextType::class)
             ->add('prenom', TextType::class)
-            ->add('dateInscription', null, [
-                'disabled' => true, // rend le champ non éditable
-            ])
             ->add('utilisateurGroupe', EntityType::class, [
-                'class' => \App\Entity\UtilisateurGroupe::class,
+                'class'        => UtilisateurGroupe::class,
                 'choice_label' => 'nomGroupe',
-                'disabled' => true, // Groupe non modifiable
+                'label'        => 'Groupe',
+                'placeholder'  => '-- Sélectionner un groupe --',
             ])
         ;
     }

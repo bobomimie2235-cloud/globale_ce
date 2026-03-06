@@ -1,6 +1,8 @@
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
+@use 'sass:color';
+
 // ===== IMPRESSION =====
 @media print {
     nav, header, footer,
@@ -178,9 +180,9 @@
     font-weight: 600;
 }
 
-.statut-validee  { background: rgba($color-success, 0.15); color: darken($color-success, 10%); }
-.statut-en_cours { background: rgba($color-warning, 0.20); color: darken($color-warning, 25%); }
-.statut-annulee  { background: rgba($color-danger,  0.15); color: darken($color-danger,  10%); }
+.statut-validee  { background: rgba($color-success, 0.15); color: color.adjust($color-success, $lightness: -10%); }
+.statut-en_cours { background: rgba($color-warning, 0.20); color: color.adjust($color-warning, $lightness: -25%); }
+.statut-annulee  { background: rgba($color-danger,  0.15); color: color.adjust($color-danger,  $lightness: -10%); }
 
 // ===== PIED DE FACTURE =====
 .facture-footer {

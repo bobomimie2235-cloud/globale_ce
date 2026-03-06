@@ -16,12 +16,15 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+    /**
+     * Recherche full-text utilisée par le SearchController global.
+     */
     public function search(string $q): array
     {
         return $this->createQueryBuilder('a')
             ->leftJoin('a.articleCategorie', 'cat')
-            ->where('a.titre LIKE :q 
-            OR a.description LIKE :q 
+            ->where('a.titre LIKE :q
+            OR a.description LIKE :q
             OR a.offreCommerciale LIKE :q
             OR cat.intitule LIKE :q')
             ->setParameter('q', '%' . $q . '%')
@@ -30,28 +33,33 @@ class ArticleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    //    /**
-    //     * @return Article[] Returns an array of Article objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @param int[]       $categorieIds
+     * @param int[]       $departementIds
+     * @param string|null $search         Recherche sur titre, description, offreCommerciale
+     * @return Article[]
+     */
+    public function findByFiltres(array $categorieIds, array $departementIds, ?string $search = null): array
+    {
+        $qb = $this->createQueryBuilder('a');
 
-    //    public function findOneBySomeField($value): ?Article
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!empty($categorieIds)) {
+            $qb->andWhere('a.articleCategorie IN (:categorieIds)')
+               ->setParameter('categorieIds', $categorieIds);
+        }
+
+        if (!empty($departementIds)) {
+            $qb->andWhere('a.departement IN (:departementIds)')
+               ->setParameter('departementIds', $departementIds);
+        }
+
+        if ($search) {
+            $qb->andWhere('a.titre LIKE :search OR a.description LIKE :search OR a.offreCommerciale LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->orderBy('a.titre', 'ASC')
+                  ->getQuery()
+                  ->getResult();
+    }
 }

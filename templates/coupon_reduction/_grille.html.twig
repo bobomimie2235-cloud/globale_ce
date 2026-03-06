@@ -1,0 +1,79 @@
+{# templates/coupon_reduction/_grille.html.twig #}
+
+{% if categoriesActives is not empty or departementsActifs is not empty %}
+    <div class="articles-filtres-actifs">
+        <span>Filtres actifs :</span>
+        {% for categorie in categories %}
+            {% if categorie.id in categoriesActives %}
+                <span class="filtre-tag">🏷️ {{ categorie.categorie }}</span>
+            {% endif %}
+        {% endfor %}
+        {% for departement in departements %}
+            {% if departement.id in departementsActifs %}
+                <span class="filtre-tag">📍 {{ departement.numero }} - {{ departement.nom }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if coupon_reductions is empty %}
+    <div class="articles-empty">
+        <p>Aucun coupon disponible pour ces critères.</p>
+    </div>
+{% else %}
+    <div class="articles-grid">
+        {% for coupon in coupon_reductions %}
+            <div class="article-card">
+
+                {% if coupon.offre %}
+                    <div class="article-card-badge">{{ coupon.offre }}</div>
+                {% endif %}
+
+                {% if not coupon.actif %}
+                    <div class="article-card-badge" style="background: #6c757d;">Inactif</div>
+                {% endif %}
+
+                <a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}">
+                    <div class="article-card-img">
+                        {% if coupon.logo %}
+                            <img src="{{ asset('uploads/logos/' ~ coupon.logo) }}" alt="{{ coupon.intitule }}">
+                        {% else %}
+                            <div class="article-card-img-placeholder">🎫</div>
+                        {% endif %}
+                    </div>
+                </a>
+
+                {% if coupon.couponCategorie %}
+                    <div class="article-card-categorie">
+                        🏷️ {{ coupon.couponCategorie.categorie }}
+                    </div>
+                {% endif %}
+
+                {% if coupon.departement %}
+                    <div class="article-card-departement">
+                        📍 {{ coupon.departement.numero }} - {{ coupon.departement.nom }}
+                    </div>
+                {% endif %}
+
+                <div class="article-card-body">
+                    <h3 class="article-card-titre">{{ coupon.intitule }}</h3>
+                    <p class="article-card-desc">{{ coupon.ville }}</p>
+                    <hr class="article-card-divider">
+                    <a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}" class="article-card-link">Voir la fiche</a>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="article-card-admin">
+                            <a href="{{ path('app_coupon_reduction_edit', {'id': coupon.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <form method="post" action="{{ path('app_coupon_reduction_delete', {'id': coupon.id}) }}"
+                                  onsubmit="return confirm('Supprimer ce coupon ?');" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ coupon.id) }}">
+                                <button class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

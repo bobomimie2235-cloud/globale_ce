@@ -1,0 +1,94 @@
+{# templates/produit/_grille.html.twig #}
+
+{% if categoriesActives is not empty or departementsActifs is not empty %}
+    <div class="articles-filtres-actifs">
+        <span>Filtres actifs :</span>
+        {% for categorie in categories %}
+            {% if categorie.id in categoriesActives %}
+                <span class="filtre-tag">🏷️ {{ categorie.intitule }}</span>
+            {% endif %}
+        {% endfor %}
+        {% for departement in departements %}
+            {% if departement.id in departementsActifs %}
+                <span class="filtre-tag">📍 {{ departement.numero }} - {{ departement.nom }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if produits is empty %}
+    <div class="articles-empty">
+        <p>Aucun produit disponible pour ces critères.</p>
+    </div>
+{% else %}
+    <div class="articles-grid">
+        {% for produit in produits %}
+            <div class="article-card">
+
+                {% if produit.stock <= 0 %}
+                    <div class="article-card-badge" style="background: #dc3545;">Rupture</div>
+                {% endif %}
+
+                <a href="{{ path('app_produit_show', {'id': produit.id}) }}">
+                    <div class="article-card-img">
+                        {% if produit.logo %}
+                            <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="{{ produit.intitule }}">
+                        {% else %}
+                            <div class="article-card-img-placeholder">🎟️</div>
+                        {% endif %}
+                    </div>
+                </a>
+
+                {% if produit.produitCategorie %}
+                    <div class="article-card-categorie">
+                        🏷️ {{ produit.produitCategorie.intitule }}
+                    </div>
+                {% endif %}
+
+                {% if produit.departement %}
+                    <div class="article-card-departement">
+                        📍 {{ produit.departement.numero }} - {{ produit.departement.nom }}
+                    </div>
+                {% endif %}
+
+                <div class="article-card-body">
+                    <h3 class="article-card-titre">{{ produit.intitule }}</h3>
+
+                    {% if produit.description %}
+                        <p class="article-card-desc">
+                            {{ produit.description|slice(0, 60) }}{% if produit.description|length > 60 %}...{% endif %}
+                        </p>
+                    {% endif %}
+
+                    <div class="produit-prix">
+                        <span class="produit-prix-public">{{ produit.prixPublic }} €</span>
+                        <span class="produit-prix-unitaire">{{ produit.prixUnitaire }} €</span>
+                    </div>
+
+                    <hr class="article-card-divider">
+
+                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="article-card-link">Voir la fiche</a>
+
+                    {% if is_granted('ROLE_USER') and produit.stock > 0 %}
+                        <form method="post" action="{{ path('app_commande_ajouter_produit', {'produitId': produit.id}) }}" class="produit-form-panier">
+                            <input type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}" class="produit-qty">
+                            <button type="submit" class="btn-panier">🛒 Ajouter</button>
+                        </form>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="article-card-admin">
+                            <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}"
+                                  onsubmit="return confirm('Supprimer ce produit ?');" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                                <button class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
