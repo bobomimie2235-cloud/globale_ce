@@ -180,6 +180,62 @@ final class CommandeController extends AbstractController
         return $this->redirectToRoute('app_commande_index');
     }
 
+// ===== Modifier la quantité d'un produit (AJAX) =====
+#[IsGranted('ROLE_USER')]
+#[Route('/quantite/{commandeProduitId}', name: 'app_commande_modifier_quantite', methods: ['POST'])]
+public function modifierQuantite(
+    int $commandeProduitId,
+    Request $request,
+    EntityManagerInterface $entityManager
+): Response {
+    $commandeProduit = $entityManager->getRepository(CommandeProduit::class)->find($commandeProduitId);
+
+    if (!$commandeProduit || $commandeProduit->getCommande()->getUtilisateur() !== $this->getUser()) {
+        return $this->json(['error' => 'Non autorisé.'], 403);
+    }
+
+    $action          = $request->request->get('action');
+    $quantiteActuelle = $commandeProduit->getQuantite();
+    $stock           = $commandeProduit->getProduit()->getStock();
+
+    if ($action === 'plus') {
+        if ($quantiteActuelle >= $stock) {
+            return $this->json(['error' => 'Stock insuffisant.'], 400);
+        }
+        $commandeProduit->setQuantite($quantiteActuelle + 1);
+
+    } elseif ($action === 'moins') {
+        if ($quantiteActuelle <= 1) {
+            return $this->json(['error' => 'Quantité minimale atteinte.'], 400);
+        }
+        $commandeProduit->setQuantite($quantiteActuelle - 1);
+
+    } else {
+        return $this->json(['error' => 'Action invalide.'], 400);
+    }
+
+    // Recalcule le total TTC
+    $commande = $commandeProduit->getCommande();
+    $total    = 0;
+    foreach ($commande->getCommandeProduits() as $cp) {
+        $total += $cp->getProduit()->getPrixPublic() * $cp->getQuantite();
+    }
+    $commande->setTotalTTC((string) $total);
+    $entityManager->flush();
+
+    $nouvelleQuantite = $commandeProduit->getQuantite();
+
+    return $this->json([
+        'nouvelleQuantite' => $nouvelleQuantite,
+        'sousTotalLigne'   => number_format(
+            $commandeProduit->getProduit()->getPrixPublic() * $nouvelleQuantite,
+            2, ',', ' '
+        ),
+        'totalTTC'         => number_format((float) $commande->getTotalTTC(), 2, ',', ' '),
+        'stockAtteint'     => $nouvelleQuantite >= $stock,
+    ]);
+}
+
     // ===== Retirer un produit de la commande =====
     #[IsGranted('ROLE_USER')]
     #[Route('/retirer/{commandeProduitId}', name: 'app_commande_retirer_produit', methods: ['POST'])]

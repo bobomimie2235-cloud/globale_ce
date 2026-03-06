@@ -1,0 +1,195 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// ===== IMPRESSION =====
+@media print {
+    nav, header, footer,
+    .btn-imprimer, .btn-retour, .flash-container {
+        display: none !important;
+    }
+
+    body {
+        background: $color-white !important;
+    }
+
+    .facture-wrapper {
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+}
+
+// ===== BOUTONS D'ACTION =====
+.btn-actions {
+    @include flex(row, flex-end, center, $spacing-md);
+    max-width: 860px;
+    margin: 0 auto $spacing-lg auto;
+}
+
+// ===== CADRE PRINCIPAL =====
+.facture-wrapper {
+    max-width: 860px;
+    margin: $spacing-xl auto;
+    background: $color-white;
+    border: 1px solid $color-grey;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-lg;
+    padding: $spacing-xl 3rem;
+    font-family: $font-text;
+    color: $color-text-dark;
+}
+
+// ===== EN-TÊTE =====
+.facture-header {
+    @include flex(row, space-between, flex-start, 0);
+    border-bottom: 3px solid $color-primary;
+    padding-bottom: $spacing-lg;
+    margin-bottom: $spacing-xl;
+
+    .logo-bloc {
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            font-family: $font-title;
+            color: $color-primary;
+            margin: 0;
+        }
+
+        p {
+            margin: 2px 0;
+            font-size: $font-size-sm;
+            color: $color-text-grey;
+        }
+    }
+
+    .numero-bloc {
+        text-align: right;
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: $font-subtitle;
+            color: $color-text-dark;
+            margin: 0 0 $spacing-xs 0;
+        }
+
+        p {
+            margin: 2px 0;
+            font-size: $font-size-sm;
+            color: $color-text-grey;
+        }
+    }
+}
+
+// ===== BLOC VENDEUR / ACHETEUR =====
+.facture-parties {
+    @include flex(row, space-between, flex-start, $spacing-xl);
+    margin-bottom: $spacing-xl;
+
+    @include mobile {
+        flex-direction: column;
+    }
+}
+
+.facture-partie {
+    flex: 1;
+    background: $color-light;
+    border-radius: $border-radius;
+    padding: $spacing-md $spacing-lg;
+
+    h4 {
+        font-size: $font-size-xs;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: $color-primary;
+        margin: 0 0 $spacing-sm 0;
+        border-bottom: 1px solid $color-grey;
+        padding-bottom: $spacing-xs;
+        font-family: $font-subtitle;
+    }
+
+    p {
+        margin: 3px 0;
+        font-size: $font-size-base;
+        color: $color-text-dark;
+    }
+}
+
+// ===== TABLEAU PRODUITS =====
+.facture-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: $spacing-lg;
+    font-size: $font-size-base;
+    font-family: $font-text;
+
+    .text-center { text-align: center; }
+    .text-right  { text-align: right; }
+
+    thead tr {
+        background: $color-primary;
+        color: $color-white;
+    }
+
+    thead th {
+        padding: $spacing-sm $spacing-md;
+        font-weight: 600;
+        text-align: left;
+
+        &:last-child { text-align: right; }
+    }
+
+    tbody {
+        tr:nth-child(even) {
+            background: rgba($color-primary, 0.06);
+        }
+
+        td {
+            padding: $spacing-xs $spacing-md;
+            border-bottom: 1px solid $color-grey;
+            color: $color-text-dark;
+
+            &:last-child { text-align: right; }
+        }
+    }
+
+    tfoot tr {
+        font-weight: 700;
+        font-size: 1.05rem;
+    }
+
+    tfoot td {
+        padding: $spacing-sm $spacing-md;
+        border-top: 2px solid $color-primary;
+        background: $color-light;
+
+        &:last-child { text-align: right; }
+    }
+}
+
+// ===== BADGES STATUT =====
+.statut-badge {
+    display: inline-block;
+    padding: 3px $spacing-md;
+    border-radius: $border-radius-pill;
+    font-size: $font-size-sm;
+    font-weight: 600;
+}
+
+.statut-validee  { background: rgba($color-success, 0.15); color: darken($color-success, 10%); }
+.statut-en_cours { background: rgba($color-warning, 0.20); color: darken($color-warning, 25%); }
+.statut-annulee  { background: rgba($color-danger,  0.15); color: darken($color-danger,  10%); }
+
+// ===== PIED DE FACTURE =====
+.facture-footer {
+    text-align: center;
+    font-size: $font-size-xs;
+    color: $color-text-grey;
+    margin-top: $spacing-xl;
+    border-top: 1px solid $color-grey;
+    padding-top: $spacing-md;
+
+    p { margin: 2px 0; color: $color-text-grey; }
+}

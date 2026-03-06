@@ -1,36 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Commande{% endblock %}
+{% block title %}Facture n°{{ commande.id }}{% endblock %}
 
 {% block body %}
-    <h1>Commande</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ commande.id }}</td>
-            </tr>
-            <tr>
-                <th>Statut</th>
-                <td>{{ commande.statut }}</td>
-            </tr>
-            <tr>
-                <th>Total TTC</th>
-                <td>{{ commande.totalTTC }} €</td>
-            </tr>
-            <tr>
-                <th>Date commande</th>
-                <td>{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y H:i') : '-' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="btn-actions">
+        <a href="{{ path('app_commande_index') }}" class="btn btn-secondary btn-retour">
+            ← Retour à mes commandes
+        </a>
+        <button onclick="window.print()" class="btn btn-primary btn-imprimer">
+            🖨️ Télécharger / Imprimer
+        </button>
+    </div>
 
-    <a href="{{ path('app_commande_index') }}">Retour à la liste</a>
+    <div class="facture-wrapper">
 
-    {% if is_granted('ROLE_ADMIN') or app.user == commande.utilisateur %}
-        <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+        <div class="facture-header">
+            <div class="logo-bloc">
+                <h2>GLOBAL C.E.</h2>
+                <p>Bâtiment Nominoë</p>
+                <p>35290 SAINT-MÉEN-LE-GRAND</p>
+            </div>
+            <div class="numero-bloc">
+                <h3>FACTURE N° {{ '%05d'|format(commande.id) }}</h3>
+                <p>Date : {{ commande.dateCommande ? commande.dateCommande|date('d/m/Y') : 'N/A' }}</p>
+                <p>
+                    Statut :
+                    <span class="statut-badge statut-{{ commande.statut }}">
+                        {% if commande.statut == 'validee' %}Validée
+                        {% elseif commande.statut == 'en_cours' %}En cours
+                        {% else %}{{ commande.statut }}
+                        {% endif %}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <div class="facture-parties">
+            <div class="facture-partie">
+                <h4>Vendeur</h4>
+                <p><strong>GLOBAL C.E.</strong></p>
+                <p>Bâtiment Nominoë</p>
+                <p>35290 SAINT-MÉEN-LE-GRAND</p>
+            </div>
+
+            <div class="facture-partie">
+    <h4>Acheteur</h4>
+    {% set user = commande.utilisateur %}
+    <p><strong>{{ user.prenom }} {{ user.nom|upper }}</strong></p>
+    <p>{{ user.email }}</p>
+    {% if user.utilisateurGroupe %}
+        <p>Groupe : {{ user.utilisateurGroupe.nomGroupe }}</p>
     {% endif %}
+    {% if user.utilisateurAdresses is not empty %}
+        {% set adresse = user.utilisateurAdresses.first() %}
+        <p style="margin-top: 6px;">
+            {{ adresse.adresse }}<br>
+            {{ adresse.codePostal }} {{ adresse.ville }}<br>
+            {{ adresse.pays }}
+        </p>
+    {% endif %}
+</div>
+        </div>
 
-    {{ include('commande/_delete_form.html.twig') }}
+        <table class="facture-table">
+    <thead>
+        <tr>
+            <th>Désignation</th>
+            <th>Mode de paiement</th>
+            <th class="text-center">Qté</th>
+            <th class="text-right">Prix unit. TTC</th>
+            <th class="text-right">Sous-total TTC</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cp in commande.commandeProduits %}
+            <tr>
+                <td>{{ cp.produit.intitule }}</td>
+                <td>{{ cp.modePaiement ?? '—' }}</td>
+                <td class="text-center">{{ cp.quantite }}</td>
+                <td class="text-right">{{ cp.produit.prixPublic|number_format(2, ',', ' ') }} €</td>
+                <td class="text-right">{{ (cp.produit.prixPublic * cp.quantite)|number_format(2, ',', ' ') }} €</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4">Total TTC</td>
+            <td class="text-right">{{ commande.totalTTC|number_format(2, ',', ' ') }} €</td>
+        </tr>
+    </tfoot>
+</table>
+
+        <div class="facture-footer">
+            <p>GLOBAL C.E. — Bâtiment Nominoë — 35290 Saint-Méen-le-Grand</p>
+            <p>Merci de votre confiance.</p>
+        </div>
+
+    </div>
+
 {% endblock %}

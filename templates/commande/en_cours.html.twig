@@ -28,13 +28,33 @@
             </thead>
             <tbody>
                 {% for cp in commande.commandeProduits %}
-                    <tr>
+                    <tr data-cp-id="{{ cp.id }}">
                         <td>{{ cp.produit.intitule }}</td>
                         <td>{{ cp.produit.prixPublic }} €</td>
-                        <td>{{ cp.quantite }}</td>
-                        <td>{{ (cp.produit.prixPublic * cp.quantite)|number_format(2, ',', ' ') }} €</td>
                         <td>
-                            <form method="post" action="{{ path('app_commande_retirer_produit', {'commandeProduitId': cp.id}) }}"
+                            {# ===== Boutons +/- ===== #}
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-outline-secondary btn-sm btn-quantite"
+                                        data-id="{{ cp.id }}"
+                                        data-action="moins"
+                                        {% if cp.quantite <= 1 %}disabled{% endif %}>
+                                    −
+                                </button>
+                                <span class="quantite-valeur fw-bold px-2">{{ cp.quantite }}</span>
+                                <button class="btn btn-outline-secondary btn-sm btn-quantite"
+                                        data-id="{{ cp.id }}"
+                                        data-action="plus"
+                                        {% if cp.quantite >= cp.produit.stock %}disabled{% endif %}>
+                                    +
+                                </button>
+                            </div>
+                        </td>
+                        <td class="sous-total-ligne">
+                            {{ (cp.produit.prixPublic * cp.quantite)|number_format(2, ',', ' ') }} €
+                        </td>
+                        <td>
+                            <form method="post"
+                                  action="{{ path('app_commande_retirer_produit', {'commandeProduitId': cp.id}) }}"
                                   onsubmit="return confirm('Retirer ce produit ?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Retirer</button>
                             </form>
@@ -45,7 +65,7 @@
             <tfoot>
                 <tr>
                     <th colspan="3">Total TTC</th>
-                    <th>{{ commande.totalTTC }} €</th>
+                    <th id="total-ttc">{{ commande.totalTTC }} €</th>
                     <th></th>
                 </tr>
             </tfoot>
@@ -62,4 +82,50 @@
         </form>
     {% endif %}
 
+{% endblock %}
+
+{% block scripts_body %}
+<script>
+document.querySelectorAll('.btn-quantite').forEach(btn => {
+    btn.addEventListener('click', async function () {
+        const id     = this.dataset.id;
+        const action = this.dataset.action;
+        const ligne  = this.closest('tr');
+
+        ligne.querySelectorAll('.btn-quantite').forEach(b => b.disabled = true);
+
+        const formData = new FormData();
+        formData.append('action', action);
+
+        try {
+            const response = await fetch(
+                `/commande/quantite/${id}`,
+                { method: 'POST', body: formData }
+            );
+
+            if (!response.ok) {
+                const err = await response.json();
+                alert(err.error ?? 'Erreur lors de la mise à jour.');
+                // Réactive les boutons en cas d'erreur
+                ligne.querySelectorAll('.btn-quantite').forEach(b => b.disabled = false);
+                return;
+            }
+
+            const data = await response.json();
+
+            ligne.querySelector('.quantite-valeur').textContent = data.nouvelleQuantite;
+            ligne.querySelector('.sous-total-ligne').textContent = data.sousTotalLigne + ' €';
+            document.getElementById('total-ttc').textContent = data.totalTTC + ' €';
+
+            // Gère les états disabled selon les nouvelles limites
+            ligne.querySelector('[data-action="moins"]').disabled = data.nouvelleQuantite <= 1;
+            ligne.querySelector('[data-action="plus"]').disabled  = data.stockAtteint ?? false;
+
+        } catch (e) {
+            alert('Erreur réseau.');
+            ligne.querySelectorAll('.btn-quantite').forEach(b => b.disabled = false);
+        }
+    });
+});
+</script>
 {% endblock %}
