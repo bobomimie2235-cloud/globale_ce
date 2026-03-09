@@ -1,33 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier Utilisateur{% endblock %}
-
 {% block body %}
-    <h1>Modifier Utilisateur</h1>
+	<h1>Modifier mon profil</h1>
 
-    <p>Roles : {{ form.vars.data.roles|join(', ') }}</p>
+	{# ===== Modification du profil ===== #}
+	<h2>Informations personnelles</h2>
+	{{ form_start(form) }}
+	{{ form_row(form.nom) }}
+	{{ form_row(form.prenom) }}
+	{{ form_row(form.email) }}
+	<button class="btn btn-primary">Enregistrer</button>
+	{{ form_end(form) }}
 
-    {# ===== Changement de mot de passe — accessible à l'admin ET à l'utilisateur lui-même ===== #}
-    {% if is_granted('ROLE_ADMIN') or app.user == utilisateur %}
-        <h2>Modifier le mot de passe</h2>
+	{# ===== Changement de mot de passe ===== #}
+	<h2>Modifier le mot de passe</h2>
+	{{ form_start(passwordForm) }}
+	{{ form_row(passwordForm.currentPassword) }}
+	{{ form_row(passwordForm.newPassword.first) }}
+	{{ form_row(passwordForm.newPassword.second) }}
+	<button class="btn btn-warning">Changer le mot de passe</button>
+	{{ form_end(passwordForm) }}
 
-        {{ form_start(passwordForm) }}
-            {{ form_row(passwordForm.currentPassword) }}
-            {{ form_row(passwordForm.newPassword.first) }}
-            {{ form_row(passwordForm.newPassword.second) }}
-            <button class="btn btn-warning">Changer le mot de passe</button>
-        {{ form_end(passwordForm) }}
-    {% endif %}
+	{% if is_granted('ROLE_ADMIN') %}
+		<a class="btn-return" href="{{ path('app_utilisateur_index') }}">Retour à la liste</a>
+	{% else %}
+		<a class="btn-return" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
+	{% endif %}
 
-    {# ===== Modification du profil — accessible à l'admin ET à l'utilisateur lui-même ===== #}
-    {% if is_granted('ROLE_ADMIN') or app.user == utilisateur %}
-        {{ include('utilisateur/_form.html.twig', {'button_label': 'Modifier'}) }}
-    {% else %}
-        <p class="alert alert-warning">Vous n'avez pas les droits pour modifier cet utilisateur.</p>
-    {% endif %}
-
-    <a href="{{ path('app_utilisateur_index') }}">Retour à la liste</a>
-
-    {# ===== Suppression — ROLE_ADMIN uniquement ===== #}
-    {{ include('utilisateur/_delete_form.html.twig') }}
+	{# Suppression — admin uniquement #}
+	{% if is_granted('ROLE_ADMIN') %}
+		{{ include('utilisateur/_delete_form.html.twig') }}
+	{% endif %}
 {% endblock %}

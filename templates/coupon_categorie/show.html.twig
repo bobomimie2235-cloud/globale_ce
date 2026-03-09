@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}CouponCategorie{% endblock %}
+{% block title %}Coupon Categorie{% endblock %}
 
 {% block body %}
-    <h1>CouponCategorie</h1>
+    <h1>Coupon Categorie</h1>
 
     <table class="table">
         <tbody>
@@ -18,9 +18,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_coupon_categorie_index') }}">back to list</a>
+    <a class="btn-return" href="{{ path('app_coupon_categorie_index') }}">Retour à la liste</a>
 
-    <a href="{{ path('app_coupon_categorie_edit', {'id': coupon_categorie.id}) }}">edit</a>
+    <a href="{{ path('app_coupon_categorie_edit', {'id': coupon_categorie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
 
     {{ include('coupon_categorie/_delete_form.html.twig') }}
 {% endblock %}

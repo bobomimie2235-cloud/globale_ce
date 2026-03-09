@@ -1,0 +1,105 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+@use 'sass:color';
+
+// ===== WRAPPER TABLE =====
+.groupes-table-wrap {
+    overflow-x: auto;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-sm;
+    margin-top: $spacing-lg;
+    -webkit-overflow-scrolling: touch;
+}
+
+// ===== TABLE =====
+.groupes-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $font-text;
+    font-size: $font-size-sm;
+    background: $color-white;
+    table-layout: fixed;
+
+    thead tr {
+        background: $color-nav;
+        color: $color-white;
+
+        th {
+            padding: $spacing-md $spacing-lg;
+            text-align: left;
+            font-weight: 700;
+            font-size: $font-size-sm;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+    }
+
+    thead th {
+        &:nth-child(1) { width: 120px; }   // Nom groupe
+        &:nth-child(2) { width: 150px; }   // Adresse
+        &:nth-child(3) { width: 90px; }    // Code postal
+        &:nth-child(4) { width: 150px; }   // Ville
+        &:nth-child(5) { width: 180px; }   // Actions
+    }
+
+    tbody tr {
+        border-bottom: 1px solid rgba($color-nav, 0.12);
+        transition: background 0.15s;
+        text-overflow: ellipsis;
+
+        &:hover {
+            background: rgba($color-primary, 0.04);
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: $spacing-md $spacing-lg;
+            color: $color-text-dark;
+            vertical-align: middle;
+        }
+    }
+}
+
+// ===== CELLULES SPÉCIFIQUES =====
+.groupes-id {
+    font-weight: 700;
+    color: $color-text-grey;
+}
+
+.groupes-nom {
+    font-weight: 600;
+    color: $color-nav;
+}
+
+.groupes-ref {
+    font-size: $font-size-xs;
+    color: $color-text-grey;
+    font-style: italic;
+}
+
+.groupes-cp,
+.groupes-tel {
+    white-space: nowrap;
+}
+
+.groupes-email {
+    font-weight: 600;
+    color: $color-nav;
+}
+
+.groupes-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+}
+
+.groupes-empty {
+    text-align: center;
+    padding: $spacing-xl !important;
+    color: $color-text-grey;
+    font-style: italic;
+}

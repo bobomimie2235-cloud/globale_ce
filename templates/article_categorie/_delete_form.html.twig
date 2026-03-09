@@ -1,6 +1,6 @@
 {% if is_granted('ROLE_ADMIN') %}
 <form method="post" action="{{ path('app_article_categorie_delete', {'id': article_categorie.id}) }}" onsubmit="return confirm('Voulez vous supprimer cette Catégorie Article ?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article_categorie.id) }}">
-    <button class="btn">Supprimer</button>
+    <button class="btn btn-danger btn-sm">Supprimer</button>
 </form>
 {% endif %}

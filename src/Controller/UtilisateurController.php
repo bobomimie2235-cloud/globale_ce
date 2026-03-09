@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Form\ProfilType;
 
 #[Route('/utilisateur')]
 final class UtilisateurController extends AbstractController
@@ -49,7 +50,7 @@ final class UtilisateurController extends AbstractController
         ]);
     }
 
-    #[IsGranted('VIEW', subject: 'utilisateur')]
+    #[IsGranted('EDIT', subject: 'utilisateur')]
     #[Route('/{id}', name: 'app_utilisateur_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Utilisateur $utilisateur): Response
     {
@@ -58,6 +59,7 @@ final class UtilisateurController extends AbstractController
         ]);
     }
 
+    #[IsGranted('EDIT', subject: 'utilisateur')]
     #[Route('/{id}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(
         Request $request,
@@ -66,7 +68,7 @@ final class UtilisateurController extends AbstractController
         UserPasswordHasherInterface $passwordHasher
     ): Response {
         // ===== Formulaire utilisateur (sans mot de passe) =====
-        $form = $this->createForm(UtilisateurType::class, $utilisateur);
+        $form = $this->createForm(ProfilType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -89,7 +89,7 @@
         </table>
     {% endif %}
 
-    <a href="{{ path('app_utilisateur_groupe_index') }}">Retour à la liste</a>
+    <a class="btn btn-return btn-sm" href="{{ path('app_utilisateur_groupe_index') }}">Retour à la liste</a>
 
     {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_utilisateur_groupe_edit', {'id': utilisateur_groupe.id}) }}" class="btn btn-warning btn-sm">Modifier</a>

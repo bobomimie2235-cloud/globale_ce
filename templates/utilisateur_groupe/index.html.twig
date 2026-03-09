@@ -1,59 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Groupe Utilisateur index{% endblock %}
+{% block title %}Gestion des Groupes
+{% endblock %}
 
 {% block body %}
-    <h1>Groupe Utilisateur index</h1>
+	<section class="articles-page">
+		<div class="articles-container">
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_utilisateur_groupe_new') }}" class="btn btn-primary btn-sm">Créer un groupe</a>
-    {% endif %}
+			<h1 class="articles-titre">Gestion des
+				<span>Groupes</span>
+			</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom groupe</th>
-                <th>Référence</th>
-                <th>Adresse</th>
-                <th>Code postal</th>
-                <th>Ville</th>
-                <th>Téléphone</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for utilisateur_groupe in utilisateur_groupes %}
-            <tr>
-                <td>{{ utilisateur_groupe.id }}</td>
-                <td>{{ utilisateur_groupe.nomGroupe }}</td>
-                <td>{{ utilisateur_groupe.referenceGroupe }}</td>
-                <td>{{ utilisateur_groupe.adresse }}</td>
-                <td>{{ utilisateur_groupe.codePostal }}</td>
-                <td>{{ utilisateur_groupe.ville }}</td>
-                <td>{{ utilisateur_groupe.telephone }}</td>
-                <td>{{ utilisateur_groupe.email }}</td>
-                <td>
-                    <a href="{{ path('app_utilisateur_groupe_show', {'id': utilisateur_groupe.id}) }}" class="btn btn-info btn-sm">Voir</a>
+			{% if is_granted('ROLE_ADMIN') %}
+				<div class="articles-admin-bar">
+					<a href="{{ path('app_utilisateur_groupe_new') }}" class="btn btn-primary btn-sm">+ Créer un groupe</a>
+				</div>
+			{% endif %}
 
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_utilisateur_groupe_edit', {'id': utilisateur_groupe.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+			<div class="groupes-table-wrap">
+				<table class="groupes-table">
+					<thead>
+						<tr>
+							<th>Nom groupe</th>
+							<th>Adresse</th>
+							<th>Code postal</th>
+							<th>Ville</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for groupe in utilisateur_groupes %}
+							<tr>
+								<td class="groupes-nom">{{ groupe.nomGroupe }}</td>
+								<td>{{ groupe.adresse }}</td>
+								<td class="groupes-cp">{{ groupe.codePostal }}</td>
+								<td>{{ groupe.ville }}</td>
+								<td class="groupes-actions">
+									<a href="{{ path('app_utilisateur_groupe_show', {'id': groupe.id}) }}" class="btn btn-info btn-sm">Voir</a>
 
-                        <form method="post" action="{{ path('app_utilisateur_groupe_delete', {'id': utilisateur_groupe.id}) }}"
-                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?');"
-                            style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur_groupe.id) }}">
-                            <button class="btn btn-danger btn-sm">Supprimer</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">Aucun groupe trouvé.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+									{% if is_granted('ROLE_ADMIN') %}
+										<a href="{{ path('app_utilisateur_groupe_edit', {'id': groupe.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+
+										<form method="post" action="{{ path('app_utilisateur_groupe_delete', {'id': groupe.id}) }}" onsubmit="return confirm('Supprimer ce groupe ?');" style="display:inline;">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ groupe.id) }}">
+											<button class="btn btn-delete btn-sm">Supprimer</button>
+										</form>
+									{% endif %}
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="9" class="groupes-empty">Aucun groupe trouvé.</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</section>
 {% endblock %}

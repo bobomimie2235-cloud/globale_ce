@@ -8,6 +8,7 @@
     border-radius: $border-radius-lg;
     box-shadow: $shadow-sm;
     margin-top: $spacing-lg;
+    -webkit-overflow-scrolling: touch; // ← fluidité sur mobile
 }
 
 // ===== TABLE =====
@@ -30,6 +31,49 @@
             letter-spacing: 0.5px;
             white-space: nowrap;
         }
+    }
+
+    thead th {
+        // ID
+        &:nth-child(1) {
+            width: 40px;
+        }
+
+        // Email
+        &:nth-child(2) {
+            width: 200px;
+        }
+
+        // Rôle
+        &:nth-child(3) {
+            width: 100px;
+        }
+
+        // Nom
+        &:nth-child(4) {
+            width: 100px;
+        }
+
+        // Prénom
+        &:nth-child(5) {
+            width: 100px;
+        }
+
+        // Inscription
+        &:nth-child(6) {
+            width: 100px;
+        }
+
+        // Groupe
+        &:nth-child(7) {
+            width: 300px;
+        }
+
+        // Actions
+        &:nth-child(8) {
+            width: 200px;
+        }
+
     }
 
     tbody tr {
@@ -112,6 +156,7 @@
     font-size: $font-size-xs;
     font-weight: 700;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 
     &--admin {
         background: rgba($color-primary, 0.15);

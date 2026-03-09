@@ -5,13 +5,56 @@
 .btn {
     @include btn-base;
 
-    &-sm  { padding: 0.3rem 0.6rem; font-size: $font-size-xs; }
-    &-lg  { padding: 0.6rem 1.2rem; font-size: 1.1rem; }
+    &-sm {
+        padding: 0.3rem 0.6rem;
+        font-size: $font-size-xs;
+    }
 
-    &-primary   { @include btn-color($color-primary); }
-    &-secondary { @include btn-color($color-secondary); }
-    &-success   { @include btn-color($color-success); }
-    &-danger    { @include btn-color($color-danger); }
-    &-warning   { @include btn-color($color-warning, #000); }
-    &-info      { @include btn-color($color-nav); }
+    &-lg {
+        padding: 0.6rem 1.2rem;
+        font-size: 1.1rem;
+    }
+
+    &-primary {
+        @include btn-color($color-primary);
+    }
+
+    &-secondary {
+        @include btn-color($color-secondary);
+    }
+
+    &-success {
+        @include btn-color($color-success);
+    }
+
+    &-danger {
+        @include btn-color($color-danger);
+    }
+
+    &-warning {
+        @include btn-color($color-warning, #000);
+    }
+
+    &-info {
+        @include btn-color($color-nav);
+    }
+}
+
+// ===== BOUTON RETOUR =====
+.btn-return {
+    display: inline-block;
+    margin: $spacing-xs 0;
+    padding: 0.6rem 1.5rem;
+    background: $color-primary;
+    color: $color-white;
+    border-radius: $border-radius-pill;
+    font-family: $font-text;
+    font-size: $font-size-sm;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+
+    &:hover {
+        background: $color-bg-dark;
+        transform: translateY(-1px);
+    }
 }

@@ -5,6 +5,8 @@
 {% block body %}
     <h1>CouponCategorie index</h1>
 
+    <a href="{{ path('app_coupon_categorie_new') }}" class="btn btn-primary btn-sm">+ Créer Coupon</a>
+
     <table class="table">
         <thead>
             <tr>
@@ -19,8 +21,8 @@
                 <td>{{ coupon_categorie.id }}</td>
                 <td>{{ coupon_categorie.categorie }}</td>
                 <td>
-                    <a href="{{ path('app_coupon_categorie_show', {'id': coupon_categorie.id}) }}">show</a>
-                    <a href="{{ path('app_coupon_categorie_edit', {'id': coupon_categorie.id}) }}">edit</a>
+                    <a href="{{ path('app_coupon_categorie_show', {'id': coupon_categorie.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                    <a href="{{ path('app_coupon_categorie_edit', {'id': coupon_categorie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -31,5 +33,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_coupon_categorie_new') }}">Create new</a>
 {% endblock %}

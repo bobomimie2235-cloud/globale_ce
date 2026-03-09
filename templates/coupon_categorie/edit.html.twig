@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit CouponCategorie{% endblock %}
+{% block title %}Modifier Coupon Catégorie{% endblock %}
 
 {% block body %}
-    <h1>Edit CouponCategorie</h1>
+    <h1>Modifier Coupon Catégorie</h1>
 
-    {{ include('coupon_categorie/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('coupon_categorie/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a href="{{ path('app_coupon_categorie_index') }}">back to list</a>
+    <a  class="btn-return" href="{{ path('app_coupon_categorie_index') }}">Retour à la liste</a>
 
     {{ include('coupon_categorie/_delete_form.html.twig') }}
 {% endblock %}

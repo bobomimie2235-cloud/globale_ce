@@ -10,7 +10,7 @@
 	{% else %}
 		<p class="alert alert-warning">Vous n'avez pas les droits pour modifier cet article.</p>
 	{% endif %}
-	<a href="{{ path('app_article_categorie_index') }}">Retour à la liste</a>
+	<a class="btn-return" href="{{ path('app_article_categorie_index') }}">Retour à la liste</a>
 
 	{{ include('article_categorie/_delete_form.html.twig') }}
 {% endblock %}

@@ -41,9 +41,12 @@ security:
 
         # 👑 ADMIN uniquement
         - { path: ^/utilisateur-groupe, roles: ROLE_ADMIN }
+        - { path: ^/utilisateur/new, roles: ROLE_ADMIN }
+        - { path: ^/utilisateur/\d+/edit, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/utilisateur/\d+$, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/utilisateur, roles: ROLE_ADMIN }
         - { path: ^/article-categorie, roles: ROLE_ADMIN }
-        - { path: ^/produit-categorie, roles: ROLE_ADMIN }
+        - { path: ^/produit-categorie, roles: ROLE_ADMIN }  
 
         # 🔐 Utilisateurs connectés
         - { path: ^/commande, roles: ROLE_USER }
