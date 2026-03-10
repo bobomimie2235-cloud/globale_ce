@@ -1,0 +1,140 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}{{ categorie.categorie }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_coupon_index') }}">Coupons</a> /
+      <a href="{{ path('admin_coupon_categorie_index') }}">Catégories</a> /</span>
+      {{ categorie.categorie }}
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_coupon_categorie_edit', {id: categorie.id}) }}" class="btn btn-warning">
+        <i class="bx bx-edit me-1"></i> Modifier
+      </a>
+      <a href="{{ path('admin_coupon_categorie_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4">
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-tag me-2 text-primary"></i>Informations</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-1">ID</p>
+          <p class="fw-semibold">#{{ categorie.id }}</p>
+          <p class="text-muted small mb-1">Catégorie</p>
+          <p class="fw-semibold">{{ categorie.categorie }}</p>
+          <p class="text-muted small mb-1">Nombre de coupons</p>
+          <p><span class="badge bg-label-warning fs-6">{{ categorie.couponReductions|length }}</span></p>
+        </div>
+      </div>
+
+      <div class="card border-danger">
+        <div class="card-header bg-label-danger">
+          <h6 class="mb-0 text-danger"><i class="bx bx-trash me-2"></i>Zone dangereuse</h6>
+        </div>
+        <div class="card-body">
+          {% if categorie.couponReductions|length > 0 %}
+            <p class="text-muted small mb-0">
+              <i class="bx bx-lock text-warning me-1"></i>
+              Impossible de supprimer : {{ categorie.couponReductions|length }} coupon(s) rattaché(s).
+            </p>
+          {% else %}
+            <p class="text-muted small mb-3">La suppression est irréversible.</p>
+            <form method="POST"
+                  action="{{ path('admin_coupon_categorie_delete', {id: categorie.id}) }}"
+                  onsubmit="return confirm('Supprimer définitivement cette catégorie ?')">
+              <input type="hidden" name="_token"
+                     value="{{ csrf_token('delete' ~ categorie.id) }}">
+              <button type="submit" class="btn btn-danger w-100">
+                <i class="bx bx-trash me-1"></i> Supprimer
+              </button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="bx bx-purchase-tag me-2 text-warning"></i>Coupons rattachés</h5>
+          <span class="badge bg-label-warning">{{ categorie.couponReductions|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          {% if categorie.couponReductions is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Logo</th>
+                    <th>Référence</th>
+                    <th>Intitulé</th>
+                    <th>Offre</th>
+                    <th>Statut</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for coupon in categorie.couponReductions %}
+                    <tr>
+                      <td>
+                        {% if coupon.logo %}
+                          <img src="{{ asset('uploads/logos/' ~ coupon.logo) }}"
+                               alt="{{ coupon.intitule }}"
+                               class="rounded" style="width:36px;height:36px;object-fit:cover;">
+                        {% else %}
+                          <span class="avatar avatar-sm">
+                            <span class="avatar-initial rounded bg-label-secondary">
+                              <i class="bx bx-purchase-tag"></i>
+                            </span>
+                          </span>
+                        {% endif %}
+                      </td>
+                      <td><code>{{ coupon.reference }}</code></td>
+                      <td class="fw-semibold">{{ coupon.intitule }}</td>
+                      <td>
+                        {% if coupon.offre %}
+                          <span class="badge bg-label-success">{{ coupon.offre }}</span>
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if coupon.actif %}
+                          <span class="badge bg-label-success">Actif</span>
+                        {% else %}
+                          <span class="badge bg-label-danger">Inactif</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <a href="{{ path('admin_coupon_show', {id: coupon.id}) }}"
+                           class="btn btn-sm btn-icon btn-outline-primary" title="Voir">
+                          <i class="bx bx-show"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-purchase-tag bx-md mb-2 d-block"></i>
+              <p class="mb-0">Aucun coupon dans cette catégorie.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

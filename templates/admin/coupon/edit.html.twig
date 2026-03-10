@@ -1,0 +1,131 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Modifier {{ coupon.intitule }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_coupon_index') }}">Coupons</a> /
+      <a href="{{ path('admin_coupon_show', {id: coupon.id}) }}">{{ coupon.intitule }}</a> /</span>
+      Modifier
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_coupon_show', {id: coupon.id}) }}" class="btn btn-outline-primary">
+        <i class="bx bx-show me-1"></i> Voir
+      </a>
+      <a href="{{ path('admin_coupon_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+  <div class="row">
+
+    <div class="col-md-8 mb-4">
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-purchase-tag me-2 text-warning"></i>Informations principales</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.reference) }}</label>
+              {{ form_widget(form.reference, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.reference) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.intitule) }}</label>
+              {{ form_widget(form.intitule, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.intitule) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.couponCategorie) }}</label>
+              {{ form_widget(form.couponCategorie, {'attr': {'class': 'form-select'}}) }}
+              {{ form_errors(form.couponCategorie) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.offre) }}</label>
+              {{ form_widget(form.offre, {'attr': {'class': 'form-control', 'placeholder': 'Ex: -10%, -25%...'}}) }}
+              {{ form_errors(form.offre) }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">{{ form_label(form.offreCommerciale) }}</label>
+              {{ form_widget(form.offreCommerciale, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.offreCommerciale) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-map me-2 text-info"></i>Localisation</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.adresse) }}</label>
+              {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.adresse) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.ville) }}</label>
+              {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.ville) }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">{{ form_label(form.departement) }}</label>
+              {{ form_widget(form.departement, {'attr': {'class': 'form-select'}}) }}
+              {{ form_errors(form.departement) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-image me-2 text-primary"></i>Logo actuel</h6>
+        </div>
+        <div class="card-body">
+          {% if coupon.logo %}
+            <div class="text-center mb-3">
+              <img src="{{ asset('uploads/logos/' ~ coupon.logo) }}"
+                   alt="Logo actuel" class="img-fluid rounded" style="max-height:100px;">
+            </div>
+          {% endif %}
+          {{ form_widget(form.logo, {'attr': {'class': 'form-control'}}) }}
+          {{ form_errors(form.logo) }}
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-toggle-left me-2 text-success"></i>Statut</h6>
+        </div>
+        <div class="card-body">
+          <div class="form-check form-switch">
+            {{ form_widget(form.actif, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+            <label class="form-check-label">{{ form_label(form.actif) }}</label>
+          </div>
+          {{ form_errors(form.actif) }}
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-warning">
+          <i class="bx bx-save me-1"></i> Enregistrer les modifications
+        </button>
+        <a href="{{ path('admin_coupon_index') }}" class="btn btn-outline-secondary">Annuler</a>
+      </div>
+
+    </div>
+  </div>
+  {{ form_end(form) }}
+
+{% endblock %}

@@ -16,6 +16,19 @@ class UtilisateurCouponRepository extends ServiceEntityRepository
         parent::__construct($registry, UtilisateurCoupon::class);
     }
 
+        /**
+     * À ajouter dans src/Repository/UtilisateurGroupeRepository.php
+     */
+    public function findBySearch(?string $search): array
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.nomGroupe LIKE :search OR g.referenceGroupe LIKE :search OR g.ville LIKE :search OR g.email LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->orderBy('g.nomGroupe', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+    
     //    /**
     //     * @return UtilisateurCoupon[] Returns an array of UtilisateurCoupon objects
     //     */

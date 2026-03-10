@@ -1,0 +1,174 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Coupons de réduction{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin /</span> Coupons de réduction
+    </h4>
+    <a href="{{ path('admin_coupon_new') }}" class="btn btn-primary">
+      <i class="bx bx-plus me-1"></i> Nouveau coupon
+    </a>
+  </div>
+
+  {# ===== FILTRES ===== #}
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">Recherche</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bx bx-search"></i></span>
+            <input type="text" name="search" class="form-control"
+                   placeholder="Intitulé, référence, ville..." value="{{ search ?? '' }}">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Catégorie</label>
+          <select name="categorie" class="form-select">
+            <option value="">Toutes les catégories</option>
+            {% for categorie in categories %}
+              <option value="{{ categorie.id }}" {{ categorieActif == categorie.id ? 'selected' : '' }}>
+                {{ categorie.categorie }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Département</label>
+          <select name="departement" class="form-select">
+            <option value="">Tous</option>
+            {% for dept in departements %}
+              <option value="{{ dept.id }}" {{ deptActif == dept.id ? 'selected' : '' }}>
+                {{ dept }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Statut</label>
+          <select name="actif" class="form-select">
+            <option value="">Tous</option>
+            <option value="1" {{ actifActif == '1' ? 'selected' : '' }}>Actifs</option>
+            <option value="0" {{ actifActif == '0' ? 'selected' : '' }}>Inactifs</option>
+          </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bx bx-filter-alt"></i> Filtrer
+          </button>
+          <a href="{{ path('admin_coupon_index') }}" class="btn btn-outline-secondary">
+            <i class="bx bx-x"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# ===== TABLEAU ===== #}
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Liste des coupons</h5>
+      <span class="badge bg-label-primary">{{ coupons|length }} coupon(s)</span>
+    </div>
+    <div class="card-body p-0">
+      {% if coupons is not empty %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Logo</th>
+                <th>Référence</th>
+                <th>Intitulé</th>
+                <th>Catégorie</th>
+                <th>Offre</th>
+                <th>Ville</th>
+                <th>Statut</th>
+                <th>Utilisations</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for coupon in coupons %}
+                <tr>
+                  <td>
+                    {% if coupon.logo %}
+                      <img src="{{ asset('uploads/logos/' ~ coupon.logo) }}"
+                           alt="{{ coupon.intitule }}"
+                           class="rounded" style="width:40px;height:40px;object-fit:cover;">
+                    {% else %}
+                      <span class="avatar avatar-sm">
+                        <span class="avatar-initial rounded bg-label-warning">
+                          <i class="bx bx-purchase-tag"></i>
+                        </span>
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td><code>{{ coupon.reference }}</code></td>
+                  <td class="fw-semibold">{{ coupon.intitule }}</td>
+                  <td>
+                    {% if coupon.couponCategorie %}
+                      <span class="badge bg-label-info">{{ coupon.couponCategorie.categorie }}</span>
+                    {% else %}
+                      <span class="text-muted">—</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if coupon.offre %}
+                      <span class="badge bg-label-success">{{ coupon.offre }}</span>
+                    {% else %}
+                      <small class="text-muted">{{ coupon.offreCommerciale|slice(0,30) }}...</small>
+                    {% endif %}
+                  </td>
+                  <td><small>{{ coupon.ville }}</small></td>
+                  <td>
+                    {% if coupon.actif %}
+                      <span class="badge bg-label-success">Actif</span>
+                    {% else %}
+                      <span class="badge bg-label-danger">Inactif</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="badge bg-label-secondary">
+                      {{ coupon.utilisateurCoupons|length }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <a href="{{ path('admin_coupon_show', {id: coupon.id}) }}"
+                       class="btn btn-sm btn-icon btn-outline-primary me-1" title="Voir">
+                      <i class="bx bx-show"></i>
+                    </a>
+                    <a href="{{ path('admin_coupon_edit', {id: coupon.id}) }}"
+                       class="btn btn-sm btn-icon btn-outline-warning me-1" title="Modifier">
+                      <i class="bx bx-edit"></i>
+                    </a>
+                    <form method="POST"
+                          action="{{ path('admin_coupon_delete', {id: coupon.id}) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Supprimer ce coupon ?')">
+                      <input type="hidden" name="_token"
+                             value="{{ csrf_token('delete' ~ coupon.id) }}">
+                      <button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Supprimer">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="text-center py-5 text-muted">
+          <i class="bx bx-purchase-tag bx-lg mb-3 d-block"></i>
+          <p>Aucun coupon trouvé.</p>
+          <a href="{{ path('admin_coupon_new') }}" class="btn btn-primary btn-sm">
+            Ajouter le premier coupon
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

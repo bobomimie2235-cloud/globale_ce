@@ -1,0 +1,121 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Groupes utilisateurs{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_utilisateur_index') }}">Utilisateurs</a> /</span>
+      Groupes
+    </h4>
+    <a href="{{ path('admin_groupe_new') }}" class="btn btn-primary">
+      <i class="bx bx-plus me-1"></i> Nouveau groupe
+    </a>
+  </div>
+
+  {# ===== FILTRE ===== #}
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-8">
+          <label class="form-label">Recherche</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bx bx-search"></i></span>
+            <input type="text" name="search" class="form-control"
+                   placeholder="Nom, référence, ville, email..." value="{{ search ?? '' }}">
+          </div>
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bx bx-filter-alt"></i> Filtrer
+          </button>
+          <a href="{{ path('admin_groupe_index') }}" class="btn btn-outline-secondary">
+            <i class="bx bx-x"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# ===== TABLEAU ===== #}
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Liste des groupes</h5>
+      <span class="badge bg-label-primary">{{ groupes|length }} groupe(s)</span>
+    </div>
+    <div class="card-body p-0">
+      {% if groupes is not empty %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Nom du groupe</th>
+                <th>Référence</th>
+                <th>Ville</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Membres</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for groupe in groupes %}
+                <tr>
+                  <td><small class="text-muted">#{{ groupe.id }}</small></td>
+                  <td class="fw-semibold">{{ groupe.nomGroupe }}</td>
+                  <td><code>{{ groupe.referenceGroupe }}</code></td>
+                  <td>
+                    <small>
+                      {% if groupe.codePostal %}{{ groupe.codePostal }} {% endif %}
+                      {{ groupe.ville ?: '—' }}
+                    </small>
+                  </td>
+                  <td><small>{{ groupe.email ?: '—' }}</small></td>
+                  <td><small>{{ groupe.telephone ?: '—' }}</small></td>
+                  <td>
+                    <span class="badge bg-label-info">
+                      {{ groupe.utilisateurs|length }} membre(s)
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <a href="{{ path('admin_groupe_show', {id: groupe.id}) }}"
+                       class="btn btn-sm btn-icon btn-outline-primary me-1" title="Voir">
+                      <i class="bx bx-show"></i>
+                    </a>
+                    <a href="{{ path('admin_groupe_edit', {id: groupe.id}) }}"
+                       class="btn btn-sm btn-icon btn-outline-warning me-1" title="Modifier">
+                      <i class="bx bx-edit"></i>
+                    </a>
+                    <form method="POST"
+                          action="{{ path('admin_groupe_delete', {id: groupe.id}) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Supprimer ce groupe ?')">
+                      <input type="hidden" name="_token"
+                             value="{{ csrf_token('delete' ~ groupe.id) }}">
+                      <button type="submit"
+                              class="btn btn-sm btn-icon btn-outline-danger"
+                              title="Supprimer"
+                              {{ groupe.utilisateurs|length > 0 ? 'disabled' : '' }}>
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="text-center py-5 text-muted">
+          <i class="bx bx-buildings bx-lg mb-3 d-block"></i>
+          <p>Aucun groupe trouvé.</p>
+          <a href="{{ path('admin_groupe_new') }}" class="btn btn-primary btn-sm">
+            Créer le premier groupe
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Modifier {{ produit.intitule }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_produit_index') }}">Produits</a> /</span>
+      Modifier
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_produit_show', {id: produit.id}) }}" class="btn btn-outline-primary">
+        <i class="bx bx-show me-1"></i> Voir
+      </a>
+      <a href="{{ path('admin_produit_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">{{ produit.intitule }} <code class="ms-2">{{ produit.reference }}</code></h5>
+    </div>
+    <div class="card-body">
+      {{ form_start(form) }}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">{{ form_label(form.reference) }}</label>
+            {{ form_widget(form.reference, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.reference) }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{{ form_label(form.intitule) }}</label>
+            {{ form_widget(form.intitule, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.intitule) }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">{{ form_label(form.description) }}</label>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+            {{ form_errors(form.description) }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ form_label(form.prixUnitaire) }}</label>
+            {{ form_widget(form.prixUnitaire, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.prixUnitaire) }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ form_label(form.prixPublic) }}</label>
+            {{ form_widget(form.prixPublic, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.prixPublic) }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ form_label(form.stock) }}</label>
+            {{ form_widget(form.stock, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.stock) }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{{ form_label(form.produitCategorie) }}</label>
+            {{ form_widget(form.produitCategorie, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.produitCategorie) }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{{ form_label(form.departement) }}</label>
+            {{ form_widget(form.departement, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.departement) }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Logo actuel</label>
+            {% if produit.logo %}
+              <div class="mb-2">
+                <img src="{{ asset('uploads/logos/' ~ produit.logo) }}"
+                     alt="Logo" class="rounded" style="height:60px;">
+              </div>
+            {% else %}
+              <p class="text-muted small">Aucun logo</p>
+            {% endif %}
+            {{ form_widget(form.logo, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.logo) }}
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-warning">
+            <i class="bx bx-save me-1"></i> Enregistrer les modifications
+          </button>
+          <a href="{{ path('admin_produit_index') }}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
+
+{% endblock %}

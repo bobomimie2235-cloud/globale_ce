@@ -6,9 +6,6 @@ use App\Entity\UtilisateurGroupe;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<UtilisateurGroupe>
- */
 class UtilisateurGroupeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +13,18 @@ class UtilisateurGroupeRepository extends ServiceEntityRepository
         parent::__construct($registry, UtilisateurGroupe::class);
     }
 
-    //    /**
-    //     * @return UtilisateurGroupe[] Returns an array of UtilisateurGroupe objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?UtilisateurGroupe
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Retourne tous les groupes avec le nombre d'utilisateurs dans chaque groupe,
+     * triés par nombre d'utilisateurs décroissant
+     */
+    public function findGroupesAvecStats(): array
+    {
+        return $this->createQueryBuilder('g')
+            ->select('g.nomGroupe', 'g.referenceGroupe', 'COUNT(u.id) AS nbUtilisateurs')
+            ->leftJoin('g.utilisateurs', 'u')
+            ->groupBy('g.id')
+            ->orderBy('nbUtilisateurs', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

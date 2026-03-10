@@ -1,0 +1,161 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Produits
+{% endblock %}
+
+{% block body %}
+
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="fw-bold mb-0">
+			<span class="text-muted fw-light">Admin /</span>
+			Produits
+		</h4>
+		<a href="{{ path('admin_produit_new') }}" class="btn btn-primary">
+			<i class="bx bx-plus me-1"></i>
+			Nouveau produit
+		</a>
+	</div>
+
+	{# ===== FILTRES ===== #}
+	<div class="card mb-4">
+		<div class="card-body">
+			<form method="GET" class="row g-3 align-items-end">
+				<div class="col-md-4">
+					<label class="form-label">Recherche</label>
+					<div class="input-group">
+						<span class="input-group-text">
+							<i class="bx bx-search"></i>
+						</span>
+						<input type="text" name="search" class="form-control" placeholder="Référence, intitulé..." value="{{ search ?? '' }}">
+					</div>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Catégorie</label>
+					<select name="categories[]" class="form-select">
+						<option value="">Toutes les catégories</option>
+						{% for categorie in categories %}
+							<option value="{{ categorie.id }}" {{ categorie.id in categoriesActives ? 'selected' : '' }}>
+								{{ categorie.intitule }}
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Département</label>
+					<select name="departements[]" class="form-select">
+						<option value="">Tous les départements</option>
+						{% for dept in departements %}
+							<option value="{{ dept.id }}" {{ dept.id in departementsActifs ? 'selected' : '' }}>
+								{{ dept }}
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-2 d-flex gap-2">
+					<button type="submit" class="btn btn-primary w-100">
+						<i class="bx bx-filter-alt"></i>
+						Filtrer
+					</button>
+					<a href="{{ path('admin_produit_index') }}" class="btn btn-outline-secondary">
+						<i class="bx bx-x"></i>
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	{# ===== TABLEAU ===== #}
+	<div class="card">
+		<div class="card-header d-flex justify-content-between align-items-center">
+			<h5 class="mb-0">Liste des produits</h5>
+			<span class="badge bg-label-primary">{{ produits|length }}
+				produit(s)</span>
+		</div>
+		<div class="card-body p-0">
+			{% if produits is not empty %}
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0">
+						<thead class="table-light">
+							<tr>
+								<th>Logo</th>
+								<th>Référence</th>
+								<th>Intitulé</th>
+								<th>Catégorie</th>
+								<th>Prix unitaire</th>
+								<th>Prix public</th>
+								<th>Stock</th>
+								<th>Département</th>
+								<th class="text-center">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for produit in produits %}
+								<tr>
+									<td>
+										{% if produit.logo %}
+											<img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="{{ produit.intitule }}" class="rounded" style="width:40px;height:40px;object-fit:cover;">
+										{% else %}
+											<span class="avatar avatar-sm">
+												<span class="avatar-initial rounded bg-label-secondary">
+													<i class="bx bx-package"></i>
+												</span>
+											</span>
+										{% endif %}
+									</td>
+									<td>
+										<code>{{ produit.reference }}</code>
+									</td>
+									<td class="fw-semibold">{{ produit.intitule }}</td>
+									<td>
+										{% if produit.produitCategorie %}
+											<span class="badge bg-label-info">{{ produit.produitCategorie.intitule }}</span>
+										{% else %}
+											<span class="text-muted">—</span>
+										{% endif %}
+									</td>
+									<td>{{ produit.prixUnitaire ? produit.prixUnitaire ~ ' €' : '—' }}</td>
+									<td class="fw-semibold text-success">{{ produit.prixPublic }}
+										€</td>
+									<td>
+										<span class="badge bg-label-{{ produit.stock > 10 ? 'success' : (produit.stock > 0 ? 'warning' : 'danger') }}">
+											{{ produit.stock }}
+										</span>
+									</td>
+									<td>
+										{% if produit.departement %}
+											<small>{{ produit.departement }}</small>
+										{% else %}
+											<span class="text-muted">—</span>
+										{% endif %}
+									</td>
+									<td class="text-center">
+										<a href="{{ path('admin_produit_show', {id: produit.id}) }}" class="btn btn-sm btn-icon btn-outline-primary me-1" title="Voir">
+											<i class="bx bx-show"></i>
+										</a>
+										<a href="{{ path('admin_produit_edit', {id: produit.id}) }}" class="btn btn-sm btn-icon btn-outline-warning me-1" title="Modifier">
+											<i class="bx bx-edit"></i>
+										</a>
+										<form method="POST" action="{{ path('admin_produit_delete', {id: produit.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer ce produit ?')">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+											<button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Supprimer">
+												<i class="bx bx-trash"></i>
+											</button>
+										</form>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			{% else %}
+				<div class="text-center py-5 text-muted">
+					<i class="bx bx-package bx-lg mb-3 d-block"></i>
+					<p>Aucun produit trouvé.</p>
+					<a href="{{ path('admin_produit_new') }}" class="btn btn-primary btn-sm">
+						Ajouter le premier produit
+					</a>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

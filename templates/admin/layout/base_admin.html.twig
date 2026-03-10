@@ -1,13 +1,29 @@
+{% set theme = app.request.cookies.get('admin_theme', 'light') %}
+
 <!DOCTYPE html>
 <html
   lang="fr"
-  class="light-style layout-menu-fixed"
+  class="layout-navbar-fixed layout-menu-fixed"
   dir="ltr"
+  data-skin="default"
+  data-bs-theme="{{ theme }}"
   data-theme="theme-default"
   data-assets-path="{{ asset('admin/') }}"
   data-template="vertical-menu-template-free"
 >
   <head>
+    {# Anti-flash : doit être le PREMIER script, avant tout CSS #}
+    <script>
+      (function() {
+        function getCookie(n) {
+          var m = document.cookie.match(new RegExp('(^| )' + n + '=([^;]+)'));
+          return m ? m[2] : null;
+        }
+        var t = getCookie('admin_theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', t);
+      })();
+    </script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
@@ -129,6 +145,45 @@
     <script src="{{ asset('admin/vendor/js/menu.js') }}"></script>
     <!-- Main JS Sneat -->
     <script src="{{ asset('admin/js/main.js') }}"></script>
+
+    {# ===== THEME TOGGLE ===== #}
+    <script>
+      (function () {
+        function getCookie(name) {
+          const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+          return match ? match[2] : null;
+        }
+
+        function setCookie(name, value, days) {
+          const d = new Date();
+          d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+          document.cookie = name + '=' + value + ';expires=' + d.toUTCString() + ';path=/';
+        }
+
+        function applyTheme(theme) {
+          document.documentElement.setAttribute('data-bs-theme', theme);
+          setCookie('admin_theme', theme, 365);
+          const icon = document.getElementById('theme-icon');
+          if (icon) {
+            icon.className = theme === 'dark' ? 'bx bx-moon fs-5' : 'bx bx-sun fs-5';
+          }
+        }
+
+        // Appliquer le thème sauvegardé au chargement
+        const saved = getCookie('admin_theme') || 'light';
+        applyTheme(saved);
+
+        // Attacher le listener sur le bouton
+        document.addEventListener('DOMContentLoaded', function () {
+          const btn = document.getElementById('theme-toggle');
+          if (!btn) return;
+          btn.addEventListener('click', function () {
+            const current = document.documentElement.getAttribute('data-bs-theme');
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+          });
+        });
+      })();
+    </script>
 
     {% block javascripts %}{% endblock %}
 

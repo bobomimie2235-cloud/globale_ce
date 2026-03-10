@@ -1,0 +1,111 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Modifier {{ groupe.nomGroupe }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_groupe_index') }}">Groupes</a> /
+      <a href="{{ path('admin_groupe_show', {id: groupe.id}) }}">{{ groupe.nomGroupe }}</a> /</span>
+      Modifier
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_groupe_show', {id: groupe.id}) }}" class="btn btn-outline-primary">
+        <i class="bx bx-show me-1"></i> Voir
+      </a>
+      <a href="{{ path('admin_groupe_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  {{ form_start(form) }}
+  <div class="row">
+
+    <div class="col-md-8 mb-4">
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-buildings me-2 text-warning"></i>Identité du groupe</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.nomGroupe) }}</label>
+              {{ form_widget(form.nomGroupe, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.nomGroupe) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.referenceGroupe) }}</label>
+              {{ form_widget(form.referenceGroupe, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.referenceGroupe) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.email) }}</label>
+              {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.email) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.telephone) }}</label>
+              {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.telephone) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-map me-2 text-info"></i>Adresse</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">{{ form_label(form.adresse) }}</label>
+              {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.adresse) }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">{{ form_label(form.codePostal) }}</label>
+              {{ form_widget(form.codePostal, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.codePostal) }}
+            </div>
+            <div class="col-md-8">
+              <label class="form-label">{{ form_label(form.ville) }}</label>
+              {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.ville) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-info-circle me-2 text-info"></i>Infos du groupe</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-1">ID</p>
+          <p class="fw-semibold">#{{ groupe.id }}</p>
+          <p class="text-muted small mb-1">Membres</p>
+          <p><span class="badge bg-label-info">{{ groupe.utilisateurs|length }} membre(s)</span></p>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-warning">
+          <i class="bx bx-save me-1"></i> Enregistrer les modifications
+        </button>
+        <a href="{{ path('admin_groupe_index') }}" class="btn btn-outline-secondary">
+          Annuler
+        </a>
+      </div>
+
+    </div>
+  </div>
+  {{ form_end(form) }}
+
+{% endblock %}

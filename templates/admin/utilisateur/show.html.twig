@@ -1,0 +1,248 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}{{ utilisateur.prenom }} {{ utilisateur.nom }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_utilisateur_index') }}">Utilisateurs</a> /</span>
+      {{ utilisateur.prenom }} {{ utilisateur.nom }}
+    </h4>
+    <div class="d-flex gap-2">
+      {% if utilisateur != app.user %}
+        <a href="{{ path('admin_utilisateur_edit', {id: utilisateur.id}) }}" class="btn btn-warning">
+          <i class="bx bx-edit me-1"></i> Modifier
+        </a>
+      {% endif %}
+      <a href="{{ path('admin_utilisateur_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    {# ===== Colonne gauche : infos principales ===== #}
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body text-center pt-4">
+
+          {# Avatar initiales #}
+          <div class="avatar avatar-xl mx-auto mb-3">
+            <span class="avatar-initial rounded-circle bg-label-primary" style="font-size:2rem;">
+              {{ utilisateur.prenom|first|upper }}{{ utilisateur.nom|first|upper }}
+            </span>
+          </div>
+
+          <h5 class="mb-1">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h5>
+          <p class="text-muted mb-2">{{ utilisateur.email }}</p>
+
+          {# Rôles #}
+          <div class="mb-3">
+            {% for role in utilisateur.roles %}
+              <span class="badge bg-label-{{ role == 'ROLE_ADMIN' ? 'danger' : 'success' }} me-1">
+                {{ role }}
+              </span>
+            {% endfor %}
+          </div>
+
+          {# Groupe #}
+          {% if utilisateur.utilisateurGroupe %}
+            <span class="badge bg-label-secondary fs-6">
+              <i class="bx bx-group me-1"></i>
+              {{ utilisateur.utilisateurGroupe.nomGroupe }}
+            </span>
+          {% endif %}
+
+        </div>
+        <div class="card-footer text-center">
+          <small class="text-muted">
+            <i class="bx bx-calendar me-1"></i>
+            Inscrit le {{ utilisateur.dateInscription|date('d/m/Y à H:i') }}
+          </small>
+        </div>
+      </div>
+
+      {# ===== Zone dangereuse ===== #}
+      {% if utilisateur != app.user %}
+        <div class="card border-danger mt-4">
+          <div class="card-header bg-label-danger">
+            <h6 class="mb-0 text-danger">
+              <i class="bx bx-trash me-2"></i> Zone dangereuse
+            </h6>
+          </div>
+          <div class="card-body">
+            <p class="text-muted small mb-3">La suppression est irréversible.</p>
+            <form method="POST"
+                  action="{{ path('admin_utilisateur_delete', {id: utilisateur.id}) }}"
+                  onsubmit="return confirm('Supprimer définitivement cet utilisateur ?')">
+              <input type="hidden" name="_token"
+                     value="{{ csrf_token('delete' ~ utilisateur.id) }}">
+              <button type="submit" class="btn btn-danger w-100">
+                <i class="bx bx-trash me-1"></i> Supprimer
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    {# ===== Colonne droite : détails ===== #}
+    <div class="col-md-8">
+
+      {# Informations du compte #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-user me-2 text-primary"></i>Informations du compte</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">ID</p>
+              <p class="fw-semibold">#{{ utilisateur.id }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Email</p>
+              <p class="fw-semibold">{{ utilisateur.email }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Nom</p>
+              <p class="fw-semibold">{{ utilisateur.nom ?: '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Prénom</p>
+              <p class="fw-semibold">{{ utilisateur.prenom ?: '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Groupe</p>
+              <p class="fw-semibold">
+                {{ utilisateur.utilisateurGroupe ? utilisateur.utilisateurGroupe.nomGroupe : '—' }}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Référence groupe</p>
+              <p class="fw-semibold">
+                {{ utilisateur.utilisateurGroupe ? utilisateur.utilisateurGroupe.referenceGroupe : '—' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Commandes #}
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="bx bx-cart me-2 text-warning"></i>Commandes</h5>
+          <span class="badge bg-label-warning">{{ utilisateur.commandes|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          {% if utilisateur.commandes is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Total TTC</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for commande in utilisateur.commandes %}
+                    <tr>
+                      <td><code>#{{ commande.id }}</code></td>
+                      <td>
+                        <small>{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y') : '—' }}</small>
+                      </td>
+                      <td>
+                        {% set statutColor = {
+                          'en_cours': 'secondary',
+                          'validee':  'info',
+                          'payee':    'success',
+                          'livree':   'primary',
+                          'annulee':  'danger'
+                        } %}
+                        <span class="badge bg-label-{{ statutColor[commande.statut] ?? 'secondary' }}">
+                          {{ commande.statut|replace({'_': ' '})|capitalize }}
+                        </span>
+                      </td>
+                      <td class="fw-semibold text-success">
+                        {{ commande.totalTTC ? commande.totalTTC ~ ' €' : '—' }}
+                      </td>
+                      <td>
+                        <a href="{{ path('admin_commande_show', {id: commande.id}) }}"
+                           class="btn btn-sm btn-icon btn-outline-primary" title="Voir">
+                          <i class="bx bx-show"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-cart bx-md mb-2 d-block"></i>
+              <p class="mb-0">Aucune commande.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Coupons utilisés #}
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="bx bx-purchase-tag me-2 text-info"></i>Coupons</h5>
+          <span class="badge bg-label-info">{{ utilisateur.utilisateurCoupons|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          {% if utilisateur.utilisateurCoupons is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Coupon</th>
+                    <th>Utilisé</th>
+                    <th>Date utilisation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for uc in utilisateur.utilisateurCoupons %}
+                    <tr>
+                      <td>
+                        {% if uc.couponReduction %}
+                          <strong>{{ uc.couponReduction.intitule }}</strong>
+                          <br><small class="text-muted">{{ uc.couponReduction.reference }}</small>
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if uc.utilise %}
+                          <span class="badge bg-label-success">Oui</span>
+                        {% else %}
+                          <span class="badge bg-label-secondary">Non</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <small>{{ uc.dateUtilisation ? uc.dateUtilisation|date('d/m/Y') : '—' }}</small>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-purchase-tag bx-md mb-2 d-block"></i>
+              <p class="mb-0">Aucun coupon.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

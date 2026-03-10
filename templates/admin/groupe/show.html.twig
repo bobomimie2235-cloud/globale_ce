@@ -1,0 +1,155 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}{{ groupe.nomGroupe }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_groupe_index') }}">Groupes</a> /</span>
+      {{ groupe.nomGroupe }}
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_groupe_edit', {id: groupe.id}) }}" class="btn btn-warning">
+        <i class="bx bx-edit me-1"></i> Modifier
+      </a>
+      <a href="{{ path('admin_groupe_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    {# ===== Colonne gauche : infos + zone dangereuse ===== #}
+    <div class="col-md-4 mb-4">
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-buildings me-2 text-primary"></i>Informations</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-1">ID</p>
+          <p class="fw-semibold">#{{ groupe.id }}</p>
+
+          <p class="text-muted small mb-1">Nom du groupe</p>
+          <p class="fw-semibold">{{ groupe.nomGroupe }}</p>
+
+          <p class="text-muted small mb-1">Référence</p>
+          <p><code>{{ groupe.referenceGroupe }}</code></p>
+
+          <p class="text-muted small mb-1">Email</p>
+          <p>{{ groupe.email ?: '—' }}</p>
+
+          <p class="text-muted small mb-1">Téléphone</p>
+          <p>{{ groupe.telephone ?: '—' }}</p>
+
+          <p class="text-muted small mb-1">Adresse</p>
+          <p>
+            {% if groupe.adresse %}
+              {{ groupe.adresse }}<br>
+              {{ groupe.codePostal }} {{ groupe.ville }}
+            {% else %}
+              —
+            {% endif %}
+          </p>
+
+          <p class="text-muted small mb-1">Membres</p>
+          <p><span class="badge bg-label-info fs-6">{{ groupe.utilisateurs|length }}</span></p>
+        </div>
+      </div>
+
+      <div class="card border-danger">
+        <div class="card-header bg-label-danger">
+          <h6 class="mb-0 text-danger"><i class="bx bx-trash me-2"></i>Zone dangereuse</h6>
+        </div>
+        <div class="card-body">
+          {% if groupe.utilisateurs|length > 0 %}
+            <p class="text-muted small mb-0">
+              <i class="bx bx-lock text-warning me-1"></i>
+              Impossible de supprimer : {{ groupe.utilisateurs|length }} membre(s) rattaché(s).
+            </p>
+          {% else %}
+            <p class="text-muted small mb-3">La suppression est irréversible.</p>
+            <form method="POST"
+                  action="{{ path('admin_groupe_delete', {id: groupe.id}) }}"
+                  onsubmit="return confirm('Supprimer définitivement ce groupe ?')">
+              <input type="hidden" name="_token"
+                     value="{{ csrf_token('delete' ~ groupe.id) }}">
+              <button type="submit" class="btn btn-danger w-100">
+                <i class="bx bx-trash me-1"></i> Supprimer
+              </button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    {# ===== Colonne droite : membres ===== #}
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="bx bx-group me-2 text-info"></i>Membres du groupe</h5>
+          <span class="badge bg-label-info">{{ groupe.utilisateurs|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          {% if groupe.utilisateurs is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Utilisateur</th>
+                    <th>Email</th>
+                    <th>Rôles</th>
+                    <th>Inscrit le</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for utilisateur in groupe.utilisateurs %}
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="avatar avatar-sm">
+                            <span class="avatar-initial rounded-circle bg-label-primary">
+                              {{ utilisateur.prenom|first|upper }}{{ utilisateur.nom|first|upper }}
+                            </span>
+                          </span>
+                          <strong>{{ utilisateur.prenom }} {{ utilisateur.nom }}</strong>
+                        </div>
+                      </td>
+                      <td><small>{{ utilisateur.email }}</small></td>
+                      <td>
+                        {% for role in utilisateur.roles %}
+                          <span class="badge bg-label-{{ role == 'ROLE_ADMIN' ? 'danger' : 'success' }} me-1">
+                            {{ role }}
+                          </span>
+                        {% endfor %}
+                      </td>
+                      <td>
+                        <small>{{ utilisateur.dateInscription|date('d/m/Y') }}</small>
+                      </td>
+                      <td>
+                        <a href="{{ path('admin_utilisateur_show', {id: utilisateur.id}) }}"
+                           class="btn btn-sm btn-icon btn-outline-primary" title="Voir">
+                          <i class="bx bx-show"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-group bx-md mb-2 d-block"></i>
+              <p class="mb-0">Aucun membre dans ce groupe.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}

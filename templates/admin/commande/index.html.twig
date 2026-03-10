@@ -1,0 +1,149 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Commandes{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin /</span> Commandes
+    </h4>
+  </div>
+
+  {# ===== FILTRES ===== #}
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label">Recherche</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bx bx-search"></i></span>
+            <input type="text" name="search" class="form-control"
+                   placeholder="Nom, prénom, email, n° commande..." value="{{ search ?? '' }}">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Statut</label>
+          <select name="statut" class="form-select">
+            <option value="">Tous les statuts</option>
+            {% for statut in statuts %}
+              <option value="{{ statut }}" {{ statutActif == statut ? 'selected' : '' }}>
+                {% if statut == 'en_cours' %}En cours
+                {% elseif statut == 'validee' %}Validée
+                {% elseif statut == 'payee' %}Payée
+                {% elseif statut == 'livree' %}Livrée
+                {% elseif statut == 'annulee' %}Annulée
+                {% else %}{{ statut }}{% endif %}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bx bx-filter-alt"></i> Filtrer
+          </button>
+          <a href="{{ path('admin_commande_index') }}" class="btn btn-outline-secondary">
+            <i class="bx bx-x"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# ===== TABLEAU ===== #}
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Liste des commandes</h5>
+      <span class="badge bg-label-primary">{{ commandes|length }} commande(s)</span>
+    </div>
+    <div class="card-body p-0">
+      {% if commandes is not empty %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>N°</th>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Mode paiement</th>
+                <th>Total TTC</th>
+                <th>Statut</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for commande in commandes %}
+                <tr>
+                  <td><code>#{{ '%05d'|format(commande.id) }}</code></td>
+                  <td>
+                    <small>{{ commande.dateCommande|date('d/m/Y') }}</small><br>
+                    <small class="text-muted">{{ commande.dateCommande|date('H:i') }}</small>
+                  </td>
+                  <td>
+                    {% if commande.utilisateur %}
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="avatar avatar-sm">
+                          <span class="avatar-initial rounded-circle bg-label-primary">
+                            {{ commande.utilisateur.prenom|first|upper }}{{ commande.utilisateur.nom|first|upper }}
+                          </span>
+                        </span>
+                        <div>
+                          <strong>{{ commande.utilisateur.prenom }} {{ commande.utilisateur.nom }}</strong><br>
+                          <small class="text-muted">{{ commande.utilisateur.email }}</small>
+                        </div>
+                      </div>
+                    {% else %}
+                      <span class="text-muted">—</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% set modes = [] %}
+                    {% for cp in commande.commandeProduits %}
+                      {% if cp.modePaiement and cp.modePaiement not in modes %}
+                        {% set modes = modes|merge([cp.modePaiement]) %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if modes %}
+                      {% for mode in modes %}
+                        <span class="badge bg-label-secondary me-1">{{ mode }}</span>
+                      {% endfor %}
+                    {% else %}
+                      <span class="text-muted">—</span>
+                    {% endif %}
+                  </td>
+                  <td class="fw-semibold">{{ commande.totalTTC|number_format(2, ',', ' ') }} €</td>
+                  <td>
+                    {% if commande.statut == 'en_cours' %}
+                      <span class="badge bg-label-warning">En cours</span>
+                    {% elseif commande.statut == 'validee' %}
+                      <span class="badge bg-label-info">Validée</span>
+                    {% elseif commande.statut == 'payee' %}
+                      <span class="badge bg-label-success">Payée</span>
+                    {% elseif commande.statut == 'livree' %}
+                      <span class="badge bg-label-primary">Livrée</span>
+                    {% elseif commande.statut == 'annulee' %}
+                      <span class="badge bg-label-danger">Annulée</span>
+                    {% else %}
+                      <span class="badge bg-label-secondary">{{ commande.statut }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    <a href="{{ path('admin_commande_show', {id: commande.id}) }}"
+                       class="btn btn-sm btn-icon btn-outline-primary" title="Voir">
+                      <i class="bx bx-show"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="text-center py-5 text-muted">
+          <i class="bx bx-package bx-lg mb-3 d-block"></i>
+          <p>Aucune commande trouvée.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

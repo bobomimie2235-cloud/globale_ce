@@ -5,34 +5,28 @@
 {% block body %}
 
   {# ===== EN-TÊTE DE PAGE ===== #}
-  <div class="row">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0">
-          <span class="text-muted fw-light">Admin /</span> Dashboard
-        </h4>
-        <small class="text-muted">
-          {{ "now"|date("d/m/Y") }}
-        </small>
-      </div>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin /</span> Dashboard
+    </h4>
+    <small class="text-muted">{{ "now"|date("d/m/Y") }}</small>
   </div>
 
-  {# ===== CARTES STATISTIQUES ===== #}
+  {# ===== LIGNE 1 : CARTES PRINCIPALES ===== #}
   <div class="row">
 
     {# Commandes #}
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
-            <div class="content-left">
-              <span>Commandes</span>
-              <div class="d-flex align-items-end mt-2">
-                <h4 class="mb-0 me-2">{{ stats.commandes ?? 0 }}</h4>
+            <div>
+              <span class="text-muted d-block mb-1">Commandes</span>
+              <div class="d-flex align-items-end">
+                <h4 class="mb-0 me-2">{{ stats.commandes }}</h4>
                 <small class="text-success mb-1">ce mois</small>
               </div>
-              <small>Total : {{ stats.commandes_total ?? 0 }}</small>
+              <small class="text-muted">Total : {{ stats.commandes_total }}</small>
             </div>
             <span class="badge bg-label-warning rounded p-2">
               <i class="bx bx-cart bx-sm"></i>
@@ -43,17 +37,17 @@
     </div>
 
     {# Utilisateurs #}
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
-            <div class="content-left">
-              <span>Utilisateurs</span>
-              <div class="d-flex align-items-end mt-2">
-                <h4 class="mb-0 me-2">{{ stats.utilisateurs ?? 0 }}</h4>
+            <div>
+              <span class="text-muted d-block mb-1">Utilisateurs</span>
+              <div class="d-flex align-items-end">
+                <h4 class="mb-0 me-2">{{ stats.utilisateurs }}</h4>
                 <small class="text-success mb-1">inscrits</small>
               </div>
-              <small>Nouveaux ce mois : {{ stats.nouveaux_utilisateurs ?? 0 }}</small>
+              <small class="text-muted">Nouveaux ce mois : {{ stats.nouveaux_utilisateurs }}</small>
             </div>
             <span class="badge bg-label-primary rounded p-2">
               <i class="bx bx-group bx-sm"></i>
@@ -64,17 +58,17 @@
     </div>
 
     {# Produits #}
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
-            <div class="content-left">
-              <span>Produits</span>
-              <div class="d-flex align-items-end mt-2">
-                <h4 class="mb-0 me-2">{{ stats.produits ?? 0 }}</h4>
+            <div>
+              <span class="text-muted d-block mb-1">Produits</span>
+              <div class="d-flex align-items-end">
+                <h4 class="mb-0 me-2">{{ stats.produits }}</h4>
                 <small class="text-muted mb-1">en ligne</small>
               </div>
-              <small>Catégories : {{ stats.categories ?? 0 }}</small>
+              <small class="text-muted">Catégories : {{ stats.categories }}</small>
             </div>
             <span class="badge bg-label-success rounded p-2">
               <i class="bx bx-package bx-sm"></i>
@@ -85,17 +79,17 @@
     </div>
 
     {# Chiffre d'affaires #}
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
-            <div class="content-left">
-              <span>Chiffre d'affaires</span>
-              <div class="d-flex align-items-end mt-2">
-                <h4 class="mb-0 me-2">{{ stats.ca_mois ?? '0.00' }} €</h4>
+            <div>
+              <span class="text-muted d-block mb-1">Chiffre d'affaires</span>
+              <div class="d-flex align-items-end">
+                <h4 class="mb-0 me-2">{{ stats.ca_mois }} €</h4>
                 <small class="text-success mb-1">ce mois</small>
               </div>
-              <small>Total : {{ stats.ca_total ?? '0.00' }} €</small>
+              <small class="text-muted">Total : {{ stats.ca_total }} €</small>
             </div>
             <span class="badge bg-label-danger rounded p-2">
               <i class="bx bx-euro bx-sm"></i>
@@ -106,42 +100,306 @@
     </div>
 
   </div>
-  {# /row stats #}
 
-  {# ===== TABLEAUX DU BAS ===== #}
+  {# ===== LIGNE 2 : COUPONS + ARTICLES + ACCÈS RAPIDES ===== #}
+  <div class="row">
+
+    {# Carte Coupons #}
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0">Coupons de réduction</h5>
+          <a href="{{ path('app_coupon_reduction_index') }}" class="btn btn-sm btn-outline-warning">Gérer</a>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-around text-center">
+            <div>
+              <h3 class="mb-0 text-success">{{ stats.coupons_actifs }}</h3>
+              <small class="text-muted">Actifs</small>
+            </div>
+            <div class="border-end"></div>
+            <div>
+              <h3 class="mb-0 text-danger">{{ stats.coupons_inactifs }}</h3>
+              <small class="text-muted">Inactifs</small>
+            </div>
+            <div class="border-end"></div>
+            <div>
+              <h3 class="mb-0 text-primary">{{ stats.coupons_total }}</h3>
+              <small class="text-muted">Total</small>
+            </div>
+          </div>
+
+          {# Barre de progression actifs/total #}
+          {% if stats.coupons_total > 0 %}
+            {% set pct = ((stats.coupons_actifs / stats.coupons_total) * 100)|round %}
+            <div class="mt-3">
+              <div class="d-flex justify-content-between mb-1">
+                <small class="text-muted">Taux d'activation</small>
+                <small class="fw-semibold">{{ pct }}%</small>
+              </div>
+              <div class="progress" style="height: 6px;">
+                <div class="progress-bar bg-success" style="width: {{ pct }}%"></div>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="mt-3 text-center">
+            <a href="{{ path('app_coupon_reduction_new') }}" class="btn btn-sm btn-outline-success">
+              <i class="bx bx-plus me-1"></i> Nouveau coupon
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Carte Articles #}
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0">Articles / Blog</h5>
+          <a href="{{ path('app_article_index') }}" class="btn btn-sm btn-outline-info">Gérer</a>
+        </div>
+        <div class="card-body text-center">
+          <h2 class="mb-1 text-info">{{ stats.articles }}</h2>
+          <p class="text-muted mb-3">articles publiés</p>
+          <a href="{{ path('app_article_new') }}" class="btn btn-sm btn-outline-info">
+            <i class="bx bx-plus me-1"></i> Nouvel article
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {# Accès rapides #}
+    <div class="col-lg-4 col-md-12 mb-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title m-0">Accès rapides</h5>
+        </div>
+        <div class="card-body d-flex flex-column gap-2">
+          <a href="{{ path('app_produit_new') }}" class="btn btn-outline-success btn-sm">
+            <i class="bx bx-package me-1"></i> Nouveau produit
+          </a>
+          <a href="{{ path('app_article_new') }}" class="btn btn-outline-info btn-sm">
+            <i class="bx bx-news me-1"></i> Nouvel article
+          </a>
+          <a href="{{ path('app_coupon_reduction_new') }}" class="btn btn-outline-warning btn-sm">
+            <i class="bx bx-purchase-tag me-1"></i> Nouveau coupon
+          </a>
+          <a href="{{ path('app_utilisateur_index') }}" class="btn btn-outline-primary btn-sm">
+            <i class="bx bx-group me-1"></i> Gérer les utilisateurs
+          </a>
+          <a href="{{ path('app_commande_index') }}" class="btn btn-outline-danger btn-sm">
+            <i class="bx bx-cart me-1"></i> Voir les commandes
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {# ===== LIGNE 3 : COMMANDES + GROUPES UTILISATEURS ===== #}
   <div class="row">
 
     {# Dernières commandes #}
-    <div class="col-md-6 mb-4">
+    <div class="col-md-8 mb-4">
       <div class="card h-100">
         <div class="card-header d-flex align-items-center justify-content-between">
-          <h5 class="card-title m-0 me-2">Dernières commandes</h5>
-          <a href="{{ path('app_commande_index') }}" class="btn btn-sm btn-outline-primary">
-            Voir tout
-          </a>
+          <h5 class="card-title m-0">Dernières commandes</h5>
+          <a href="{{ path('app_commande_index') }}" class="btn btn-sm btn-outline-primary">Voir tout</a>
         </div>
-        <div class="card-body">
-          {% if dernieres_commandes is defined and dernieres_commandes is not empty %}
+        <div class="card-body p-0">
+          {% if dernieres_commandes is not empty %}
             <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
                   <tr>
                     <th>#</th>
                     <th>Client</th>
                     <th>Montant</th>
                     <th>Statut</th>
+                    <th>Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for commande in dernieres_commandes %}
                     <tr>
-                      <td><a href="{{ path('app_commande_show', {id: commande.id}) }}">#{{ commande.id }}</a></td>
-                      <td>{{ commande.utilisateur.email ?? 'N/A' }}</td>
-                      <td>{{ commande.total ?? '0.00' }} €</td>
                       <td>
-                        <span class="badge bg-label-{{ commande.statut == 'payée' ? 'success' : 'warning' }}">
-                          {{ commande.statut ?? 'En attente' }}
+                        <a href="{{ path('app_commande_show', {id: commande.id}) }}">#{{ commande.id }}</a>
+                      </td>
+                      <td>
+                        {% if commande.utilisateur %}
+                          {{ commande.utilisateur.prenom }} {{ commande.utilisateur.nom }}
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ commande.totalTTC }} €</td>
+                      <td>
+                        {% set statutClass = {
+                          'payee':    'success',
+                          'en_cours': 'warning',
+                          'annulee':  'danger',
+                          'livree':   'info'
+                        } %}
+                        <span class="badge bg-label-{{ statutClass[commande.statut] ?? 'secondary' }}">
+                          {{ commande.statut|replace({'_': ' '})|capitalize }}
                         </span>
+                      </td>
+                      <td><small>{{ commande.dateCommande|date('d/m/Y') }}</small></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-cart bx-lg mb-2 d-block"></i>
+              Aucune commande pour le moment.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Répartition par groupe d'utilisateurs #}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0">Groupes utilisateurs</h5>
+          <a href="{{ path('app_utilisateur_groupe_index') }}" class="btn btn-sm btn-outline-primary">Gérer</a>
+        </div>
+        <div class="card-body">
+          {% if groupes_stats is not empty %}
+            {% set total_users = stats.utilisateurs %}
+            {% for groupe in groupes_stats %}
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div>
+                    <span class="fw-semibold d-block" style="font-size: 0.85rem;">{{ groupe.nomGroupe }}</span>
+                    <small class="text-muted">{{ groupe.referenceGroupe }}</small>
+                  </div>
+                  <span class="badge bg-label-primary">{{ groupe.nbUtilisateurs }}</span>
+                </div>
+                {% if total_users > 0 %}
+                  {% set pct = ((groupe.nbUtilisateurs / total_users) * 100)|round %}
+                  <div class="progress" style="height: 5px;">
+                    <div class="progress-bar" style="width: {{ pct }}%"></div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-buildings bx-lg mb-2 d-block"></i>
+              Aucun groupe défini.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {# ===== LIGNE 4 : NOUVEAUX UTILISATEURS + DERNIERS ARTICLES ===== #}
+  <div class="row">
+
+    {# Derniers utilisateurs #}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0">Nouveaux utilisateurs</h5>
+          <a href="{{ path('app_utilisateur_index') }}" class="btn btn-sm btn-outline-primary">Voir tout</a>
+        </div>
+        <div class="card-body">
+          {% if derniers_utilisateurs is not empty %}
+            <ul class="list-unstyled mb-0">
+              {% for user in derniers_utilisateurs %}
+                <li class="d-flex align-items-center mb-3">
+                  <span class="avatar avatar-sm flex-shrink-0 me-3">
+                    <span class="avatar-initial rounded-circle bg-label-primary">
+                      {{ user.prenom|first|upper }}{{ user.nom|first|upper }}
+                    </span>
+                  </span>
+                  <div class="flex-grow-1">
+                    <p class="mb-0 fw-semibold" style="font-size: 0.85rem;">
+                      {{ user.prenom }} {{ user.nom }}
+                    </p>
+                    <small class="text-muted">{{ user.dateInscription|date('d/m/Y') }}</small>
+                  </div>
+                  {% if user.utilisateurGroupe %}
+                    <small class="badge bg-label-secondary">{{ user.utilisateurGroupe.nomGroupe }}</small>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-group bx-lg mb-2 d-block"></i>
+              Aucun utilisateur récent.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Derniers articles #}
+    <div class="col-md-8 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0">Derniers articles</h5>
+          <a href="{{ path('app_article_index') }}" class="btn btn-sm btn-outline-primary">Voir tout</a>
+        </div>
+        <div class="card-body p-0">
+          {% if derniers_articles is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Titre</th>
+                    <th>Catégorie</th>
+                    <th>Auteur</th>
+                    <th>Offre</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for article in derniers_articles %}
+                    <tr>
+                      <td>
+                        <span class="fw-semibold" style="font-size: 0.85rem;">
+                          {{ article.titre|length > 35 ? article.titre|slice(0,35) ~ '…' : article.titre }}
+                        </span>
+                      </td>
+                      <td>
+                        {% if article.articleCategorie %}
+                          <span class="badge bg-label-secondary">{{ article.articleCategorie.intitule }}</span>
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if article.utilisateur %}
+                          <small>{{ article.utilisateur.prenom }} {{ article.utilisateur.nom }}</small>
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if article.offre %}
+                          <span class="badge bg-label-warning">{{ article.offre }}</span>
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <a href="{{ path('app_article_show', {id: article.id}) }}"
+                          class="btn btn-sm btn-icon btn-outline-primary me-1" title="Voir">
+                          <i class="bx bx-show"></i>
+                        </a>
+                        <a href="{{ path('app_article_edit', {id: article.id}) }}"
+                          class="btn btn-sm btn-icon btn-outline-warning" title="Modifier">
+                          <i class="bx bx-edit"></i>
+                        </a>
                       </td>
                     </tr>
                   {% endfor %}
@@ -149,48 +407,15 @@
               </table>
             </div>
           {% else %}
-            <p class="text-muted text-center py-3">Aucune commande pour le moment.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-    {# Derniers utilisateurs inscrits #}
-    <div class="col-md-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header d-flex align-items-center justify-content-between">
-          <h5 class="card-title m-0 me-2">Nouveaux utilisateurs</h5>
-          <a href="{{ path('app_utilisateur_index') }}" class="btn btn-sm btn-outline-primary">
-            Voir tout
-          </a>
-        </div>
-        <div class="card-body">
-          {% if derniers_utilisateurs is defined and derniers_utilisateurs is not empty %}
-            <ul class="list-unstyled mb-0">
-              {% for user in derniers_utilisateurs %}
-                <li class="d-flex align-items-center mb-3">
-                  <span class="avatar avatar-sm flex-shrink-0 me-3">
-                    <span class="avatar-initial rounded-circle bg-label-primary">
-                      {{ user.email|first|upper }}
-                    </span>
-                  </span>
-                  <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                    <div>
-                      <p class="mb-0 fw-semibold">{{ user.email }}</p>
-                      <small class="text-muted">{{ user.createdAt ? user.createdAt|date('d/m/Y') : '' }}</small>
-                    </div>
-                  </div>
-                </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p class="text-muted text-center py-3">Aucun utilisateur récent.</p>
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-news bx-lg mb-2 d-block"></i>
+              Aucun article pour le moment.
+            </div>
           {% endif %}
         </div>
       </div>
     </div>
 
   </div>
-  {# /row tableaux #}
 
 {% endblock %}

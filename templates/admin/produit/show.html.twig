@@ -1,0 +1,194 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}{{ produit.intitule }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_produit_index') }}">Produits</a> /</span>
+      {{ produit.intitule }}
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_produit_edit', {id: produit.id}) }}" class="btn btn-warning">
+        <i class="bx bx-edit me-1"></i> Modifier
+      </a>
+      <a href="{{ path('admin_produit_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    {# ===== Colonne gauche : logo + zone dangereuse ===== #}
+    <div class="col-md-4 mb-4">
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-image me-2 text-primary"></i>Logo</h6>
+        </div>
+        <div class="card-body text-center">
+          {% if produit.logo %}
+            <img src="{{ asset('uploads/logos/' ~ produit.logo) }}"
+                 alt="{{ produit.intitule }}"
+                 class="img-fluid rounded" style="max-height:160px;">
+          {% else %}
+            <div class="py-4 text-muted">
+              <i class="bx bx-package bx-lg"></i>
+              <p class="small mb-0 mt-2">Aucun logo</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Prix #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-euro me-2 text-success"></i>Tarification</h6>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted small">Prix unitaire</span>
+            <strong>{{ produit.prixUnitaire ? produit.prixUnitaire ~ ' €' : '—' }}</strong>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted small">Prix public</span>
+            <strong class="text-success">{{ produit.prixPublic }} €</strong>
+          </div>
+        </div>
+      </div>
+
+      {# Zone dangereuse #}
+      <div class="card border-danger">
+        <div class="card-header bg-label-danger">
+          <h6 class="mb-0 text-danger"><i class="bx bx-trash me-2"></i>Zone dangereuse</h6>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-3">La suppression est irréversible.</p>
+          <form method="POST"
+                action="{{ path('admin_produit_delete', {id: produit.id}) }}"
+                onsubmit="return confirm('Supprimer définitivement ce produit ?')">
+            <input type="hidden" name="_token"
+                   value="{{ csrf_token('delete' ~ produit.id) }}">
+            <button type="submit" class="btn btn-danger w-100">
+              <i class="bx bx-trash me-1"></i> Supprimer
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    {# ===== Colonne droite : infos ===== #}
+    <div class="col-md-8">
+
+      {# Informations principales #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-package me-2 text-primary"></i>Informations principales</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Référence</p>
+              <p><code class="fs-6">{{ produit.reference }}</code></p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Intitulé</p>
+              <p class="fw-semibold">{{ produit.intitule }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Catégorie</p>
+              <p>
+                {% if produit.produitCategorie %}
+                  <span class="badge bg-label-info">{{ produit.produitCategorie.intitule }}</span>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Département</p>
+              <p>{{ produit.departement ?? '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Stock</p>
+              <p>
+                <span class="badge bg-label-{{ produit.stock > 10 ? 'success' : (produit.stock > 0 ? 'warning' : 'danger') }} fs-6">
+                  {{ produit.stock }}
+                </span>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Date de création</p>
+              <p>{{ produit.dateCreation ? produit.dateCreation|date('d/m/Y') : '—' }}</p>
+            </div>
+            <div class="col-12">
+              <p class="text-muted small mb-1">Description</p>
+              <p>{{ produit.description ?: '—' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Commandes contenant ce produit #}
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="bx bx-cart me-2 text-warning"></i>Commandes associées</h5>
+          <span class="badge bg-label-warning">{{ produit.commandeProduits|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          {% if produit.commandeProduits is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Commande</th>
+                    <th>Client</th>
+                    <th>Quantité</th>
+                    <th>Statut</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for cp in produit.commandeProduits %}
+                    <tr>
+                      <td><code>#{{ cp.commande.id }}</code></td>
+                      <td>
+                        {% if cp.commande.utilisateur %}
+                          <small>{{ cp.commande.utilisateur.prenom }} {{ cp.commande.utilisateur.nom }}</small>
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ cp.quantite }}</td>
+                      <td>
+                        {% set couleurs = {'en_cours': 'warning', 'validee': 'info', 'payee': 'success', 'livree': 'primary', 'annulee': 'danger'} %}
+                        <span class="badge bg-label-{{ couleurs[cp.commande.statut] ?? 'secondary' }}">
+                          {{ cp.commande.statut|replace({'_': ' '})|capitalize }}
+                        </span>
+                      </td>
+                      <td>
+                        <a href="{{ path('admin_commande_show', {id: cp.commande.id}) }}"
+                           class="btn btn-sm btn-icon btn-outline-primary" title="Voir">
+                          <i class="bx bx-show"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-cart bx-md mb-2 d-block"></i>
+              <p class="mb-0">Aucune commande pour ce produit.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

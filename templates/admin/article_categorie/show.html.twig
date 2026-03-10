@@ -1,0 +1,135 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}{{ categorie.intitule }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_article_index') }}">Offre Commerçant</a> /
+      <a href="{{ path('admin_article_categorie_index') }}">Catégories</a> /</span>
+      {{ categorie.intitule }}
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_article_categorie_edit', {id: categorie.id}) }}" class="btn btn-warning">
+        <i class="bx bx-edit me-1"></i> Modifier
+      </a>
+      <a href="{{ path('admin_article_categorie_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4">
+
+      {# Infos catégorie #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-tag me-2 text-primary"></i>Informations</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-1">ID</p>
+          <p class="fw-semibold">#{{ categorie.id }}</p>
+          <p class="text-muted small mb-1">Intitulé</p>
+          <p class="fw-semibold">{{ categorie.intitule }}</p>
+          <p class="text-muted small mb-1">Nombre d'articles</p>
+          <p>
+            <span class="badge bg-label-info fs-6">{{ categorie.articles|length }}</span>
+          </p>
+        </div>
+      </div>
+
+      {# Zone dangereuse #}
+      <div class="card border-danger">
+        <div class="card-header bg-label-danger">
+          <h6 class="mb-0 text-danger"><i class="bx bx-trash me-2"></i>Zone dangereuse</h6>
+        </div>
+        <div class="card-body">
+          {% if categorie.articles|length > 0 %}
+            <p class="text-muted small mb-0">
+              <i class="bx bx-lock text-warning me-1"></i>
+              Impossible de supprimer : {{ categorie.articles|length }} article(s) rattaché(s).
+            </p>
+          {% else %}
+            <p class="text-muted small mb-3">La suppression est irréversible.</p>
+            <form method="POST"
+                  action="{{ path('admin_article_categorie_delete', {id: categorie.id}) }}"
+                  onsubmit="return confirm('Supprimer définitivement cette catégorie ?')">
+              <input type="hidden" name="_token"
+                     value="{{ csrf_token('delete' ~ categorie.id) }}">
+              <button type="submit" class="btn btn-danger w-100">
+                <i class="bx bx-trash me-1"></i> Supprimer
+              </button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    {# Articles rattachés #}
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="bx bx-store me-2 text-info"></i>Articles rattachés</h5>
+          <span class="badge bg-label-info">{{ categorie.articles|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          {% if categorie.articles is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Logo</th>
+                    <th>Titre</th>
+                    <th>Offre</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for article in categorie.articles %}
+                    <tr>
+                      <td>
+                        {% if article.imgLogo %}
+                          <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}"
+                               alt="{{ article.titre }}"
+                               class="rounded" style="width:36px;height:36px;object-fit:cover;">
+                        {% else %}
+                          <span class="avatar avatar-sm">
+                            <span class="avatar-initial rounded bg-label-secondary">
+                              <i class="bx bx-store"></i>
+                            </span>
+                          </span>
+                        {% endif %}
+                      </td>
+                      <td class="fw-semibold">{{ article.titre }}</td>
+                      <td>
+                        {% if article.offre %}
+                          <span class="badge bg-label-success">{{ article.offre }}</span>
+                        {% else %}
+                          <span class="text-muted">—</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <a href="{{ path('admin_article_show', {id: article.id}) }}"
+                           class="btn btn-sm btn-icon btn-outline-primary" title="Voir">
+                          <i class="bx bx-show"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bx bx-store bx-md mb-2 d-block"></i>
+              <p class="mb-0">Aucun article dans cette catégorie.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

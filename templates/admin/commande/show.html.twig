@@ -1,0 +1,349 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Commande #{{ '%05d'|format(commande.id) }}{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    @media print {
+      /* Masquer tout sauf la facture */
+      body > *:not(#facture-print-zone) { display: none !important; }
+      #facture-print-zone { display: block !important; }
+      .no-print { display: none !important; }
+
+      #facture-print-zone {
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        color: #111;
+      }
+      .facture-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+      }
+      .facture-header h2 { font-size: 22px; margin: 0 0 4px; }
+      .facture-header h3 { font-size: 18px; margin: 0 0 6px; }
+      .facture-parties {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+      .facture-partie { width: 48%; }
+      .facture-partie h4 { font-size: 13px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; }
+      .facture-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+      .facture-table th { background: #f0f0f0; border: 1px solid #ccc; padding: 7px 10px; font-size: 12px; text-align: left; }
+      .facture-table td { border: 1px solid #ddd; padding: 6px 10px; font-size: 12px; }
+      .facture-table tfoot td { font-weight: bold; background: #f9f9f9; }
+      .text-right { text-align: right !important; }
+      .text-center { text-align: center !important; }
+      .facture-footer { text-align: center; font-size: 11px; color: #666; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 20px; }
+      .statut-badge { font-weight: bold; text-transform: uppercase; font-size: 11px; }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+
+  {# ===== ENTÊTE PAGE ===== #}
+  <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_commande_index') }}">Commandes</a> /</span>
+      Commande #{{ '%05d'|format(commande.id) }}
+    </h4>
+    <div class="d-flex gap-2">
+      <button onclick="window.print()" class="btn btn-outline-info">
+        <i class="bx bx-printer me-1"></i> Imprimer la facture
+      </button>
+      <a href="{{ path('admin_commande_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  {# ===== CONTENU ADMIN (masqué à l'impression) ===== #}
+  <div class="no-print">
+    <div class="row">
+
+      {# ---- Colonne gauche : résumé + statut + danger ---- #}
+      <div class="col-md-4 mb-4">
+
+        {# Résumé commande #}
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bx bx-receipt me-2 text-primary"></i>Résumé</h5>
+          </div>
+          <div class="card-body">
+            <p class="text-muted small mb-1">N° commande</p>
+            <p class="fw-semibold"><code>#{{ '%05d'|format(commande.id) }}</code></p>
+
+            <p class="text-muted small mb-1">Date</p>
+            <p>{{ commande.dateCommande|date('d/m/Y à H:i') }}</p>
+
+            <p class="text-muted small mb-1">Total TTC</p>
+            <p class="fw-bold fs-5 text-success">{{ commande.totalTTC|number_format(2, ',', ' ') }} €</p>
+
+            <p class="text-muted small mb-1">Statut actuel</p>
+            <p>
+              {% if commande.statut == 'en_cours' %}
+                <span class="badge bg-warning fs-6">En cours</span>
+              {% elseif commande.statut == 'validee' %}
+                <span class="badge bg-info fs-6">Validée</span>
+              {% elseif commande.statut == 'payee' %}
+                <span class="badge bg-success fs-6">Payée</span>
+              {% elseif commande.statut == 'livree' %}
+                <span class="badge bg-primary fs-6">Livrée</span>
+              {% elseif commande.statut == 'annulee' %}
+                <span class="badge bg-danger fs-6">Annulée</span>
+              {% else %}
+                <span class="badge bg-secondary fs-6">{{ commande.statut }}</span>
+              {% endif %}
+            </p>
+
+            <p class="text-muted small mb-1">Nb articles</p>
+            <p>{{ commande.commandeProduits|length }} ligne(s)</p>
+          </div>
+        </div>
+
+        {# Changer le statut #}
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bx bx-refresh me-2 text-warning"></i>Changer le statut</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{{ path('admin_commande_statut', {id: commande.id}) }}">
+              <input type="hidden" name="_token" value="{{ csrf_token('statut' ~ commande.id) }}">
+              <div class="mb-3">
+                <select name="statut" class="form-select">
+                  <option value="en_cours"  {{ commande.statut == 'en_cours'  ? 'selected' : '' }}>En cours</option>
+                  <option value="validee"   {{ commande.statut == 'validee'   ? 'selected' : '' }}>Validée</option>
+                  <option value="payee"     {{ commande.statut == 'payee'     ? 'selected' : '' }}>Payée</option>
+                  <option value="livree"    {{ commande.statut == 'livree'    ? 'selected' : '' }}>Livrée</option>
+                  <option value="annulee"   {{ commande.statut == 'annulee'   ? 'selected' : '' }}>Annulée</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-warning w-100">
+                <i class="bx bx-save me-1"></i> Mettre à jour
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {# Zone dangereuse #}
+        <div class="card border-danger">
+          <div class="card-header bg-label-danger">
+            <h6 class="mb-0 text-danger"><i class="bx bx-trash me-2"></i>Zone dangereuse</h6>
+          </div>
+          <div class="card-body">
+            <p class="text-muted small mb-3">La suppression est irréversible.</p>
+            <form method="POST"
+                  action="{{ path('admin_commande_delete', {id: commande.id}) }}"
+                  onsubmit="return confirm('Supprimer définitivement cette commande ?')">
+              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commande.id) }}">
+              <button type="submit" class="btn btn-danger w-100">
+                <i class="bx bx-trash me-1"></i> Supprimer
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      {# ---- Colonne droite : client + produits ---- #}
+      <div class="col-md-8 mb-4">
+
+        {# Client #}
+        {% if commande.utilisateur %}
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0"><i class="bx bx-user me-2 text-info"></i>Client</h5>
+            </div>
+            <div class="card-body">
+              {% set user = commande.utilisateur %}
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <span class="avatar avatar-md">
+                  <span class="avatar-initial rounded-circle bg-label-primary fs-5">
+                    {{ user.prenom|first|upper }}{{ user.nom|first|upper }}
+                  </span>
+                </span>
+                <div>
+                  <strong class="fs-6">{{ user.prenom }} {{ user.nom|upper }}</strong><br>
+                  <small class="text-muted">{{ user.email }}</small>
+                </div>
+                <a href="{{ path('admin_utilisateur_show', {id: user.id}) }}"
+                   class="btn btn-sm btn-outline-primary ms-auto">
+                  <i class="bx bx-show me-1"></i> Voir profil
+                </a>
+              </div>
+              <div class="row g-2">
+                {% if user.utilisateurGroupe %}
+                  <div class="col-12">
+                    <small class="text-muted">Groupe :</small>
+                    <span class="badge bg-label-info ms-1">{{ user.utilisateurGroupe.nomGroupe }}</span>
+                  </div>
+                {% endif %}
+                <div class="col-12">
+                  <small class="text-muted">Inscrit le :</small>
+                  <span class="ms-1">{{ user.dateInscription|date('d/m/Y') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {# Produits commandés #}
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bx bx-box me-2 text-success"></i>Produits commandés</h5>
+            <span class="badge bg-label-success">{{ commande.commandeProduits|length }} ligne(s)</span>
+          </div>
+          <div class="card-body p-0">
+            {% if commande.commandeProduits is not empty %}
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Produit</th>
+                      <th>Mode paiement</th>
+                      <th class="text-center">Qté</th>
+                      <th class="text-end">Prix unit. TTC</th>
+                      <th class="text-end">Sous-total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% set total = 0 %}
+                    {% for cp in commande.commandeProduits %}
+                      {% set sousTotal = cp.produit.prixPublic * cp.quantite %}
+                      {% set total = total + sousTotal %}
+                      <tr>
+                        <td>
+                          <strong>{{ cp.produit.intitule }}</strong><br>
+                          <small class="text-muted">Réf. {{ cp.produit.reference }}</small>
+                        </td>
+                        <td>
+                          {% if cp.modePaiement %}
+                            <span class="badge bg-label-secondary">{{ cp.modePaiement }}</span>
+                          {% else %}
+                            <span class="text-muted">—</span>
+                          {% endif %}
+                        </td>
+                        <td class="text-center">{{ cp.quantite }}</td>
+                        <td class="text-end">{{ cp.produit.prixPublic|number_format(2, ',', ' ') }} €</td>
+                        <td class="text-end fw-semibold">{{ sousTotal|number_format(2, ',', ' ') }} €</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot class="table-light">
+                    <tr>
+                      <td colspan="4" class="text-end fw-bold">Total TTC</td>
+                      <td class="text-end fw-bold text-success fs-6">
+                        {{ commande.totalTTC|number_format(2, ',', ' ') }} €
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-center py-4 text-muted">
+                <i class="bx bx-box bx-md mb-2 d-block"></i>
+                <p class="mb-0">Aucun produit dans cette commande.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {# ===================================================== #}
+  {# ===== ZONE FACTURE (visible uniquement à l'impression) ===== #}
+  {# ===================================================== #}
+  <div id="facture-print-zone" style="display:none;">
+
+    <div class="facture-header">
+      <div class="logo-bloc">
+        <h2>GLOBAL C.E.</h2>
+        <p>Bâtiment Nominoë</p>
+        <p>35290 SAINT-MÉEN-LE-GRAND</p>
+      </div>
+      <div class="numero-bloc">
+        <h3>FACTURE N° {{ '%05d'|format(commande.id) }}</h3>
+        <p>Date : {{ commande.dateCommande|date('d/m/Y') }}</p>
+        <p>
+          Statut :
+          <span class="statut-badge">
+            {% if commande.statut == 'payee' %}Payée
+            {% elseif commande.statut == 'validee' %}Validée
+            {% elseif commande.statut == 'en_cours' %}En cours
+            {% elseif commande.statut == 'livree' %}Livrée
+            {% elseif commande.statut == 'annulee' %}Annulée
+            {% else %}{{ commande.statut }}{% endif %}
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div class="facture-parties">
+      <div class="facture-partie">
+        <h4>Vendeur</h4>
+        <p><strong>GLOBAL C.E.</strong></p>
+        <p>Bâtiment Nominoë</p>
+        <p>35290 SAINT-MÉEN-LE-GRAND</p>
+      </div>
+      <div class="facture-partie">
+        <h4>Acheteur</h4>
+        {% if commande.utilisateur %}
+          {% set user = commande.utilisateur %}
+          <p><strong>{{ user.prenom }} {{ user.nom|upper }}</strong></p>
+          <p>{{ user.email }}</p>
+          {% if user.utilisateurGroupe %}
+            <p>Groupe : {{ user.utilisateurGroupe.nomGroupe }}</p>
+          {% endif %}
+          {% if user.utilisateurAdresses is defined and user.utilisateurAdresses is not empty %}
+            {% set adresse = user.utilisateurAdresses.first() %}
+            <p style="margin-top:6px;">
+              {{ adresse.adresse }}<br>
+              {{ adresse.codePostal }} {{ adresse.ville }}<br>
+              {{ adresse.pays }}
+            </p>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <table class="facture-table">
+      <thead>
+        <tr>
+          <th>Désignation</th>
+          <th>Mode de paiement</th>
+          <th class="text-center">Qté</th>
+          <th class="text-right">Prix unit. TTC</th>
+          <th class="text-right">Sous-total TTC</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cp in commande.commandeProduits %}
+          <tr>
+            <td>{{ cp.produit.intitule }}</td>
+            <td>{{ cp.modePaiement ?? '—' }}</td>
+            <td class="text-center">{{ cp.quantite }}</td>
+            <td class="text-right">{{ cp.produit.prixPublic|number_format(2, ',', ' ') }} €</td>
+            <td class="text-right">{{ (cp.produit.prixPublic * cp.quantite)|number_format(2, ',', ' ') }} €</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">Total TTC</td>
+          <td class="text-right">{{ commande.totalTTC|number_format(2, ',', ' ') }} €</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="facture-footer">
+      <p>GLOBAL C.E. — Bâtiment Nominoë — 35290 Saint-Méen-le-Grand</p>
+      <p>Merci de votre confiance.</p>
+    </div>
+
+  </div>
+
+{% endblock %}

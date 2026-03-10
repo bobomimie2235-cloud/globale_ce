@@ -1,0 +1,220 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}{{ article.titre }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_article_index') }}">Offre Commerçant</a> /</span>
+      {{ article.titre }}
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_article_edit', {id: article.id}) }}" class="btn btn-warning">
+        <i class="bx bx-edit me-1"></i> Modifier
+      </a>
+      <a href="{{ path('admin_article_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    {# ===== Colonne gauche : images ===== #}
+    <div class="col-md-4 mb-4">
+
+      {# Logo #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-image me-2 text-primary"></i>Logo</h6>
+        </div>
+        <div class="card-body text-center">
+          {% if article.imgLogo %}
+            <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}"
+                 alt="{{ article.titre }}"
+                 class="img-fluid rounded" style="max-height:150px;">
+          {% else %}
+            <div class="py-3 text-muted">
+              <i class="bx bx-image bx-lg"></i>
+              <p class="small mb-0">Aucun logo</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Photo devanture #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-building me-2 text-info"></i>Devanture</h6>
+        </div>
+        <div class="card-body text-center">
+          {% if article.imgPhotosDevanture %}
+            <img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}"
+                 alt="Devanture"
+                 class="img-fluid rounded" style="max-height:150px;">
+          {% else %}
+            <div class="py-3 text-muted">
+              <i class="bx bx-image bx-lg"></i>
+              <p class="small mb-0">Aucune photo</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Photo intérieur #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-photo-album me-2 text-warning"></i>Intérieur</h6>
+        </div>
+        <div class="card-body text-center">
+          {% if article.imgPhotosInterieur %}
+            <img src="{{ asset('uploads/articles/' ~ article.imgPhotosInterieur) }}"
+                 alt="Intérieur"
+                 class="img-fluid rounded" style="max-height:150px;">
+          {% else %}
+            <div class="py-3 text-muted">
+              <i class="bx bx-image bx-lg"></i>
+              <p class="small mb-0">Aucune photo</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Zone dangereuse #}
+      <div class="card border-danger">
+        <div class="card-header bg-label-danger">
+          <h6 class="mb-0 text-danger"><i class="bx bx-trash me-2"></i>Zone dangereuse</h6>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-3">La suppression est irréversible.</p>
+          <form method="POST"
+                action="{{ path('admin_article_delete', {id: article.id}) }}"
+                onsubmit="return confirm('Supprimer définitivement cet article ?')">
+            <input type="hidden" name="_token"
+                   value="{{ csrf_token('delete' ~ article.id) }}">
+            <button type="submit" class="btn btn-danger w-100">
+              <i class="bx bx-trash me-1"></i> Supprimer
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    {# ===== Colonne droite : infos ===== #}
+    <div class="col-md-8">
+
+      {# Infos principales #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-store me-2 text-primary"></i>Informations principales</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <p class="text-muted small mb-1">Titre</p>
+              <p class="fw-semibold fs-5">{{ article.titre }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Catégorie</p>
+              <p>
+                {% if article.articleCategorie %}
+                  <span class="badge bg-label-info">{{ article.articleCategorie.intitule }}</span>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Département</p>
+              <p>{{ article.departement ?? '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Offre</p>
+              <p>
+                {% if article.offre %}
+                  <span class="badge bg-label-success fs-6">{{ article.offre }}</span>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Site web</p>
+              <p>
+                {% if article.siteWeb %}
+                  <a href="{{ article.siteWeb }}" target="_blank">
+                    <i class="bx bx-link-external me-1"></i>{{ article.siteWeb }}
+                  </a>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-1">Auteur</p>
+              <p>
+                {% if article.utilisateur %}
+                  <a href="{{ path('admin_utilisateur_show', {id: article.utilisateur.id}) }}">
+                    {{ article.utilisateur.prenom }} {{ article.utilisateur.nom }}
+                  </a>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Description + infos activité #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-text me-2 text-info"></i>Description & Activité</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <p class="text-muted small mb-1">Description</p>
+            <p>{{ article.description ?: '—' }}</p>
+          </div>
+          <div>
+            <p class="text-muted small mb-1">Infos activité</p>
+            <p>{{ article.infosActivite ?: '—' }}</p>
+          </div>
+        </div>
+      </div>
+
+      {# Offre commerciale + horaires #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-purchase-tag me-2 text-success"></i>Offre commerciale & Horaires</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <p class="text-muted small mb-1">Offre commerciale</p>
+            <p>{{ article.offreCommerciale ?: '—' }}</p>
+          </div>
+          <div>
+            <p class="text-muted small mb-1">Horaires</p>
+            <p style="white-space: pre-line">{{ article.horaires ?: '—' }}</p>
+          </div>
+        </div>
+      </div>
+
+      {# Coupons liés #}
+      {% if article.couponReduction is not null %}
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bx bx-purchase-tag-alt me-2 text-warning"></i>Coupon lié</h5>
+          </div>
+          <div class="card-body">
+            <p class="fw-semibold">{{ article.couponReduction.intitule }}</p>
+            <p class="text-muted small mb-0">{{ article.couponReduction.reference }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+{% endblock %}

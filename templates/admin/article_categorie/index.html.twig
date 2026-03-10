@@ -1,0 +1,105 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Catégories Articles{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_article_index') }}">Offre Commerçant</a> /</span>
+      Catégories
+    </h4>
+    <a href="{{ path('admin_article_categorie_new') }}" class="btn btn-primary">
+      <i class="bx bx-plus me-1"></i> Nouvelle catégorie
+    </a>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Liste des catégories</h5>
+          <span class="badge bg-label-primary">{{ categories|length }} catégorie(s)</span>
+        </div>
+        <div class="card-body p-0">
+          {% if categories is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Intitulé</th>
+                    <th>Nombre d'articles</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for categorie in categories %}
+                    <tr>
+                      <td><small class="text-muted">#{{ categorie.id }}</small></td>
+                      <td class="fw-semibold">{{ categorie.intitule }}</td>
+                      <td>
+                        <span class="badge bg-label-info">
+                          {{ categorie.articles|length }} article(s)
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <a href="{{ path('admin_article_categorie_show', {id: categorie.id}) }}"
+                           class="btn btn-sm btn-icon btn-outline-primary me-1" title="Voir">
+                          <i class="bx bx-show"></i>
+                        </a>
+                        <a href="{{ path('admin_article_categorie_edit', {id: categorie.id}) }}"
+                           class="btn btn-sm btn-icon btn-outline-warning me-1" title="Modifier">
+                          <i class="bx bx-edit"></i>
+                        </a>
+                        <form method="POST"
+                              action="{{ path('admin_article_categorie_delete', {id: categorie.id}) }}"
+                              class="d-inline"
+                              onsubmit="return confirm('Supprimer cette catégorie ?')">
+                          <input type="hidden" name="_token"
+                                 value="{{ csrf_token('delete' ~ categorie.id) }}">
+                          <button type="submit"
+                                  class="btn btn-sm btn-icon btn-outline-danger"
+                                  title="Supprimer"
+                                  {{ categorie.articles|length > 0 ? 'disabled' : '' }}>
+                            <i class="bx bx-trash"></i>
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5 text-muted">
+              <i class="bx bx-tag bx-lg mb-3 d-block"></i>
+              <p>Aucune catégorie trouvée.</p>
+              <a href="{{ path('admin_article_categorie_new') }}" class="btn btn-primary btn-sm">
+                Créer la première catégorie
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Colonne info #}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-info-circle me-2 text-info"></i>Information</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-2">
+            Les catégories permettent de classer les offres commerçants.
+          </p>
+          <p class="text-muted small mb-0">
+            <i class="bx bx-lock text-warning me-1"></i>
+            La suppression est désactivée si des articles sont rattachés à la catégorie.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

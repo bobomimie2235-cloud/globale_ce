@@ -1,0 +1,140 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Utilisateurs
+{% endblock %}
+
+{% block body %}
+
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="fw-bold mb-0">
+			<span class="text-muted fw-light">Admin /</span>
+			Utilisateurs
+		</h4>
+		<span class="badge bg-label-primary fs-6">{{ utilisateurs|length }}
+			utilisateur(s)</span>
+	</div>
+
+	{# ===== FILTRES ===== #}
+	<div class="card mb-4">
+		<div class="card-body">
+			<form method="GET" class="row g-3 align-items-end">
+				<div class="col-md-5">
+					<label class="form-label">Recherche</label>
+					<div class="input-group">
+						<span class="input-group-text">
+							<i class="bx bx-search"></i>
+						</span>
+						<input type="text" name="search" class="form-control" placeholder="Nom, prénom, email..." value="{{ search ?? '' }}">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Groupe</label>
+					<select name="groupe" class="form-select">
+						<option value="">Tous les groupes</option>
+						{% for groupe in groupes %}
+							<option value="{{ groupe.id }}" {{ groupeActif == groupe.id ? 'selected' : '' }}>
+								{{ groupe.nomGroupe }}
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-3 d-flex gap-2">
+					<button type="submit" class="btn btn-primary w-100">
+						<i class="bx bx-filter-alt"></i>
+						Filtrer
+					</button>
+					<a href="{{ path('admin_utilisateur_index') }}" class="btn btn-outline-secondary">
+						<i class="bx bx-x"></i>
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	{# ===== TABLEAU ===== #}
+	<div class="card">
+		<div class="card-body p-0">
+			{% if utilisateurs is not empty %}
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0">
+						<thead class="table-light">
+							<tr>
+								<th>Utilisateur</th>
+								<th>Email</th>
+								<th>Groupe</th>
+								<th>Rôles</th>
+								<th>Inscrit le</th>
+								<th class="text-center">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for utilisateur in utilisateurs %}
+								<tr>
+									<td>
+										<div class="d-flex align-items-center gap-2">
+											<span class="avatar avatar-sm">
+												<span class="avatar-initial rounded-circle bg-label-primary">
+													{{ utilisateur.prenom|first|upper }}{{ utilisateur.nom|first|upper }}
+												</span>
+											</span>
+											<div>
+												<strong>{{ utilisateur.prenom }}
+													{{ utilisateur.nom }}</strong>
+												<br><small class="text-muted">#{{ utilisateur.id }}</small>
+											</div>
+										</div>
+									</td>
+									<td>
+										<small>{{ utilisateur.email }}</small>
+									</td>
+									<td>
+										{% if utilisateur.utilisateurGroupe %}
+											<span class="badge bg-label-secondary">
+												{{ utilisateur.utilisateurGroupe.nomGroupe }}
+											</span>
+										{% else %}
+											<span class="text-muted">—</span>
+										{% endif %}
+									</td>
+									<td>
+										{% for role in utilisateur.roles %}
+											{% if role != 'ROLE_USER' %}
+												<span class="badge bg-label-danger">{{ role }}</span>
+											{% else %}
+												<span class="badge bg-label-success">{{ role }}</span>
+											{% endif %}
+										{% endfor %}
+									</td>
+									<td>
+										<small>{{ utilisateur.dateInscription|date('d/m/Y') }}</small>
+									</td>
+									<td class="text-center">
+										<a href="{{ path('admin_utilisateur_show', {id: utilisateur.id}) }}" class="btn btn-sm btn-icon btn-outline-primary me-1" title="Voir">
+											<i class="bx bx-show"></i>
+										</a>
+										<a href="{{ path('admin_utilisateur_edit', {id: utilisateur.id}) }}" class="btn btn-sm btn-icon btn-outline-warning me-1" title="Modifier">
+											<i class="bx bx-edit"></i>
+										</a>
+										{% if utilisateur != app.user %}
+											<form method="POST" action="{{ path('admin_utilisateur_delete', {id: utilisateur.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer cet utilisateur ?')">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
+												<button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Supprimer">
+													<i class="bx bx-trash"></i>
+												</button>
+											</form>
+										{% endif %}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			{% else %}
+				<div class="text-center py-5 text-muted">
+					<i class="bx bx-group bx-lg mb-3 d-block"></i>
+					<p>Aucun utilisateur trouvé.</p>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

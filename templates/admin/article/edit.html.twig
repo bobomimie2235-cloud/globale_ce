@@ -1,0 +1,172 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+{% block title %}Modifier {{ article.titre }}{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+      <span class="text-muted fw-light">Admin / <a href="{{ path('admin_article_index') }}">Offre Commerçant</a> /
+      <a href="{{ path('admin_article_show', {id: article.id}) }}">{{ article.titre }}</a> /</span>
+      Modifier
+    </h4>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_article_show', {id: article.id}) }}" class="btn btn-outline-primary">
+        <i class="bx bx-show me-1"></i> Voir
+      </a>
+      <a href="{{ path('admin_article_index') }}" class="btn btn-outline-secondary">
+        <i class="bx bx-arrow-back me-1"></i> Retour
+      </a>
+    </div>
+  </div>
+
+  {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+  <div class="row">
+
+    {# ===== Colonne principale ===== #}
+    <div class="col-md-8 mb-4">
+
+      {# Infos principales #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-store me-2 text-primary"></i>Informations principales</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">{{ form_label(form.titre) }}</label>
+              {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.titre) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.articleCategorie) }}</label>
+              {{ form_widget(form.articleCategorie, {'attr': {'class': 'form-select'}}) }}
+              {{ form_errors(form.articleCategorie) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.departement) }}</label>
+              {{ form_widget(form.departement, {'attr': {'class': 'form-select'}}) }}
+              {{ form_errors(form.departement) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.offre) }}</label>
+              {{ form_widget(form.offre, {'attr': {'class': 'form-control', 'placeholder': 'Ex: -10%, -25%...'}}) }}
+              {{ form_errors(form.offre) }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ form_label(form.siteWeb) }}</label>
+              {{ form_widget(form.siteWeb, {'attr': {'class': 'form-control', 'placeholder': 'https://...'}}) }}
+              {{ form_errors(form.siteWeb) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Description + activité #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-text me-2 text-info"></i>Description & Activité</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">{{ form_label(form.description) }}</label>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+            {{ form_errors(form.description) }}
+          </div>
+          <div>
+            <label class="form-label">{{ form_label(form.infosActivite) }}</label>
+            {{ form_widget(form.infosActivite, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+            {{ form_errors(form.infosActivite) }}
+          </div>
+        </div>
+      </div>
+
+      {# Offre commerciale + horaires #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bx bx-purchase-tag me-2 text-success"></i>Offre commerciale & Horaires</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">{{ form_label(form.offreCommerciale) }}</label>
+            {{ form_widget(form.offreCommerciale, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+            {{ form_errors(form.offreCommerciale) }}
+          </div>
+          <div>
+            <label class="form-label">{{ form_label(form.horaires) }}</label>
+            {{ form_widget(form.horaires, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+            {{ form_errors(form.horaires) }}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {# ===== Colonne images ===== #}
+    <div class="col-md-4 mb-4">
+
+      {# Logo #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-image me-2 text-primary"></i>Logo</h6>
+        </div>
+        <div class="card-body">
+          {% if article.imgLogo %}
+            <div class="text-center mb-3">
+              <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}"
+                   alt="Logo actuel" class="img-fluid rounded" style="max-height:100px;">
+            </div>
+          {% endif %}
+          {{ form_widget(form.imgLogo, {'attr': {'class': 'form-control'}}) }}
+          {{ form_errors(form.imgLogo) }}
+        </div>
+      </div>
+
+      {# Devanture #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-building me-2 text-info"></i>Photo devanture</h6>
+        </div>
+        <div class="card-body">
+          {% if article.imgPhotosDevanture %}
+            <div class="text-center mb-3">
+              <img src="{{ asset('uploads/articles/' ~ article.imgPhotosDevanture) }}"
+                   alt="Devanture actuelle" class="img-fluid rounded" style="max-height:100px;">
+            </div>
+          {% endif %}
+          {{ form_widget(form.imgPhotosDevanture, {'attr': {'class': 'form-control'}}) }}
+          {{ form_errors(form.imgPhotosDevanture) }}
+        </div>
+      </div>
+
+      {# Intérieur #}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bx bx-photo-album me-2 text-warning"></i>Photo intérieur</h6>
+        </div>
+        <div class="card-body">
+          {% if article.imgPhotosInterieur %}
+            <div class="text-center mb-3">
+              <img src="{{ asset('uploads/articles/' ~ article.imgPhotosInterieur) }}"
+                   alt="Intérieur actuel" class="img-fluid rounded" style="max-height:100px;">
+            </div>
+          {% endif %}
+          {{ form_widget(form.imgPhotosInterieur, {'attr': {'class': 'form-control'}}) }}
+          {{ form_errors(form.imgPhotosInterieur) }}
+        </div>
+      </div>
+
+      {# Bouton enregistrer #}
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-warning">
+          <i class="bx bx-save me-1"></i> Enregistrer les modifications
+        </button>
+        <a href="{{ path('admin_article_index') }}" class="btn btn-outline-secondary">
+          Annuler
+        </a>
+      </div>
+
+    </div>
+  </div>
+  {{ form_end(form) }}
+
+{% endblock %}

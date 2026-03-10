@@ -58,20 +58,6 @@
                 <ul>
                     <li><a href="{{ path('app_accueil') }}">Accueil</a></li>
 
-                    {# ===== ADMIN UNIQUEMENT ===== #}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <li class="has-submenu">
-                            <a href="#">Administration ▾</a>
-                            <ul class="submenu">
-                                <li><a href="{{ path('app_utilisateur_index') }}">Utilisateurs</a></li>
-                                <li><a href="{{ path('app_utilisateur_groupe_index') }}">Groupes</a></li>
-                                <li><a href="{{ path('app_article_categorie_index') }}">Catégories Articles</a></li>
-                                <li><a href="{{ path('app_produit_categorie_index') }}">Catégories Produits</a></li>
-                                <li><a href="{{ path('app_coupon_categorie_index') }}">Catégories Coupons</a></li>
-                            </ul>
-                        </li>
-                    {% endif %}
-
                     {# ===== USER UNIQUEMENT ===== #}
                     {% if is_granted('ROLE_USER') %}
 
@@ -133,7 +119,11 @@
                                 <li><a href="{{ path('app_logout') }}" class="li-deconnexion">Déconnexion</a></li>
                             </ul>
                         </li>
-
+                        {% endif %}
+                        
+                    {# ===== ADMIN UNIQUEMENT ===== #}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('admin_dashboard') }}">🖥️ Dashboard Admin</a></li>
                     {% endif %}
                 </ul>
             </nav>

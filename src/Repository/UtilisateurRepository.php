@@ -33,28 +33,60 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return Utilisateur[] Returns an array of Utilisateur objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+     * Nombre d'utilisateurs inscrits ce mois-ci
+     */
+    public function countThisMonth(): int
+    {
+        $debut = new \DateTimeImmutable('first day of this month midnight');
+        $fin   = new \DateTimeImmutable('last day of this month 23:59:59');
 
-    //    public function findOneBySomeField($value): ?Utilisateur
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.dateInscription BETWEEN :debut AND :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Les N derniers utilisateurs inscrits
+     */
+    public function findDerniers(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.dateInscription', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+/**
+     * Recherche + filtre par groupe pour l'admin
+     */
+    public function findByFiltresAdmin(?string $search, ?int $groupeId): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->leftJoin('u.utilisateurGroupe', 'g')
+            ->addSelect('g')
+            ->orderBy('u.dateInscription', 'DESC');
+
+        if ($groupeId) {
+            $qb->andWhere('g.id = :groupeId')
+            ->setParameter('groupeId', $groupeId);
+        }
+
+        if ($search) {
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like('u.nom', ':search'),
+                    $qb->expr()->like('u.prenom', ':search'),
+                    $qb->expr()->like('u.email', ':search')
+                )
+            )->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
