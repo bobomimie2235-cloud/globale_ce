@@ -66,9 +66,9 @@
 
                             {% if is_granted('ROLE_ADMIN') %}
                                 <form method="post"
-                                      action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}"
-                                      onsubmit="return confirm('Supprimer cet utilisateur ?');"
-                                      style="display:inline;">
+                                    action="{{ path('app_utilisateur_delete', {'id': utilisateur.id}) }}"
+                                    onsubmit="return confirm('Supprimer cet utilisateur ?');"
+                                    style="display:inline;">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
                                     <button class="btn btn-delete btn-sm">Supprimer</button>
                                 </form>

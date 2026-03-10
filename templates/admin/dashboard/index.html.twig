@@ -1,0 +1,196 @@
+{% extends 'admin/layout/base_admin.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+
+  {# ===== EN-TÊTE DE PAGE ===== #}
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">
+          <span class="text-muted fw-light">Admin /</span> Dashboard
+        </h4>
+        <small class="text-muted">
+          {{ "now"|date("d/m/Y") }}
+        </small>
+      </div>
+    </div>
+  </div>
+
+  {# ===== CARTES STATISTIQUES ===== #}
+  <div class="row">
+
+    {# Commandes #}
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="content-left">
+              <span>Commandes</span>
+              <div class="d-flex align-items-end mt-2">
+                <h4 class="mb-0 me-2">{{ stats.commandes ?? 0 }}</h4>
+                <small class="text-success mb-1">ce mois</small>
+              </div>
+              <small>Total : {{ stats.commandes_total ?? 0 }}</small>
+            </div>
+            <span class="badge bg-label-warning rounded p-2">
+              <i class="bx bx-cart bx-sm"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Utilisateurs #}
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="content-left">
+              <span>Utilisateurs</span>
+              <div class="d-flex align-items-end mt-2">
+                <h4 class="mb-0 me-2">{{ stats.utilisateurs ?? 0 }}</h4>
+                <small class="text-success mb-1">inscrits</small>
+              </div>
+              <small>Nouveaux ce mois : {{ stats.nouveaux_utilisateurs ?? 0 }}</small>
+            </div>
+            <span class="badge bg-label-primary rounded p-2">
+              <i class="bx bx-group bx-sm"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Produits #}
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="content-left">
+              <span>Produits</span>
+              <div class="d-flex align-items-end mt-2">
+                <h4 class="mb-0 me-2">{{ stats.produits ?? 0 }}</h4>
+                <small class="text-muted mb-1">en ligne</small>
+              </div>
+              <small>Catégories : {{ stats.categories ?? 0 }}</small>
+            </div>
+            <span class="badge bg-label-success rounded p-2">
+              <i class="bx bx-package bx-sm"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Chiffre d'affaires #}
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="content-left">
+              <span>Chiffre d'affaires</span>
+              <div class="d-flex align-items-end mt-2">
+                <h4 class="mb-0 me-2">{{ stats.ca_mois ?? '0.00' }} €</h4>
+                <small class="text-success mb-1">ce mois</small>
+              </div>
+              <small>Total : {{ stats.ca_total ?? '0.00' }} €</small>
+            </div>
+            <span class="badge bg-label-danger rounded p-2">
+              <i class="bx bx-euro bx-sm"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {# /row stats #}
+
+  {# ===== TABLEAUX DU BAS ===== #}
+  <div class="row">
+
+    {# Dernières commandes #}
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0 me-2">Dernières commandes</h5>
+          <a href="{{ path('app_commande_index') }}" class="btn btn-sm btn-outline-primary">
+            Voir tout
+          </a>
+        </div>
+        <div class="card-body">
+          {% if dernieres_commandes is defined and dernieres_commandes is not empty %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Client</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for commande in dernieres_commandes %}
+                    <tr>
+                      <td><a href="{{ path('app_commande_show', {id: commande.id}) }}">#{{ commande.id }}</a></td>
+                      <td>{{ commande.utilisateur.email ?? 'N/A' }}</td>
+                      <td>{{ commande.total ?? '0.00' }} €</td>
+                      <td>
+                        <span class="badge bg-label-{{ commande.statut == 'payée' ? 'success' : 'warning' }}">
+                          {{ commande.statut ?? 'En attente' }}
+                        </span>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="text-muted text-center py-3">Aucune commande pour le moment.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Derniers utilisateurs inscrits #}
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0 me-2">Nouveaux utilisateurs</h5>
+          <a href="{{ path('app_utilisateur_index') }}" class="btn btn-sm btn-outline-primary">
+            Voir tout
+          </a>
+        </div>
+        <div class="card-body">
+          {% if derniers_utilisateurs is defined and derniers_utilisateurs is not empty %}
+            <ul class="list-unstyled mb-0">
+              {% for user in derniers_utilisateurs %}
+                <li class="d-flex align-items-center mb-3">
+                  <span class="avatar avatar-sm flex-shrink-0 me-3">
+                    <span class="avatar-initial rounded-circle bg-label-primary">
+                      {{ user.email|first|upper }}
+                    </span>
+                  </span>
+                  <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                    <div>
+                      <p class="mb-0 fw-semibold">{{ user.email }}</p>
+                      <small class="text-muted">{{ user.createdAt ? user.createdAt|date('d/m/Y') : '' }}</small>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted text-center py-3">Aucun utilisateur récent.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {# /row tableaux #}
+
+{% endblock %}

@@ -22,11 +22,11 @@
 
                 <div class="sidebar-search">
     <input type="text"
-           name="search"
-           id="sidebar-search-input"
-           placeholder="Rechercher..."
-           value="{{ search ?? '' }}"
-           class="sidebar-search-input">
+        name="search"
+        id="sidebar-search-input"
+        placeholder="Rechercher..."
+        value="{{ search ?? '' }}"
+        class="sidebar-search-input">
 </div>
 <hr class="sidebar-divider">
 
@@ -45,9 +45,9 @@
                                 <li>
                                     <label class="sidebar-checkbox-label">
                                         <input type="checkbox"
-                                               name="categories[]"
-                                               value="{{ categorie.id }}"
-                                               {% if categorie.id in categoriesActives %}checked{% endif %}>
+                                            name="categories[]"
+                                            value="{{ categorie.id }}"
+                                            {% if categorie.id in categoriesActives %}checked{% endif %}>
                                         <span>{{ categorie.intitule }}</span>
                                     </label>
                                 </li>
@@ -72,9 +72,9 @@
                                 <li>
                                     <label class="sidebar-checkbox-label">
                                         <input type="checkbox"
-                                               name="departements[]"
-                                               value="{{ departement.id }}"
-                                               {% if departement.id in departementsActifs %}checked{% endif %}>
+                                            name="departements[]"
+                                            value="{{ departement.id }}"
+                                            {% if departement.id in departementsActifs %}checked{% endif %}>
                                         <span>{{ departement.numero }} - {{ departement.nom }}</span>
                                     </label>
                                 </li>
@@ -85,7 +85,7 @@
                     {# ----- RESET ----- #}
                     <div class="sidebar-actions" id="sidebar-reset-wrap" style="display:none">
                         <a href="{{ path('app_produit_index') }}"
-                           class="btn btn-secondary btn-sm btn-block">
+                        class="btn btn-secondary btn-sm btn-block">
                             ✕ Réinitialiser
                         </a>
                     </div>

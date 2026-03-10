@@ -1,0 +1,187 @@
+{#
+  =============================================
+  Sidebar / Menu latéral Admin - Sneat Template
+  Routes adaptées au projet GLOBALE_CE
+  =============================================
+  Fichier : templates/admin/partials/_sidebar.html.twig
+#}
+
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+  {# ===== Logo / Brand ===== #}
+<div class="app-brand demo">
+  <a href="{{ path('admin_dashboard') }}" class="app-brand-link">
+    <span class="app-brand-logo demo me-2">
+      <img 
+        src="{{ asset('uploads/logos/001-logo-globale-ce-01-v1.jpg') }}" 
+        alt="Globale C.E." 
+        style="height: 60px; width: auto;"
+      />
+    </span>
+    <span class="app-brand-text demo menu-text fw-bolder ms-1" style="font-size: 0.85rem; line-height: 1.2;">
+      Dashboard
+    </span>
+  </a>
+
+    {# Bouton fermeture menu (mobile) #}
+  <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+    <i class="bx bx-chevron-left bx-sm align-middle"></i>
+  </a>
+</div>
+
+  <div class="menu-divider mt-0"></div>
+  <div class="menu-inner-shadow"></div>
+
+  <ul class="menu-inner py-1">
+
+    {# --- Dashboard --- #}
+    <li class="menu-item {{ app.request.attributes.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
+      <a href="{{ path('admin_dashboard') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-home-circle"></i>
+        <div>Dashboard</div>
+      </a>
+    </li>
+
+    {# ===== CATALOGUE ===== #}
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Catalogue</span>
+    </li>
+
+    {# --- Produits --- #}
+    <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_produit' ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-package"></i>
+        <div>Produits</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ app.request.attributes.get('_route') == 'app_produit_index' ? 'active' : '' }}">
+          <a href="{{ path('app_produit_index') }}" class="menu-link">
+            <div>Liste des produits</div>
+          </a>
+        </li>
+        <li class="menu-item {{ app.request.attributes.get('_route') == 'app_produit_new' ? 'active' : '' }}">
+          <a href="{{ path('app_produit_new') }}" class="menu-link">
+            <div>Ajouter un produit</div>
+          </a>
+        </li>
+        <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_produit_categorie' ? 'active' : '' }}">
+          <a href="{{ path('app_produit_categorie_index') }}" class="menu-link">
+            <div>Catégories produits</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    {# --- Articles / Blog --- #}
+    <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_article' ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-news"></i>
+        <div>Articles / Blog</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ app.request.attributes.get('_route') == 'app_article_index' ? 'active' : '' }}">
+          <a href="{{ path('app_article_index') }}" class="menu-link">
+            <div>Liste des articles</div>
+          </a>
+        </li>
+        <li class="menu-item {{ app.request.attributes.get('_route') == 'app_article_new' ? 'active' : '' }}">
+          <a href="{{ path('app_article_new') }}" class="menu-link">
+            <div>Nouvel article</div>
+          </a>
+        </li>
+        <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_article_categorie' ? 'active' : '' }}">
+          <a href="{{ path('app_article_categorie_index') }}" class="menu-link">
+            <div>Catégories articles</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    {# ===== COMMANDES & CLIENTS ===== #}
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Commandes & Clients</span>
+    </li>
+
+    {# --- Commandes --- #}
+    <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_commande' ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-cart"></i>
+        <div>Commandes</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ app.request.attributes.get('_route') == 'app_commande_index' ? 'active' : '' }}">
+          <a href="{{ path('app_commande_index') }}" class="menu-link">
+            <div>Toutes les commandes</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    {# --- Utilisateurs --- #}
+    <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_utilisateur' ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-group"></i>
+        <div>Utilisateurs</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ app.request.attributes.get('_route') == 'app_utilisateur_index' ? 'active' : '' }}">
+          <a href="{{ path('app_utilisateur_index') }}" class="menu-link">
+            <div>Liste des utilisateurs</div>
+          </a>
+        </li>
+        <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_utilisateur_groupe' ? 'active' : '' }}">
+          <a href="{{ path('app_utilisateur_groupe_index') }}" class="menu-link">
+            <div>Groupes</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    {# ===== MARKETING ===== #}
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Marketing</span>
+    </li>
+
+    {# --- Coupons --- #}
+    <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_coupon' ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-purchase-tag"></i>
+        <div>Coupons de réduction</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ app.request.attributes.get('_route') == 'app_coupon_reduction_index' ? 'active' : '' }}">
+          <a href="{{ path('app_coupon_reduction_index') }}" class="menu-link">
+            <div>Liste des coupons</div>
+          </a>
+        </li>
+        <li class="menu-item {{ app.request.attributes.get('_route') starts with 'app_coupon_categorie' ? 'active' : '' }}">
+          <a href="{{ path('app_coupon_categorie_index') }}" class="menu-link">
+            <div>Catégories coupons</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    {# ===== PARAMÈTRES ===== #}
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Paramètres</span>
+    </li>
+
+    {# --- Voir le site --- #}
+    <li class="menu-item">
+      <a href="{{ path('app_accueil') }}" class="menu-link" target="_blank">
+        <i class="menu-icon tf-icons bx bx-link-external"></i>
+        <div>Voir le site</div>
+      </a>
+    </li>
+
+    {# --- Déconnexion --- #}
+    <li class="menu-item">
+      <a href="{{ path('app_logout') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-power-off"></i>
+        <div>Déconnexion</div>
+      </a>
+    </li>
+
+  </ul>
+</aside>

@@ -1,40 +1,53 @@
 <footer>
-    <div class="footer-content">
+	<div
+		class="footer-content">
 
-        {# ===== COLONNE INFOS ===== #}
-        <div class="footer-col footer-col-infos">
-            <h4>Globale C.E.</h4>
-            <p>
-                24, avenue Maréchal Foch<br>
-                Résidence Louis Leray<br>
-                35290 Saint Meen Le Grand
-            </p>
-            <p>
-                Lundi, mardi, mercredi et vendredi<br>
-                10h-12h et 14h-18h<br>
-                Jeudi sur rendez-vous
-            </p>
-        </div>
+		{# ===== COLONNE INFOS ===== #}
+		<div class="footer-col footer-col-infos">
+			<h4>Globale C.E.</h4>
+			<p>
+				24, avenue Maréchal Foch<br>
+				Résidence Louis Leray<br>
+				35290 Saint Meen Le Grand
+			</p>
+			<p>
+				Lundi, mardi, mercredi et vendredi<br>
+				10h-12h et 14h-18h<br>
+				Jeudi sur rendez-vous
+			</p>
+		</div>
 
-        {# ===== COLONNE CONTACT ===== #}
-        <div class="footer-col footer-col-contact">
-            <h4>Nous contacter</h4>
-            <div class="footer-contact">
-                <span>09 67 35 56 32</span>
-                <a href="mailto:globale-ce@orange.fr">globale-ce@orange.fr</a>
-            </div>
-        </div>
+		{# ===== COLONNE CONTACT ===== #}
+		<div class="footer-col footer-col-contact">
+			<h4>Nous contacter</h4>
+			<div class="footer-contact">
+				<span>09 67 35 56 32</span>
+				<a href="mailto:globale-ce@orange.fr">globale-ce@orange.fr</a>
+			</div>
+		</div>
 
-        {# ===== COLONNE LIENS ===== #}
-        <div class="footer-col">
-            <h4>Informations</h4>
-            <ul>
-                <li><a href="#">Contactez-nous</a></li>
-                <li><a href="{{ path('app_mentions_legales') }}">Mentions légales</a></li>
-                <li><a href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a></li>
-                <li><a href="{{ path('app_cgv') }}">CGV</a></li>
-            </ul>
-        </div>
+		{# ===== COLONNE LIENS ===== #}
+		<div class="footer-col">
+			<h4>Informations</h4>
+			<ul>
+				<li>
+					{% if is_granted('ROLE_USER') %}
+						<a href="{{ path('app_contactez_nous') }}">Contactez-nous</a>
+					{% else %}
+						<a href="{{ path('app_accueil') }}#contact">Contactez-nous</a>
+					{% endif %}
+				</li>
+				<li>
+					<a href="{{ path('app_mentions_legales') }}">Mentions légales</a>
+				</li>
+				<li>
+					<a href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a>
+				</li>
+				<li>
+					<a href="{{ path('app_cgv') }}">CGV</a>
+				</li>
+			</ul>
+		</div>
 
-    </div>
+	</div>
 </footer>

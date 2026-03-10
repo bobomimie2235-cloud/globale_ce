@@ -28,21 +28,21 @@ class ProduitRepository extends ServiceEntityRepository
 
         if (!empty($categorieIds)) {
             $qb->andWhere('p.produitCategorie IN (:categorieIds)')
-               ->setParameter('categorieIds', $categorieIds);
+            ->setParameter('categorieIds', $categorieIds);
         }
 
         if (!empty($departementIds)) {
             $qb->andWhere('p.departement IN (:departementIds)')
-               ->setParameter('departementIds', $departementIds);
+            ->setParameter('departementIds', $departementIds);
         }
 
         if ($search) {
             $qb->andWhere('p.intitule LIKE :search OR p.reference LIKE :search OR p.description LIKE :search')
-               ->setParameter('search', '%' . $search . '%');
+            ->setParameter('search', '%' . $search . '%');
         }
 
         return $qb->orderBy('p.intitule', 'ASC')
-                  ->getQuery()
-                  ->getResult();
+                ->getQuery()
+                ->getResult();
     }
 }
