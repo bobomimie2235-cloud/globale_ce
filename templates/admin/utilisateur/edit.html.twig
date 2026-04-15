@@ -47,6 +47,24 @@
                 {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(form.email) }}
               </div>
+              <div class="col-12 mt-3">
+  <label class="form-label fw-semibold">Groupe</label>
+  {{ form_widget(form.utilisateurGroupe, {'attr': {'class': 'form-select'}}) }}
+  {{ form_errors(form.utilisateurGroupe) }}
+</div>
+
+<div class="col-12 mt-3">
+  <label class="form-label fw-semibold">Rôles</label>
+  <div class="d-flex flex-wrap gap-3 mt-1">
+    {% for role in form.roles %}
+      <div class="form-check">
+        {{ form_widget(role, {'attr': {'class': 'form-check-input'}}) }}
+        {{ form_label(role, null, {'label_attr': {'class': 'form-check-label'}}) }}
+      </div>
+    {% endfor %}
+  </div>
+  {{ form_errors(form.roles) }}
+</div>
             </div>
             <div class="mt-4">
               <button type="submit" class="btn btn-primary">

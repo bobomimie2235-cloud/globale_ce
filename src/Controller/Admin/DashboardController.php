@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_ADMIN')] // Sécurisation globale du contrôleur
 class DashboardController extends AbstractController
 {
     #[Route('/admin', name: 'admin_dashboard')]
@@ -32,23 +32,18 @@ class DashboardController extends AbstractController
             // Commandes
             'commandes'             => $commandeRepository->countThisMonth(),
             'commandes_total'       => $commandeRepository->count([]),
-
             // Utilisateurs
             'utilisateurs'          => $utilisateurRepository->count([]),
             'nouveaux_utilisateurs' => $utilisateurRepository->countThisMonth(),
-
             // Produits
             'produits'              => $produitRepository->countAll(),
             'categories'            => $produitCategorieRepository->countAll(),
-
             // Articles
             'articles'              => $articleRepository->countAll(),
-
             // Coupons
             'coupons_total'         => $couponReductionRepository->countAll(),
             'coupons_actifs'        => $couponReductionRepository->countActifs(),
             'coupons_inactifs'      => $couponReductionRepository->countInactifs(),
-
             // Chiffre d'affaires
             'ca_mois'               => $commandeRepository->caThisMonth(),
             'ca_total'              => $commandeRepository->caTotal(),

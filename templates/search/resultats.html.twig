@@ -3,129 +3,270 @@
 {% block title %}Résultats pour "{{ q }}"{% endblock %}
 
 {% block body %}
-    <h1>Résultats pour "{{ q }}"</h1>
+<section class="articles-page">
+    <div class="articles-container">
 
-    {% set total = articles|length + produits|length + coupons|length %}
+        <h1 class="articles-titre">Résultats
+            <span>de recherche</span>
+        </h1>
 
-    {% if q is empty %}
-        <p>Veuillez saisir un terme de recherche.</p>
+        {% set total = articles|length + produits|length + coupons|length %}
 
-    {% elseif total == 0 %}
-        <p>Aucun résultat pour "<strong>{{ q }}</strong>".</p>
+        {# ===== BARRE DE RECHERCHE ===== #}
+        <div class="search-barre">
+            <form method="GET" action="{{ path('app_recherche') }}" class="search-barre-form">
+                <input type="text"
+                    name="q"
+                    value="{{ q }}"
+                    placeholder="Rechercher..."
+                    class="sidebar-search-input search-barre-input"
+                    autofocus>
+                <button type="submit" class="btn btn-primary btn-sm">🔍 Rechercher</button>
+            </form>
+        </div>
 
-    {% else %}
-        <p>{{ total }} résultat(s) trouvé(s)</p>
+        {# ===== FILTRES PAR TYPE ===== #}
+        {% if q is not empty %}
+        <div class="search-filtres">
+            {% set filtres = [
+                {'val': 'tout',     'label': 'Tout (' ~ total ~ ')'},
+                {'val': 'articles', 'label': 'Offres Cartes (' ~ articles|length ~ ')'},
+                {'val': 'produits', 'label': 'Billetterie (' ~ produits|length ~ ')'},
+                {'val': 'coupons',  'label': 'Coupons (' ~ coupons|length ~ ')'},
+            ] %}
+            {% for f in filtres %}
+                <a href="{{ path('app_recherche', {'q': q, 'filtre': f.val}) }}"
+                   class="search-filtre-btn {% if filtre == f.val %}active{% endif %}">
+                    {{ f.label }}
+                </a>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-        {# ===== ARTICLES ===== #}
-        {% if articles is not empty %}
-            <h2>Offres Cartes ({{ articles|length }})</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Logo</th>
-                        <th>Titre</th>
-                        <th>Catégorie</th>
-                        <th>Offre</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+        {# ===== ÉTAT VIDE ===== #}
+        {% if q is empty %}
+            <div class="articles-empty">
+                <p>Veuillez saisir un terme de recherche.</p>
+            </div>
+
+        {% elseif total == 0 %}
+            <div class="articles-empty">
+                <p>Aucun résultat pour "<strong>{{ q }}</strong>".</p>
+            </div>
+
+        {% else %}
+
+            {# ===== ARTICLES ===== #}
+            {% if articles is not empty and (filtre == 'tout' or filtre == 'articles') %}
+                <h2 class="search-section-titre">🏪 Offres Cartes <span class="search-count">{{ articles|length }}</span></h2>
+                <div class="articles-grid">
                     {% for article in articles %}
-                        <tr>
-                            <td>
-                                {% if article.imgLogo %}
-                                    <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" style="max-height:40px;">
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ article.titre }}</td>
-                            <td>{{ article.articleCategorie ? article.articleCategorie.intitule : '-' }}</td>
-                            <td>{{ article.offreCommerciale }}</td>
-                            <td>
-                                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+                        <div class="article-card">
 
-        {# ===== PRODUITS ===== #}
-        {% if produits is not empty %}
-            <h2>Billetterie ({{ produits|length }})</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Logo</th>
-                        <th>Intitulé</th>
-                        <th>Prix</th>
-                        <th>Stock</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+                            {% if article.offre %}
+                                <div class="article-card-badge">{{ article.offre }}</div>
+                            {% endif %}
+
+                            <a href="{{ path('app_article_show', {'id': article.id}) }}">
+                                <div class="article-card-img">
+                                    {% if article.imgLogo %}
+                                        <img src="{{ asset('uploads/articles/' ~ article.imgLogo) }}" alt="{{ article.titre }}">
+                                    {% else %}
+                                        <div class="article-card-img-placeholder">🏪</div>
+                                    {% endif %}
+                                </div>
+                            </a>
+
+                            {% if article.articleCategorie %}
+                                <div class="article-card-categorie">
+                                    🏷️ {{ article.articleCategorie.intitule }}
+                                </div>
+                            {% endif %}
+
+                            {% if article.departement %}
+                                <div class="article-card-departement">
+                                    📍 {{ article.departement.numero }} - {{ article.departement.nom }}
+                                </div>
+                            {% endif %}
+
+                            <div class="article-card-body">
+                                <h3 class="article-card-titre">{{ article.titre }}</h3>
+
+                                {% if article.offreCommerciale %}
+                                    <p class="article-card-desc">
+                                        {{ article.offreCommerciale|slice(0, 60) }}{% if article.offreCommerciale|length > 60 %}...{% endif %}
+                                    </p>
+                                {% endif %}
+
+                                <hr class="article-card-divider">
+                                <a href="{{ path('app_article_show', {'id': article.id}) }}" class="article-card-link">Voir la fiche</a>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# ===== PRODUITS ===== #}
+            {% if produits is not empty and (filtre == 'tout' or filtre == 'produits') %}
+                <h2 class="search-section-titre">🎟️ Billetterie <span class="search-count">{{ produits|length }}</span></h2>
+                <div class="articles-grid">
                     {% for produit in produits %}
-                        <tr>
-                            <td>
-                                {% if produit.logo %}
-                                    <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" style="max-height:40px;">
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ produit.intitule }}</td>
-                            <td>{{ produit.prixPublic }} €</td>
-                            <td>
-                                {% if produit.stock > 0 %}
-                                    <span class="badge bg-success">{{ produit.stock }}</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Rupture</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+                        <div class="article-card">
 
-        {# ===== COUPONS ===== #}
-        {% if coupons is not empty %}
-            <h2>Coupons Réduction ({{ coupons|length }})</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Logo</th>
-                        <th>Intitulé</th>
-                        <th>Ville</th>
-                        <th>Offre</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+                            {% if produit.stock <= 0 %}
+                                <div class="article-card-badge" style="background: #dc3545;">Rupture</div>
+                            {% endif %}
+
+                            <a href="{{ path('app_produit_show', {'id': produit.id}) }}">
+                                <div class="article-card-img">
+                                    {% if produit.logo %}
+                                        <img src="{{ asset('uploads/logos/' ~ produit.logo) }}" alt="{{ produit.intitule }}">
+                                    {% else %}
+                                        <div class="article-card-img-placeholder">🎟️</div>
+                                    {% endif %}
+                                </div>
+                            </a>
+
+                            {% if produit.produitCategorie %}
+                                <div class="article-card-categorie">
+                                    🏷️ {{ produit.produitCategorie.intitule }}
+                                </div>
+                            {% endif %}
+
+                            {% if produit.departement %}
+                                <div class="article-card-departement">
+                                    📍 {{ produit.departement.numero }} - {{ produit.departement.nom }}
+                                </div>
+                            {% endif %}
+
+                            <div class="article-card-body">
+                                <h3 class="article-card-titre">{{ produit.intitule }}</h3>
+
+                                {% if produit.description %}
+                                    <p class="article-card-desc">
+                                        {{ produit.description|slice(0, 60) }}{% if produit.description|length > 60 %}...{% endif %}
+                                    </p>
+                                {% endif %}
+
+                                <div class="produit-prix">
+                                    <span class="produit-prix-public">{{ produit.prixPublic }} €</span>
+                                    <span class="produit-prix-unitaire">{{ produit.prixUnitaire }} €</span>
+                                </div>
+
+                                <hr class="article-card-divider">
+                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="article-card-link">Voir la fiche</a>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# ===== COUPONS ===== #}
+            {% if coupons is not empty and (filtre == 'tout' or filtre == 'coupons') %}
+                <h2 class="search-section-titre">🎫 Coupons Réduction <span class="search-count">{{ coupons|length }}</span></h2>
+                <div class="articles-grid">
                     {% for coupon in coupons %}
-                        <tr>
-                            <td>
-                                {% if coupon.logo %}
-                                    <img src="{{ asset('uploads/logos/' ~ coupon.logo) }}" style="max-height:40px;">
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ coupon.intitule }}</td>
-                            <td>{{ coupon.ville }}</td>
-                            <td>{{ coupon.offreCommerciale }}</td>
-                            <td>
-                                <a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                            </td>
-                        </tr>
+                        <div class="article-card">
+
+                            {% if coupon.offre %}
+                                <div class="article-card-badge">{{ coupon.offre }}</div>
+                            {% endif %}
+
+                            {% if not coupon.actif %}
+                                <div class="article-card-badge" style="background: #6c757d;">Inactif</div>
+                            {% endif %}
+
+                            <a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}">
+                                <div class="article-card-img">
+                                    {% if coupon.logo %}
+                                        <img src="{{ asset('uploads/logos/' ~ coupon.logo) }}" alt="{{ coupon.intitule }}">
+                                    {% else %}
+                                        <div class="article-card-img-placeholder">🎫</div>
+                                    {% endif %}
+                                </div>
+                            </a>
+
+                            {% if coupon.couponCategorie %}
+                                <div class="article-card-categorie">
+                                    🏷️ {{ coupon.couponCategorie.categorie }}
+                                </div>
+                            {% endif %}
+
+                            {% if coupon.departement %}
+                                <div class="article-card-departement">
+                                    📍 {{ coupon.departement.numero }} - {{ coupon.departement.nom }}
+                                </div>
+                            {% endif %}
+
+                            <div class="article-card-body">
+                                <h3 class="article-card-titre">{{ coupon.intitule }}</h3>
+                                <p class="article-card-desc">{{ coupon.ville }}</p>
+                                <hr class="article-card-divider">
+                                <a href="{{ path('app_coupon_reduction_show', {'id': coupon.id}) }}" class="article-card-link">Voir la fiche</a>
+                            </div>
+
+                        </div>
                     {% endfor %}
-                </tbody>
-            </table>
+                </div>
+            {% endif %}
+
         {% endif %}
 
-    {% endif %}
+    </div>
+</section>
+
+<style>
+.search-barre {
+    margin-bottom: 1.5rem;
+}
+.search-barre-form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    max-width: 500px;
+}
+.search-barre-input {
+    flex: 1;
+}
+.search-filtres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+.search-filtre-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    border: 2px solid var(--color-nav, #6c757d);
+    background: white;
+    color: var(--color-nav, #6c757d);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.search-filtre-btn:hover,
+.search-filtre-btn.active {
+    background: var(--color-nav, #6c757d);
+    color: white;
+}
+.search-section-titre {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 2rem 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.search-count {
+    background: var(--color-primary, #7c3aed);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+}
+</style>
 {% endblock %}

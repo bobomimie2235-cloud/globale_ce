@@ -25,9 +25,67 @@
     top: 80px;
 
     @include mobile {
-        width: 100%;
-        position: static;
-        padding: $spacing-s $spacing-md;
+        // Panneau coulissant
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100dvh;
+        width: 80vw;
+        max-width: 320px;
+        border-radius: 0 $border-radius-lg $border-radius-lg 0;
+        border: none;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+        z-index: 300;
+        overflow-y: auto;
+        padding: $spacing-md;
+        transform: translateX(-110%);
+        transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+
+        &.is-open {
+            transform: translateX(0);
+        }
+    }
+}
+
+// ===== HEADER MOBILE SIDEBAR =====
+.sidebar-mobile-header {
+    display: none;
+
+    @include mobile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: $spacing-md;
+        padding-bottom: $spacing-sm;
+        border-bottom: 2px solid $color-nav;
+    }
+}
+
+.sidebar-mobile-title {
+    font-family: $font-subtitle;
+    font-weight: 700;
+    font-size: 1rem;
+    color: $color-text-dark;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    i { color: $color-primary; font-size: 1.2rem; }
+}
+
+.sidebar-mobile-close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: $color-text-grey;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: $border-radius-sm;
+    transition: color 0.2s, background 0.2s;
+
+    &:hover {
+        color: $color-text-dark;
+        background: $color-light;
     }
 }
 
@@ -186,12 +244,18 @@
 
 // ===== PAGE ARTICLES =====
 .articles-page {
-    padding: $spacing-xl * 2 $spacing-xl;
+    padding: $spacing-xl $spacing-xl; 
     background: $color-light;
+    display: flow-root;
+
+    @include mobile {
+        padding: 0 !important; 
+    }
 
     .articles-container {
         max-width: 1400px;
         margin: 0 auto;
+        padding: 0;
     }
 
     .articles-titre {
@@ -206,8 +270,9 @@
         }
 
         @include mobile {
-            font-size: 1.3rem;
-            margin-bottom: $spacing-sm;
+        font-size: 0.8rem;
+        margin: 0 !important; // Supprime toute marge interne au titre en mobile
+        line-height: 1;
         }
     }
 
@@ -233,8 +298,11 @@
         }
 
         @include mobile {
-            grid-template-columns: repeat(2, 1fr);
-            gap: $spacing-md $spacing-sm;
+            padding: 0;
+            gap: $spacing-lg $spacing-sm;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 15px;
+
         }
     }
 
@@ -348,7 +416,7 @@
             gap: $spacing-xs;
 
             @include mobile {
-                font-size: $font-size-xxs;
+                font-size: $font-size-3xs;
                 padding: 0.3rem $spacing-s;
             }
         }
@@ -364,6 +432,7 @@
                 font-size: 0.8rem;
                 color: $color-bg-dark;
                 margin: $spacing-xs;
+
             }
 
             .article-card-desc {
@@ -421,16 +490,15 @@
                 padding: $spacing-xs;
 
                 .article-card-titre {
-                    font-size: 0.8rem;
-                    margin: $spacing-xs;
+                    display: none;
                 }
 
                 .article-card-desc {
-                    font-size: 0.7rem;
+                    font-size: 0.6rem;
                 }
 
                 .article-card-link {
-                    font-size: $font-size-sm;
+                    font-size: 0.6rem;
                 }
             }
         }
@@ -505,10 +573,17 @@
         .article-show-logo {
             height: 120px;
 
+                        @include mobile {
+            text-align: center;
+        }
+
             img {
                 max-width: 100%;
                 max-height: 120px;
                 object-fit: contain;
+            
+                @include mobile {
+            height: 100px;
             }
         }
 
@@ -520,6 +595,7 @@
                 object-fit: cover;
             }
         }
+    }
     }
 
     .article-show-infos {
@@ -533,14 +609,14 @@
             margin-bottom: $spacing-sm;
 
             @include mobile {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
         }
 
         .article-show-gerant {
             font-size: $font-size-sm;
             color: $color-text-grey;
-            margin-bottom: $spacing-lg;
+            margin-bottom: $spacing-sm;
         }
 
         .article-show-details {
@@ -550,7 +626,7 @@
 
             li {
                 display: flex;
-                align-items: flex-start;
+                align-items: center;
                 gap: $spacing-md;
                 padding: $spacing-sm 0;
                 border-bottom: 1px solid #f0f0f0;
@@ -699,6 +775,10 @@
 
 // ===== COUPON RÉDUCTION =====
 .btn-panier-green {
+    display: block;          // Indispensable pour le margin auto
+    width: fit-content;      // Empêche le bouton de prendre toute la largeur
+    margin: 0.8rem auto;
+
     padding: 0.6rem 1.5rem;
     background: #28a745;
     color: $color-white;
@@ -707,6 +787,7 @@
     font-size: $font-size-sm;
     font-weight: bold;
     cursor: pointer;
+    text-decoration: none;
     transition: background 0.2s;
 
     &:hover {
@@ -728,5 +809,65 @@
 
     &:focus {
         border-color: $color-primary;
+    }
+}
+
+// ===== BOUTON FILTRE MOBILE =====
+.btn-filtre-mobile {
+    display: none;
+
+    @include mobile {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        position: relative;
+        background: $color-primary;
+        color: $color-white;
+        border: none;
+        border-radius: $border-radius-pill;
+        padding: 0.55rem 1.2rem;
+        font-size: $font-size-sm;
+        font-family: $font-text;
+        font-weight: 700;
+        cursor: pointer;
+        margin-bottom: 0;
+        transition: background 0.2s;
+
+        i { font-size: 1.1rem; }
+
+        &:hover { background: color.adjust($color-primary, $lightness: -8%); }
+    }
+}
+
+.filtre-mobile-badge {
+    background: $color-white;
+    color: $color-primary;
+    font-size: 0.65rem;
+    font-weight: 900;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+}
+
+// ===== OVERLAY =====
+.sidebar-overlay {
+    display: none;
+
+    @include mobile {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 200;
+        opacity: 0;
+        transition: opacity 0.25s;
+
+        &.is-active {
+            display: block;
+            opacity: 1;
+        }
     }
 }

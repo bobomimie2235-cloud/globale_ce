@@ -83,6 +83,20 @@ class CouponReductionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function search(string $q): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.couponCategorie', 'cat')
+            ->where('LOWER(c.intitule) LIKE LOWER(:q)
+                    OR LOWER(c.offreCommerciale) LIKE LOWER(:q)
+                    OR LOWER(c.ville) LIKE LOWER(:q)
+                    OR LOWER(cat.categorie) LIKE LOWER(:q)')
+            ->setParameter('q', '%' . $q . '%')
+            ->orderBy('c.intitule', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * À ajouter dans src/Repository/CouponReductionRepository.php
      */

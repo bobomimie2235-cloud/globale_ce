@@ -62,6 +62,7 @@ class CouponReductionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CouponReduction::class,
+            'csrf_protection' => false,
         ]);
     }
 }

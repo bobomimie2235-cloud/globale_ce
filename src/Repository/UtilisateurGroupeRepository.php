@@ -27,4 +27,14 @@ class UtilisateurGroupeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+        public function findBySearch(?string $search): array
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.nomGroupe LIKE :search OR g.referenceGroupe LIKE :search OR g.ville LIKE :search OR g.email LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->orderBy('g.nomGroupe', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

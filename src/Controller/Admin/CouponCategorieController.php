@@ -1,5 +1,7 @@
 <?php
 
+// Controller/Admin/CouponCategorieController
+
 namespace App\Controller\Admin;
 
 use App\Entity\CouponCategorie;

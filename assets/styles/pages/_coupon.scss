@@ -1,0 +1,241 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+@use 'sass:color';
+
+
+
+// ===== BARRE TITRE + FILTRE =====
+.articles-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-sm $spacing-md; // On utilise du padding plutôt que de la marge
+    background: $color-light;
+
+    @include mobile {
+        position: sticky;
+        top: 52px; // Ajuste selon la hauteur exacte de ton header-top (vu 52.78px sur tes screens)
+        z-index: 100;
+        width: 100%;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba($color-nav, 0.1);
+        margin: 0 !important;
+        padding : 0;
+        margin-top: 0;
+        
+        // Optionnel : un léger flou pour l'effet premium
+        backdrop-filter: blur(5px);
+        background: rgba($color-light, 0.95);
+    }
+}
+
+// ===== TITRE =====
+.articles-titre {
+    font-family: $font-title;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $color-text-dark;
+    margin-bottom: $spacing-md;
+
+    span { color: $color-nav; }
+
+    @include mobile {
+        font-size: 0.8rem;
+        margin: 0;
+        margin-bottom: $spacing-xs;
+        padding : 0;
+    }
+}
+
+// ===== BOUTON FILTRE MOBILE — plus compact =====
+.btn-filtre-mobile {
+    display: none;
+
+    @include mobile {
+        display: flex;
+        align-items: center;
+        gap: 4px;                        // ← gap réduit
+        background: $color-primary;
+        color: $color-white;
+        border: none;
+        border-radius: $border-radius-pill;
+        padding: 0.3rem 0.6rem;          // ← padding réduit
+        font-size: 0.6rem;               // ← fonte réduite
+        font-family: $font-text;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s;
+
+        i { font-size: 0.85rem; }        // ← icône réduite
+
+        &:hover { background: color.adjust($color-primary, $lightness: -8%); }
+    }
+}
+
+.articles-main {
+    @include mobile {
+        margin-top: 0;
+        padding-top: 0;
+    }
+}
+
+// ===== GRILLE 3 COLONNES EN MOBILE =====
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-lg;
+
+    @include tablet {
+        grid-template-columns: repeat(3, 1fr); // tablet → 3 colonnes
+    }
+
+    @include mobile {
+        grid-template-columns: repeat(3, 1fr); // mobile → 3 colonnes
+        gap: $spacing-xs;
+    }
+}
+
+// ===== CARTE — ajustements mobile pour 3 colonnes =====
+.article-card {
+    // ... ton CSS existant ...
+
+    @include mobile {
+        .article-card-badge {
+            width: 30px;
+            height: 30px;
+            font-size: 0.55rem;
+            top: -8px;
+            right: 6px;
+        }
+
+        .article-card-img {
+            height: 70px;
+        }
+
+        .article-card-categorie,
+        .article-card-departement {
+            font-size: 0.55rem;
+            padding: 0.2rem $spacing-xs;
+        }
+
+        .article-card-body {
+            padding: $spacing-xs 4px;
+
+            .article-card-titre {
+                font-size: 0.65rem;
+                margin: 2px $spacing-xs;
+            }
+
+            .article-card-desc {
+                font-size: 0.6rem;
+                margin-bottom: 4px;
+            }
+
+            .article-card-link {
+                font-size: 0.65rem;
+            }
+        }
+    }
+}
+
+// ===== SIDEBAR — décale le contenu sous la topbar sticky =====
+.articles-layout {
+    display: flex;
+    gap: $spacing-xl;
+    align-items: flex-start;
+
+    @include mobile {
+        flex-direction: column;
+        gap: 0;
+        margin-top: 0;
+    }
+}
+
+// ===== SIDEBAR MOBILE — part sous la topbar =====
+.articles-sidebar {
+    @include mobile {
+        top: 0;
+        padding-top: $spacing-md;
+    }
+}
+
+
+// ===== MODALE DE CONFIRMATION =====
+.modal-overlay {
+    display: none; // Masqué par défaut
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    &.is-visible {
+        display: flex; // Utilisé pour afficher la modale via JS ou Twig
+    }
+}
+
+.modal-content {
+    background: $color-white;
+    padding: $spacing-xl;
+    border-radius: $border-radius-lg;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: $shadow-lg;
+
+    h5 {
+        margin-bottom: $spacing-md;
+        font-family: $font-title;
+        font-weight: 700;
+        color: $color-text-dark;
+    }
+
+    p {
+        margin-bottom: $spacing-sm;
+        font-size: $font-size-sm;
+        
+        &.p-valider {
+            color: #dc3545; // Rappel visuel du danger/irréversibilité
+            font-weight: bold;
+            margin-top: $spacing-md;
+        }
+    }
+}
+
+.modal-footer {
+    display: flex;
+    gap: $spacing-md;
+    margin-top: $spacing-xl;
+
+    form {
+        flex: 1;
+    }
+}
+
+// Bouton Annuler (on complète celui créé précédemment)
+.btn-modal-cancel {
+        display: block;          // Indispensable pour le margin auto
+    width: fit-content;      // Empêche le bouton de prendre toute la largeur
+    margin: 0.8rem auto;
+
+    padding: 0.6rem 1.5rem;
+    border: 2px solid transparent; // On enlève la bordure grise
+    border-radius: $border-radius-pill; // Utilise ta variable existante
+    background: #dc3545; // Rouge (type bootstrap danger)
+    color: $color-white; // Texte blanc
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+
+    &:hover {
+        background: color.adjust(#dc3545, $lightness: -10%); // Rouge plus foncé au survol
+    }
+
+    &:active {
+        transform: scale(0.98); // Petit effet d'enfoncement au clic
+    }
+}

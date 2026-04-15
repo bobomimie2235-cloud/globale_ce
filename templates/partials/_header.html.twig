@@ -3,12 +3,10 @@
     {# ===== LIGNE 1 : LOGO + INFO USER + CONNEXION ===== #}
     <div class="header-top">
 
-        {# ===== LOGO ===== #}
         <a href="{{ path('app_accueil') }}" class="header-logo">
             <img src="{{ asset('uploads/logos/001-logo-globale-ce-01-v1.jpg') }}" alt="Globale CE">
         </a>
 
-        {# ===== INFO UTILISATEUR / BOUTONS ===== #}
         <div class="header-right">
             {% if app.user %}
                 <div class="info-user">
@@ -24,32 +22,31 @@
                 <a href="{{ path('app_register') }}" class="btn-inscription">Inscription</a>
                 <a href="{{ path('app_login') }}" class="btn-connexion">Connexion</a>
             {% endif %}
+
+            {# ===== LOUPE MOBILE (dans header-right, après info-user) ===== #}
+            {% if is_granted('ROLE_USER') %}
+                <button class="btn-loupe-mobile" id="toggle-search-mobile" aria-label="Rechercher">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </button>
+            {% endif %}
+
+            {# ===== BURGER MOBILE (dans header-right, en dernier) ===== #}
+            <button class="burger" id="burger-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
 
     </div>
 
     {# ===== LIGNE 2 : NAVIGATION ===== #}
     <div class="header-nav">
-
-        {# ===== BURGER MOBILE ===== #}
-        <button class="burger" id="burger-btn" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        {# ===== BOUTON RECHERCHE MOBILE (à côté du burger) ===== #}
-        {% if is_granted('ROLE_USER') %}
-            <div class="nav-search-toggle nav-search-mobile">
-                <button id="toggle-search-mobile" aria-label="Rechercher">
-                    <span id="search-label-mobile">Recherche</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                </button>
-            </div>
-        {% endif %}
 
         {# ===== WRAPPER INNER : NAV + BOUTON RECHERCHE DESKTOP ===== #}
         <div class="header-nav-inner">
@@ -58,7 +55,6 @@
                 <ul>
                     <li><a href="{{ path('app_accueil') }}">Accueil</a></li>
 
-                    {# ===== USER UNIQUEMENT ===== #}
                     {% if is_granted('ROLE_USER') %}
 
                         <li class="has-submenu">
@@ -107,7 +103,6 @@
                             </ul>
                         </li>
 
-                        <li><a href="#">TV CSE</a></li>
                         <li><a href="{{ path('app_contactez_nous') }}">Contactez-Nous</a></li>
 
                         <li class="has-submenu">
@@ -119,9 +114,9 @@
                                 <li><a href="{{ path('app_logout') }}" class="li-deconnexion">Déconnexion</a></li>
                             </ul>
                         </li>
-                        {% endif %}
-                        
-                    {# ===== ADMIN UNIQUEMENT ===== #}
+
+                    {% endif %}
+
                     {% if is_granted('ROLE_ADMIN') %}
                         <li><a href="{{ path('admin_dashboard') }}">🖥️ Dashboard Admin</a></li>
                     {% endif %}
@@ -133,7 +128,9 @@
                 <div class="nav-search-toggle nav-search-desktop">
                     <button id="toggle-search" aria-label="Rechercher">
                         <span id="search-label">Recherche</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"/>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
@@ -141,22 +138,23 @@
                 </div>
             {% endif %}
 
-        </div>{# fin .header-nav-inner #}
+        </div>
+    </div>
 
-    </div>{# fin .header-nav #}
-
-    {# ===== LIGNE 3 : BARRE DE RECHERCHE MASQUÉE PAR DÉFAUT ===== #}
+    {# ===== LIGNE 3 : BARRE DE RECHERCHE ===== #}
     {% if is_granted('ROLE_USER') %}
         <div class="header-search" id="header-search" style="display:none;">
             <form class="search-form" method="get" action="{{ path('app_recherche') }}">
                 <div class="search-input-wrapper">
                     <input type="text" name="q"
-                        placeholder="Rechercher un produit, une offre, un coupon..."
-                        value="{{ app.request.query.get('q') }}"
-                        autocomplete="off"
-                        id="search-input">
+                           placeholder="Rechercher un produit, une offre, un coupon..."
+                           value="{{ app.request.query.get('q') }}"
+                           autocomplete="off"
+                           id="search-input">
                     <button type="submit" aria-label="Rechercher">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"/>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>

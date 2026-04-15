@@ -46,7 +46,6 @@
 			</h2>
 
 			<div class="offres-grid">
-
 				<a href="{{ is_granted('ROLE_USER') ? path('app_article_index') : path('app_login') }}" class="offre-card">
 					<div class="offre-card-header">COMMERCES</div>
 					<div class="offre-card-img">
@@ -158,11 +157,11 @@
 		</section>
 	{% endif %}
 
-	<hr
+	{# <hr
 	class="section-divider">
 
 	{# ===== NOUVEAUTÉ 2026 ===== #}
-	<section class="nouveaute">
+	{# <section class="nouveaute">
 		<div class="nouveaute-container">
 
 			<h2 class="nouveaute-titre">
@@ -171,15 +170,15 @@
 			</h2>
 
 			<div
-				class="nouveaute-content">
+				class="nouveaute-content"> #}
 
 				{# ===== IMAGE ÉCRAN ===== #}
-				<div class="nouveaute-screen">
+				{# <div class="nouveaute-screen">
 					<img src="{{ asset('uploads/offres/ecran-affichage.jpg') }}" alt="Écran d'affichage CSE">
-				</div>
+				</div> #}
 
 				{# ===== TEXTE DROITE ===== #}
-				<div class="nouveaute-text">
+				{# <div class="nouveaute-text">
 					<h3>ÉCRAN D'AFFICHAGE</h3>
 					<p class="nouveaute-desc-bold">Un outil de communication interne pour valoriser les offres CSE directement auprès de vos salariés.</p>
 					<hr class="nouveaute-divider">
@@ -189,7 +188,7 @@
 
 			</div>
 		</div>
-	</section>
+	</section> #}
 
 	<hr class="section-divider">
 

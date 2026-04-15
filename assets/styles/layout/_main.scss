@@ -8,7 +8,7 @@ main {
     margin: 0 auto;
     
     @include mobile {
-        padding: $spacing-xs;
+        padding: 0 $spacing-xs $spacing-xs $spacing-xs;
     }
 }
 

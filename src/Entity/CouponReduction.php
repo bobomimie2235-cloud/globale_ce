@@ -42,7 +42,7 @@ class CouponReduction
     private ?string $intitule = null;
 
     #[ORM\Column]
-    private ?bool $actif = null;
+    private ?bool $actif = false;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Article $article = null;
@@ -91,7 +91,7 @@ class CouponReduction
     public function setIntitule(string $intitule): static { $this->intitule = $intitule; return $this; }
 
     public function isActif(): ?bool { return $this->actif; }
-    public function setActif(bool $actif): static { $this->actif = $actif; return $this; }
+    public function setActif(bool $actif): static { $this->actif = $actif ?? false; return $this; }
 
     public function getArticle(): ?Article { return $this->article; }
     public function setArticle(?Article $article): static { $this->article = $article; return $this; }

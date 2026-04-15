@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Utilisateur;
 use App\Form\ProfilType;
+use App\Form\AdminUtilisateurType;
 use App\Repository\UtilisateurGroupeRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,7 +54,7 @@ class UtilisateurController extends AbstractController
         Utilisateur $utilisateur,
         EntityManagerInterface $entityManager
     ): Response {
-        $form = $this->createForm(ProfilType::class, $utilisateur);
+        $form = $this->createForm(AdminUtilisateurType::class, $utilisateur); // ← AdminUtilisateurType
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

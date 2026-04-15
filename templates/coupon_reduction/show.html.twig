@@ -94,24 +94,24 @@
 							</li>
 						{% endif %}
 
-                        {% if is_granted('ROLE_ADMIN') %}
-						<li>
-							<span class="detail-icon">📌</span>
-							<span class="detail-text">
-								{% if coupon_reduction.actif %}
-									<strong style="color: green;">Coupon actif</strong>
-								{% else %}
-									<strong style="color: #6c757d;">Coupon inactif</strong>
-								{% endif %}
-							</span>
-						</li>
-                        {% endif %}
+						{% if is_granted('ROLE_ADMIN') %}
+							<li>
+								<span class="detail-icon">📌</span>
+								<span class="detail-text">
+									{% if coupon_reduction.actif %}
+										<strong style="color: green;">Coupon actif</strong>
+									{% else %}
+										<strong style="color: #6c757d;">Coupon inactif</strong>
+									{% endif %}
+								</span>
+							</li>
+						{% endif %}
 
-						<li>
-							<span class="detail-icon">🔖</span>
-							<span class="detail-text">Réf.
-								{{ coupon_reduction.reference }}</span>
-						</li>
+						{# <li>
+																			<span class="detail-icon">🔖</span>
+																			<span class="detail-text">Réf.
+																				{{ coupon_reduction.reference }}</span>
+																		</li> #}
 
 					</ul>
 
@@ -132,20 +132,27 @@
 							</button>
 
 							{# ===== MODALE CONFIRMATION ===== #}
-							<div id="modalUtiliserCoupon" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
-								<div style="background:#fff; padding:2rem; border-radius:12px; max-width:500px; width:90%;">
-									<h5 style="margin-bottom:1rem;">Utiliser le coupon</h5>
+							<div id="modalUtiliserCoupon" class="modal-overlay">
+								<div class="modal-content">
+									<h5>Utiliser le coupon</h5>
+
 									<p>
-										<strong>Offre :</strong>
-										{{ coupon_reduction.offreCommerciale }}</p>
-									<p style="color:#666; font-size:0.9rem;">Êtes-vous sûr ? Cette action est irréversible.</p>
-									<div style="display:flex; gap:1rem; margin-top:1.5rem;">
-										<button onclick="document.getElementById('modalUtiliserCoupon').style.display='none'" style="flex:1; padding:0.6rem; border:2px solid #ccc; border-radius:50px; background:none; cursor:pointer;">
+										<strong>Offre :<br>
+										{{ coupon_reduction.offreCommerciale }}</strong>
+									</p>
+
+									<p class="p-valider">Êtes-vous sûr ? Cette action est irréversible.</p>
+
+									<div class="modal-footer">
+										<button type="button" onclick="document.getElementById('modalUtiliserCoupon').style.display='none'" class="btn-modal-cancel">
 											Annuler
 										</button>
-										<form method="post" action="{{ path('app_coupon_reduction_utiliser_mon_coupon', {'id': coupon_reduction.id}) }}" style="flex:1;">
+
+										<form method="post" action="{{ path('app_coupon_reduction_utiliser_mon_coupon', {'id': coupon_reduction.id}) }}">
 											<input type="hidden" name="_token" value="{{ csrf_token('utiliser-mon-coupon' ~ coupon_reduction.id) }}">
-											<button class="btn-panier-green" type="submit" class="btn-panier" style="width:100%;">Confirmer</button>
+											<button type="submit" class="btn-panier-green" style="width: 100%;">
+												Confirmer
+											</button>
 										</form>
 									</div>
 								</div>

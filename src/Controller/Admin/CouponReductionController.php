@@ -50,15 +50,6 @@ class CouponReductionController extends AbstractController
         ]);
     }
 
-    // ===== VOIR =====
-    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(CouponReduction $coupon): Response
-    {
-        return $this->render('admin/coupon/show.html.twig', [
-            'coupon' => $coupon,
-        ]);
-    }
-
     // ===== NOUVEAU =====
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(
@@ -84,6 +75,15 @@ class CouponReductionController extends AbstractController
         ]);
     }
 
+        // ===== VOIR =====
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(CouponReduction $coupon): Response
+    {
+        return $this->render('admin/coupon/show.html.twig', [
+            'coupon' => $coupon,
+        ]);
+    }
+
     // ===== MODIFIER =====
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(
@@ -101,6 +101,10 @@ class CouponReductionController extends AbstractController
             $this->addFlash('success', 'Coupon modifié avec succès.');
             return $this->redirectToRoute('admin_coupon_show', ['id' => $coupon->getId()]);
         }
+
+            if ($form->isSubmitted() && !$form->isValid()) {
+    dd($form->getErrors(true, true));
+            }
 
         return $this->render('admin/coupon/edit.html.twig', [
             'coupon' => $coupon,

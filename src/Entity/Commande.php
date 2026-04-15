@@ -16,6 +16,7 @@ class Commande
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+    public const STATUTS_VALIDES = ['validee', 'en_cours', 'payee', 'annulee', 'remboursee'];
 
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
@@ -54,11 +55,16 @@ class Commande
     }
 
     public function setStatut(string $statut): static
-    {
-        $this->statut = $statut;
-
-        return $this;
+{
+    if (!in_array($statut, self::STATUTS_VALIDES, true)) {
+        throw new \InvalidArgumentException(
+            sprintf('Statut invalide "%s". Valeurs autorisées : %s',
+                $statut, implode(', ', self::STATUTS_VALIDES))
+        );
     }
+    $this->statut = $statut;
+    return $this;
+}
 
     public function getTotalTTC(): ?string
     {

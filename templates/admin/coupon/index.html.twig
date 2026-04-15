@@ -147,8 +147,7 @@
                           action="{{ path('admin_coupon_delete', {id: coupon.id}) }}"
                           class="d-inline"
                           onsubmit="return confirm('Supprimer ce coupon ?')">
-                      <input type="hidden" name="_token"
-                             value="{{ csrf_token('delete' ~ coupon.id) }}">
+                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ coupon.id) }}">
                       <button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Supprimer">
                         <i class="bx bx-trash"></i>
                       </button>

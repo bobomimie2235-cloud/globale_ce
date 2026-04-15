@@ -16,6 +16,20 @@ class CouponCategorieRepository extends ServiceEntityRepository
         parent::__construct($registry, CouponCategorie::class);
     }
 
+    public function search(string $q): array
+{
+    return $this->createQueryBuilder('c')
+        ->leftJoin('c.couponCategorie', 'cat')
+        ->where('c.intitule LIKE :q
+        OR c.offreCommerciale LIKE :q
+        OR c.ville LIKE :q
+        OR cat.intitule LIKE :q')
+        ->setParameter('q', '%' . $q . '%')
+        ->orderBy('c.intitule', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
     //    /**
     //     * @return CouponCategorie[] Returns an array of CouponCategorie objects
     //     */

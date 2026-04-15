@@ -1,14 +1,9 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Coupons Réduction{% endblock %}
 
 {% block body %}
 <section class="articles-page">
     <div class="articles-container">
-
-        <h1 class="articles-titre">Offres
-            <span>Coupons Réduction</span>
-        </h1>
 
         {% if is_granted('ROLE_ADMIN') %}
             <div class="articles-admin-bar">
@@ -16,38 +11,53 @@
             </div>
         {% endif %}
 
+        {# ===== BARRE TITRE + FILTRE (sticky mobile) ===== #}
+        <div class="articles-topbar">
+            <h1 class="articles-titre">Offres <span>Coupons Réduction</span></h1>
+            <button type="button" class="btn-filtre-mobile" id="btn-filtre-mobile"
+                    aria-expanded="false" aria-controls="articles-sidebar">
+                <i class="bx bx-filter-alt"></i>
+                <span>Filtres</span>
+                <span class="filtre-mobile-badge" id="filtre-mobile-badge" style="display:none"></span>
+            </button>
+        </div>
+
         <div class="articles-layout">
 
+            {# ===== OVERLAY MOBILE ===== #}
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
             {# ===== SIDEBAR FILTRES ===== #}
-            <aside class="articles-sidebar">
+            <aside class="articles-sidebar" id="articles-sidebar">
+
+                <div class="sidebar-mobile-header">
+                    <span class="sidebar-mobile-title"><i class="bx bx-filter-alt"></i> Filtres</span>
+                    <button type="button" class="sidebar-mobile-close" id="sidebar-close" aria-label="Fermer">✕</button>
+                </div>
+
                 <form method="GET" action="{{ path('app_coupon_reduction_index') }}" id="form-filtres">
 
-                <div class="sidebar-search">
-    <input type="text"
-           name="search"
-           id="sidebar-search-input"
-           placeholder="Rechercher..."
-           value="{{ search ?? '' }}"
-           class="sidebar-search-input">
-</div>
-<hr class="sidebar-divider">
+                    <div class="sidebar-search">
+                        <input type="text"
+                               name="search"
+                               id="sidebar-search-input"
+                               placeholder="Rechercher..."
+                               value="{{ search ?? '' }}"
+                               class="sidebar-search-input">
+                    </div>
+                    <hr class="sidebar-divider">
 
-                    {# ----- CATÉGORIES ----- #}
                     <div class="sidebar-bloc">
-                        <button type="button"
-                                class="sidebar-accordion-toggle"
-                                aria-expanded="true"
-                                aria-controls="bloc-categories">
+                        <button type="button" class="sidebar-accordion-toggle"
+                                aria-expanded="true" aria-controls="bloc-categories">
                             <h3>Catégories</h3>
                             <span class="sidebar-accordion-icon">▾</span>
                         </button>
-
                         <ul id="bloc-categories" class="sidebar-accordion-content">
                             {% for categorie in categories %}
                                 <li>
                                     <label class="sidebar-checkbox-label">
-                                        <input type="checkbox"
-                                               name="categories[]"
+                                        <input type="checkbox" name="categories[]"
                                                value="{{ categorie.id }}"
                                                {% if categorie.id in categoriesActives %}checked{% endif %}>
                                         <span>{{ categorie.categorie }}</span>
@@ -59,22 +69,17 @@
 
                     <hr class="sidebar-divider">
 
-                    {# ----- DÉPARTEMENTS ----- #}
                     <div class="sidebar-bloc">
-                        <button type="button"
-                                class="sidebar-accordion-toggle"
-                                aria-expanded="true"
-                                aria-controls="bloc-departements">
+                        <button type="button" class="sidebar-accordion-toggle"
+                                aria-expanded="true" aria-controls="bloc-departements">
                             <h3>Départements</h3>
                             <span class="sidebar-accordion-icon">▾</span>
                         </button>
-
                         <ul id="bloc-departements" class="sidebar-accordion-content">
                             {% for departement in departements %}
                                 <li>
                                     <label class="sidebar-checkbox-label">
-                                        <input type="checkbox"
-                                               name="departements[]"
+                                        <input type="checkbox" name="departements[]"
                                                value="{{ departement.id }}"
                                                {% if departement.id in departementsActifs %}checked{% endif %}>
                                         <span>{{ departement.numero }} - {{ departement.nom }}</span>
@@ -84,12 +89,9 @@
                         </ul>
                     </div>
 
-                    {# ----- RESET ----- #}
                     <div class="sidebar-actions" id="sidebar-reset-wrap" style="display:none">
                         <a href="{{ path('app_coupon_reduction_index') }}"
-                           class="btn btn-secondary btn-sm btn-block">
-                            ✕ Réinitialiser
-                        </a>
+                           class="btn btn-secondary btn-sm btn-block">✕ Réinitialiser</a>
                     </div>
 
                 </form>
@@ -103,6 +105,7 @@
         </div>
     </div>
 </section>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

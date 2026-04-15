@@ -3,7 +3,7 @@
 {% block title %}Ma commande en cours{% endblock %}
 
 {% block body %}
-    <h1>Ma commande en cours</h1>
+    <h1>Panier</h1>
 
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">{{ message }}</div>
@@ -71,7 +71,7 @@
             </tfoot>
         </table>
 
-        <a href="{{ path('app_produit_index') }}" class="btn btn-secondary">Continuer mes achats</a>
+        <a href="{{ path('app_produit_index') }}" class="btn btn-secondary btn-retour-achat">Continuer mes achats</a>
 
         <form method="post" action="{{ path('app_commande_valider') }}" style="display:inline;">
             <input type="hidden" name="_token" value="{{ csrf_token('valider_commande') }}">

@@ -17,9 +17,12 @@ class CouponCategorieType extends AbstractType
     }
 
     public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => CouponCategorie::class,
-        ]);
-    }
+{
+    $resolver->setDefaults([
+        'data_class'      => CouponCategorie::class,
+        'csrf_protection' => true,
+        'csrf_field_name' => '_token',
+        'csrf_token_id'   => 'coupon_categorie',
+    ]);
+}
 }
