@@ -44,7 +44,12 @@ footer {
                     transition: color 0.2s;
 
                     &:hover {
+                        color: $footer-text;
                         font-weight: bold;
+                    }
+
+                    &:visited {
+                        color: $footer-text;
                     }
                 }
             }
@@ -67,7 +72,12 @@ footer {
                     color: $color-white;
 
                     &:hover {
+                        color: $footer-text;
                         font-weight: bold;
+                    }
+
+                    &:visited {
+                        color: $footer-text;
                     }
                 }
             }
@@ -100,36 +110,37 @@ footer {
 
     // ===== RESPONSIVE MOBILE =====
     @include mobile {
-    padding: $spacing-md $spacing-md $spacing-md $spacing-md;
-    margin-top: 0;
+        padding: $spacing-md $spacing-md $spacing-md $spacing-md;
+        margin-top: 0;
 
-    .footer-content {
-        flex-direction: column;
-        gap: $spacing-lg;
+        .footer-content {
+            flex-direction: column;
+            gap: $spacing-lg;
 
-        .footer-col {
-            min-width: 100%;
-        }
+            .footer-col {
+                min-width: 100%;
+            }
 
-        .footer-col-infos,
-        .footer-col-contact {
-            display: none; // ✅ masqué sur mobile
-        }
-        // ===== LIENS EN LIGNE =====
-        .footer-col ul {
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: $spacing-sm;
+            .footer-col-infos,
+            .footer-col-contact {
+                display: none; // ✅ masqué sur mobile
+            }
 
-            li a {
-                font-size: $font-size-xs;
+            // ===== LIENS EN LIGNE =====
+            .footer-col ul {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: $spacing-sm;
+
+                li a {
+                    font-size: $font-size-xs;
+                }
+            }
+
+            .footer-col h4 {
+                text-align: center;
             }
         }
-
-        .footer-col h4 {
-            text-align: center;
-        }
     }
-}
 }
