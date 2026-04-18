@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')] // Sécurisation globale du contrôleur
 class DashboardController extends AbstractController
 {
-    #[Route('/admin', name: 'admin_dashboard')]
+    #[Route('/admin/', name: 'admin_dashboard')]
     public function index(
         CommandeRepository          $commandeRepository,
         UtilisateurRepository       $utilisateurRepository,

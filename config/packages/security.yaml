@@ -22,7 +22,6 @@ security:
                 login_path: app_login
                 check_path: app_login
                 default_target_path: app_accueil
-                always_use_default_target_path: true
                 enable_csrf: true
 
             remember_me:
@@ -53,7 +52,7 @@ security:
         - { path: ^/$, roles: PUBLIC_ACCESS }
 
         # 👑 ADMIN uniquement
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN, requires_channel: https  }
         - { path: ^/utilisateur-groupe, roles: ROLE_ADMIN }
         - { path: ^/utilisateur/new, roles: ROLE_ADMIN }
         - { path: ^/utilisateur/\d+/edit, roles: IS_AUTHENTICATED_FULLY }
