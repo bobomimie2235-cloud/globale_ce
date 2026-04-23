@@ -118,7 +118,8 @@ class CouponReduction
     public function setDepartement(?Departement $departement): static { $this->departement = $departement; return $this; }
 
     /** @return Collection<int, UtilisateurCoupon> */
-    public function getUtilisateurCoupons(): Collection { return $this->utilisateurCoupons; }
+    public function getUtilisateurCoupons(): Collection 
+    { return $this->utilisateurCoupons; }
 
     public function addUtilisateurCoupon(UtilisateurCoupon $utilisateurCoupon): static
     {
