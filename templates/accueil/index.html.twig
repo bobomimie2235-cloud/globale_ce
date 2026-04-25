@@ -46,13 +46,13 @@
 			</h2>
 
 			<div class="offres-grid">
-				<a href="{{ is_granted('ROLE_USER') ? path('app_article_index') : path('app_login') }}" class="offre-card">
+				<a href="{{ is_granted('ROLE_USER') ? path('app_article_index') : path('app_login') }}" class="offre-card" aria-label="Commerces - Jusqu'à -25% dans les commerces">
 					<div class="offre-card-header">COMMERCES</div>
 					<div class="offre-card-img">
 						<img src="{{ asset('uploads/offres/commerces.jpg') }}" alt="Commerces">
 					</div>
 					<div class="offre-card-body">
-						<p class="offre-card-promo">Jusqu'à -25%</p>
+						<h3 class="offre-card-promo">Jusqu'à -25%</h3>
 						<p>dans les commerces<br>avec la carte BREIZH C.E.</p>
 						{% if not is_granted('ROLE_USER') %}
 							<span class="offre-card-lock">🔒 Connexion requise</span>
@@ -60,13 +60,13 @@
 					</div>
 				</a>
 
-				<a href="{{ is_granted('ROLE_USER') ? path('app_coupon_reduction_index') : path('app_login') }}" class="offre-card">
+				<a href="{{ is_granted('ROLE_USER') ? path('app_coupon_reduction_index') : path('app_login') }}" class="offre-card" aria-label="Coupon Réduction - Réduction exceptionnelle lors de votre 1ère visite">
 					<div class="offre-card-header">COUPON REDUCTION</div>
 					<div class="offre-card-img">
 						<img src="{{ asset('uploads/offres/coupon.jpg') }}" alt="Coupon Réduction">
 					</div>
 					<div class="offre-card-body">
-						<p class="offre-card-promo">Réduction Exceptionnelle</p>
+						<h3 class="offre-card-promo">Réduction Exceptionnelle</h3>
 						<p>lors de votre 1ère visite</p>
 						{% if not is_granted('ROLE_USER') %}
 							<span class="offre-card-lock">🔒 Connexion requise</span>
@@ -74,13 +74,13 @@
 					</div>
 				</a>
 
-				<a href="{{ is_granted('ROLE_USER') ? path('app_produit_index') : path('app_login') }}" class="offre-card">
+				<a href="{{ is_granted('ROLE_USER') ? path('app_produit_index') : path('app_login') }}" class="offre-card" aria-label="Billetterie - Jusqu'à -35% sur de nombreux Parcs de Loisirs">
 					<div class="offre-card-header">BILLETTERIE</div>
 					<div class="offre-card-img">
 						<img src="{{ asset('uploads/offres/logo-billetterie-global.jpg') }}" alt="Billetterie">
 					</div>
 					<div class="offre-card-body">
-						<p class="offre-card-promo">Jusqu'à -35%</p>
+						<h3 class="offre-card-promo">Jusqu'à -35%</h3>
 						<p>sur de nombreux<br>Parcs de Loisirs</p>
 						{% if not is_granted('ROLE_USER') %}
 							<span class="offre-card-lock">🔒 Connexion requise</span>
@@ -94,7 +94,7 @@
 						<img src="{{ asset('uploads/offres/loisirs.jpg') }}" alt="Loisirs">
 					</div>
 					<div class="offre-card-body">
-						<p class="offre-card-promo offre-a-venir">Bientôt disponible</p>
+						<h3 class="offre-card-promo offre-a-venir">Bientôt disponible</h3>
 						<p>Page en construction</p>
 
 						{% if not is_granted('ROLE_USER') %}
@@ -278,8 +278,8 @@
 	{% endif %}
 
 	<div class="message-final">
-		<p>à bientôt chez</p>
-		<p class="titre-global">GLOBALE C.E.</p>
+		<h2>à bientôt chez</h2>
+		<h2 class="titre-global">GLOBALE C.E.</h2>
 	</div>
 
 {% endblock %}
