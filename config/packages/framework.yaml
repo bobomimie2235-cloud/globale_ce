@@ -18,4 +18,6 @@ when@test:
         session:
             storage_factory_id: session.storage.factory.mock_file
             cookie_secure: auto
+            cookie_httponly: true
             cookie_samesite: lax
+            cookie_lifetime: 3600  # 1 heure d'inactivité

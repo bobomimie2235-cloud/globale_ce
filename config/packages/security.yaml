@@ -18,6 +18,11 @@ security:
             lazy: true
             provider: app_user_provider
 
+            # 🍪 Sécurisation des cookies
+            cookie_secure: auto
+            cookie_httponly: true
+            cookie_samesite: lax
+
             form_login:
                 login_path: app_login
                 check_path: app_login
